@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="wordpress.security.authentication.provider" 
+                 class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressProvider" 
+                 public="false">
+            <argument /> <!-- User Provider -->
+        </service>
+
+        <service id="wordpress.security.authentication.listener" 
+                 class="Hypebeast\WordpressBundle\Security\Firewall\WordpressListener" 
+                 public="false">
+            <tag name="monolog.logger" channel="security" />
+            <argument type="service" id="security.context" />
+            <argument type="service" id="security.authentication.manager" />
+            <argument type="service" id="logger" on-invalid="null" />
+        </service>
+    </services>
+</container>
