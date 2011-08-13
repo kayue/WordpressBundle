@@ -9,12 +9,15 @@
                  class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressProvider" 
                  public="false">
             <argument /> <!-- User Provider -->
+            <argument>%hypebeast_wordpress.logged_in_key%</argument>
+            <argument>%hypebeast_wordpress.logged_in_salt%</argument>
         </service>
 
         <service id="wordpress.security.authentication.listener" 
                  class="Hypebeast\WordpressBundle\Security\Firewall\WordpressListener" 
                  public="false">
             <tag name="monolog.logger" channel="security" />
+            <argument>%hypebeast_wordpress.wordpress_url%</argument>
             <argument type="service" id="security.context" />
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="logger" on-invalid="null" />

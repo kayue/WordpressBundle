@@ -19,12 +19,14 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
  */
 class WordpressListener implements ListenerInterface
 {
+    private $wordpressUrl;
     private $context;
     private $authenticationManager;
     private $logger;
 
-    public function __construct(SecurityContextInterface $context, AuthenticationManagerInterface $authenticationManager, LoggerInterface $logger = null)
+    public function __construct($wordpressUrl, SecurityContextInterface $context, AuthenticationManagerInterface $authenticationManager, LoggerInterface $logger = null)
     {
+        $this->wordpressUrl = $wordpressUrl;
         $this->context = $context;
         $this->authenticationManager = $authenticationManager;
         $this->logger  = $logger;
@@ -39,12 +41,11 @@ class WordpressListener implements ListenerInterface
     {
         $request = $event->getRequest();
 
-        $key = 'a6a7afb1cdf10179e3603af9023eaf0d';
-        $identity = $request->cookies->get("wordpress_logged_in_{$key}");
+        $identity = $request->cookies->get("wordpress_logged_in_".md5($this->wordpressUrl));
         
         // not logged in
         if($identity === null) {
-            // TODO: what to do when user is not logged in
+            if (null !== $this->logger) $this->logger->info('Wordpress identity not found. (Cookie not found)');
             return;
         }
 

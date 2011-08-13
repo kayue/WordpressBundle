@@ -1,9 +1,7 @@
 TODO
 ====
 
-1. Able to configure settings in YAML configuration file.
-2. Dependency Injection (service.xml)
-3. Wordpress User Provider
+1. Wordpress User Provider
 
 
 Installation
@@ -29,7 +27,15 @@ Installation
                 // ...
             );
         }
-3. Add Wordpress Factories and Firewalls to your security.yml:
+
+3. Configure the Wordpress service in your YAML configuration. Logged in Key and Salt can be found in wp-config.php.
+
+        hypebeast_wordpress:
+            wordpress_url: 'http://127.0.0.1/wordpress'
+            logged_in_key: '4f^PtWnv8T2{O#;Ms8z2-`:/PU^=c4~$?]iAZ-n`%=`>P*d):$)@l(GyvV,Cg3y!'
+            logged_in_salt: '`!`DUD!E1>IiJQs;$Ax=>2$e@m+oIr),j bY}X!o$>i#>xx#Z7#UrB.);2|&T+4*'
+
+4. Add Wordpress Factories and Firewalls to your security.yml:
 
         factories:
             - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"

@@ -12,10 +12,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class WordpressProvider implements AuthenticationProviderInterface
 {
     private $userProvider;
+    private $loggedInKey;
+    private $loggedInSalt;
 
-    public function __construct(UserProviderInterface $userProvider)
+    public function __construct(UserProviderInterface $userProvider, $loggedInKey, $loggedInSalt)
     {
         $this->userProvider = $userProvider;
+        $this->loggedInKey = $loggedInKey;
+        $this->loggedInSalt = $loggedInSalt;
     }
 
     public function authenticate(TokenInterface $token)
@@ -35,12 +39,11 @@ class WordpressProvider implements AuthenticationProviderInterface
     // validate Wordpress auth cookie
     private function validateCookie(UserInterface $user, TokenInterface $token) 
     {
+        // echo $this->site_url;
         $passwordFrag = substr($user->getPassword(), 8, 4);                
-        $loggedInKey = 'L2M!?VgvboTS{Q*.j2(<]OBg3l)R~%owdrA5{06y=6HVfc+zsKh5BrTwe{wF&kWi';
-        $loggedInSalt = 'Pl&0({w@~{G=r+SReoAtnlAY3U!*-&+V3y-Ib6~W-(HUUdz8-2-F+Qt;eb|N,~o+';
         
         // from wp_salt()
-        $salt = $loggedInKey . $loggedInSalt;
+        $salt = $this->loggedInKey . $this->loggedInSalt;
 
         // from wp_hash()
         $key = hash_hmac('md5', $user->getUsername().$passwordFrag.'|'.$token->getExpiration(), $salt);
@@ -58,7 +61,6 @@ class WordpressProvider implements AuthenticationProviderInterface
      */
     public function supports(TokenInterface $token)
     {
-        return true;
         return $token instanceof WordpressUserToken;
     }
 }
