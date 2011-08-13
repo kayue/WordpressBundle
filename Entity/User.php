@@ -127,6 +127,6 @@ class User implements UserInterface
      * @return Boolean
      */
     function equals(UserInterface $user) {
-        return true;
+        return $this->getId() === $user->getId();
     }
 }
