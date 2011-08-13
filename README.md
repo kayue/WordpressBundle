@@ -46,3 +46,15 @@ Installation
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="logger" on-invalid="null" />
         </service>
+
+4. Update your security.yml
+
+        factories:
+            - "%kernel.root_dir%/../src/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
+        
+        firewalls:
+            hello:
+                pattern:    ^/demo/
+                wordpress:  true
+                anonymous: ~
+                stateless:  true
