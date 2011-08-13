@@ -42,12 +42,6 @@ class UserMeta
     private $meta_value;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", mappedBy="id")
-     */
-    protected $products;
-
-
-    /**
      * Get id
      *
      * @return integer 
