@@ -39,16 +39,22 @@ Installation
             logged_in_key: '4f^PtWnv8T2{O#;Ms8z2-`:/PU^=c4~$?]iAZ-n`%=`>P*d):$)@l(GyvV,Cg3y!'
             logged_in_salt: '`!`DUD!E1>IiJQs;$Ax=>2$e@m+oIr),j bY}X!o$>i#>xx#Z7#UrB.);2|&T+4*'
 
-4. Add Wordpress Factories and Firewalls to your `security.yml`:
+4. Add Wordpress Factories, Firewalls and User Provider to your `security.yml`:
 
         # app/config/security.yml
-
-        factories:
-            - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
         
-        firewalls:
-            hello:
-                pattern:    ^/demo/
-                wordpress:  true
-                anonymous: ~
-                stateless:  true
+        security:
+            
+            providers:
+                wordpress:
+                    entity: { class: Hypebeast\WordpressBundle\Entity\User, property: username }
+            
+            factories:
+                - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
+            
+            firewalls:
+                hello:
+                    pattern:    ^/demo/
+                    wordpress:  true
+                    anonymous:  ~
+                    stateless:  true
