@@ -1,8 +1,34 @@
 To-do
 =====
 
-1. Wordpress user meta model.
-2. Complete getRoles() method in User model.
+1. Join UserMeta to User model to avoid the second query.
+2. Create Repositories for common tasks.
+
+Usage 
+=====
+
+Imagine you are in a Controller:
+
+    class DemoController extends Controller
+    {
+        /**
+         * @Route("/hello/{name}", name="_demo_hello")
+         * @Template()
+         */
+        public function helloAction($name)
+        {
+            // retrive current logged in user:
+            $user = $this->get('security.context')->getToken()->getUser();
+            
+            // retrive user information from repository:
+            $userRepo = $this->getDoctrine()->getRepository('HypebeastWordpressBundle:User');
+            $userRepo->find(2);
+
+            return array('username' => $user->getUsername());
+        }
+
+        // ...
+    }
 
 Installation
 ============

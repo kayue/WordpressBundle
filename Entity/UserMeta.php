@@ -4,42 +4,43 @@ namespace Hypebeast\WordpressBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Hypebeast\WordpressBundle\Entity\UserMeta
  *
- * @ORM\Table(name="wp_usermeta")
  * @ORM\Entity
+ * @ORM\Table(name="wp_usermeta")
+ *
  */
 class UserMeta
 {
     /**
-     * @var integer $umeta_id
+     * @var integer $id
      *
      * @ORM\Column(name="umeta_id", type="bigint", length=60)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $umeta_id;
+    private $id;
 
     /**
-     * @var integer $user_id
+     * @var integer $userId
      *
-     * @ORM\Column(name="user_id", type="bigint", length=20)
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="metas")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="ID")
      */
-    private $user_id;
+    private $userId;
 
     /**
-     * @var string $meta_key
+     * @var string $key
      *
      * @ORM\Column(name="meta_key", type="string", length=255)
      */
-    private $meta_key;
+    private $key;
 
     /**
-     * @var string $meta_value
+     * @var string $value
      *
      * @ORM\Column(name="meta_value", type="text")
      */
-    private $meta_value;
+    private $value;
 
     /**
      * Get id
@@ -48,47 +49,23 @@ class UserMeta
      */
     public function getId()
     {
-        return $this->umeta_id;
+        return $this->id;
     }
 
     /**
-     * Set umeta_id
-     *
-     * @param integer $umetaId
-     */
-    public function setUmetaId($umetaId)
-    {
-        $this->umeta_id = $umetaId;
-    }
-
-    /**
-     * Get umeta_id
-     *
-     * @return integer 
-     */
-    public function getUmetaId()
-    {
-        return $this->umeta_id;
-    }
-
-    /**
-     * Set user_id
-     *
      * @param integer $userId
      */
     public function setUserId($userId)
     {
-        $this->user_id = $userId;
+        $this->userId = $userId;
     }
 
     /**
-     * Get user_id
-     *
      * @return integer 
      */
     public function getUserId()
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
     /**
@@ -96,9 +73,9 @@ class UserMeta
      *
      * @param string $metaKey
      */
-    public function setMetaKey($metaKey)
+    public function setKey($key)
     {
-        $this->meta_key = $metaKey;
+        $this->key = $key;
     }
 
     /**
@@ -106,9 +83,9 @@ class UserMeta
      *
      * @return string 
      */
-    public function getMetaKey()
+    public function getKey()
     {
-        return $this->meta_key;
+        return $this->key;
     }
 
     /**
@@ -116,9 +93,9 @@ class UserMeta
      *
      * @param string $metaValue
      */
-    public function setMetaValue($metaValue)
+    public function setValue($value)
     {
-        $this->meta_value = $metaValue;
+        $this->value = $value;
     }
 
     /**
@@ -126,8 +103,8 @@ class UserMeta
      *
      * @return string 
      */
-    public function getMetaValue()
+    public function getValue()
     {
-        return $this->meta_value;
+        return $this->value;
     }
 }

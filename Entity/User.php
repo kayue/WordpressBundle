@@ -5,8 +5,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ *
  * @ORM\Entity
  * @ORM\Table(name="wp_users")
+ *
  */
 class User implements UserInterface
 {
@@ -15,7 +17,6 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\Column(name="ID", type="bigint", unique="true", length="20")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\ManyToOne(targetEntity="UserMeta", inversedBy="user_id")
      */
     protected $id;
          
@@ -29,11 +30,18 @@ class User implements UserInterface
      */
     protected $password;
 
-    protected $meta;
+    /**
+     * @ORM\OneToMany(targetEntity="UserMeta", mappedBy="userId")
+     */
+    protected $metas;
     
     protected $roles; 
     
     protected $salt;
+
+    public function __construct() {
+        $this->metas = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -69,7 +77,25 @@ class User implements UserInterface
      * @return Role[] The user roles
      */
     function getRoles() {
-        return array('ROLE_USER');
+        $return = array();
+
+        foreach($this->metas as $meta) {
+            if ($meta->getKey() !== 'wp_capabilities') continue;
+            
+            $capabilities = unserialize($meta->getValue());
+
+            if(array_key_exists('administrator', $capabilities)) $return[] = 'ROLE_ADMIN';
+            if(array_key_exists('subscriber', $capabilities)) $return[] = 'ROLE_USER';
+
+            break;
+        }
+
+        return $return;
+    }
+
+    function getMetas()
+    {
+        return $this->metas;
     }
 
     /**
