@@ -10,23 +10,40 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User implements UserInterface
 {
+
     /**
      * @ORM\Id
-     * @ORM\Column(name="user_login", unique="true", length="60")
+     * @ORM\Column(name="ID", type="bigint", unique="true", length="20")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\ManyToOne(targetEntity="UserMeta", inversedBy="user_id")
+     */
+    protected $id;
+         
+    /**
+     * @ORM\Column(name="user_login", type="string", unique="true", length="60")
      */
     protected $username;
 
     /**
-     * @ORM\Column(name="user_pass", length="64")
+     * @ORM\Column(name="user_pass", type="string", length="64")
      */
     protected $password;
 
-    /**
-     * TODO: save user's roles
-     */
-    protected $roles = array('ROLE_USER'); 
+    protected $meta;
+    
+    protected $roles; 
     
     protected $salt;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Returns the username used to authenticate the user.
@@ -52,7 +69,7 @@ class User implements UserInterface
      * @return Role[] The user roles
      */
     function getRoles() {
-        return $this->roles;
+        return array('ROLE_USER');
     }
 
     /**

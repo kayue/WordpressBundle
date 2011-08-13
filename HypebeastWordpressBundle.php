@@ -1,5 +1,4 @@
 <?php
-
 namespace Hypebeast\WordpressBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;

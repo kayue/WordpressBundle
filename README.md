@@ -1,8 +1,8 @@
-TODO
-====
+To-do
+=====
 
-1. Wordpress User Provider
-
+1. Wordpress user meta model.
+2. Complete getRoles() method in User model.
 
 Installation
 ============
