@@ -1,8 +1,7 @@
 To-do
 =====
 
-1. Join UserMeta to User model to avoid the second query.
-2. Create Repositories for common tasks.
+1. Create Repositories for common tasks.
 
 Usage 
 =====

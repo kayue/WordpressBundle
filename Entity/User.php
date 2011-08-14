@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Hypebeast\WordpressBundle\Repository\UserRepository")
  * @ORM\Table(name="wp_users")
  *
  */
@@ -63,6 +63,16 @@ class User implements UserInterface
     }
 
     /**
+     * Set username
+     *
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
      * Returns the password used to authenticate the user.
      *
      * @return string The password
@@ -72,27 +82,60 @@ class User implements UserInterface
     }
 
     /**
+     * Set password
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * Set roles
+     *
+     * @param array $roles
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+    }
+
+    /**
      * Returns the roles granted to the user.
      *
      * @return Role[] The user roles
      */
     function getRoles() {
-        $return = array();
-
         foreach($this->metas as $meta) {
             if ($meta->getKey() !== 'wp_capabilities') continue;
             
             $capabilities = unserialize($meta->getValue());
 
-            if(array_key_exists('administrator', $capabilities)) $return[] = 'ROLE_ADMIN';
-            if(array_key_exists('subscriber', $capabilities)) $return[] = 'ROLE_USER';
+            if(array_key_exists('administrator', $capabilities)) $this->roles[] = 'ROLE_ADMIN';
+            if(array_key_exists('subscriber', $capabilities)) $this->roles[] = 'ROLE_USER';
 
             break;
         }
 
-        return $return;
+        return $this->roles;
     }
 
+    /**
+     * Add metas
+     *
+     * @param Hypebeast\WordpressBundle\Entity\UserMeta $metas
+     */
+    public function addMetas(\Hypebeast\WordpressBundle\Entity\UserMeta $metas)
+    {
+        $this->metas[] = $metas;
+    }
+
+    /**
+     * Get metas
+     *
+     * @return metas[]
+     */
     function getMetas()
     {
         return $this->metas;
@@ -127,6 +170,6 @@ class User implements UserInterface
      * @return Boolean
      */
     function equals(UserInterface $user) {
-        return $this->getId() === $user->getId();
+        return ($this->getId() === $user->getId()) && ($this->getUsername() === $user->getUsername());
     }
 }
