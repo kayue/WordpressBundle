@@ -33,7 +33,12 @@ Installation
 ============
 
 1. Make sure Wordpress's cookies is accessable from your Symfony 2 application. To confirm this, open up Symfony's profiler and look for `wordpress_test_cookie` inside the request tab.
-   To make Wordpress's cookie accessable to your application, please change the Site address (URL) of your Wordpress to root domain. For example, change from `http://domain.com/blog` to `http://domain.com`.
+   If you coudn't find the test cookie in request tab, please try to redefine the COOKIEPATH of Wordpress by editing `wp-config.php`. 
+   For more information, please read http://codex.wordpress.org/Editing_wp-config.php
+
+        // wordpress/wp-config.php
+
+        define('COOKIEPATH', '/' );    
 
 2. Register the namespace `Hypebeast` to your project's autoloader bootstrap script:
 
