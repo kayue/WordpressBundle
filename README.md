@@ -32,7 +32,10 @@ Imagine you are in a Controller:
 Installation
 ============
 
-1. Register the namespace `Hypebeast` to your project's autoloader bootstrap script:
+1. Make sure Wordpress's cookies is accessable from your Symfony 2 application. To confirm this, open up Symfony's profiler and look for `wordpress_test_cookie` inside the request tab.
+   To make Wordpress's cookie accessable to your application, please change the Site address (URL) of your Wordpress to root domain. For example, change from `http://domain.com/blog` to `http://domain.com`.
+
+2. Register the namespace `Hypebeast` to your project's autoloader bootstrap script:
 
         // app/autoload.php
 
@@ -42,7 +45,7 @@ Installation
               // ...
         ));
 
-2. Add this bundle to your application's kernel:
+3. Add this bundle to your application's kernel:
 
         // app/AppKernel.php
 
@@ -55,7 +58,7 @@ Installation
             );
         }
 
-3. Configure the Wordpress service in your YAML configuration. Logged in Key and Salt can be found in `wp-config.php`.
+4. Configure the Wordpress service in your YAML configuration. Logged in Key and Salt can be found in `wp-config.php`.
         
         # app/config/config.yml
         
@@ -64,7 +67,7 @@ Installation
             logged_in_key: '4f^PtWnv8T2{O#;Ms8z2-`:/PU^=c4~$?]iAZ-n`%=`>P*d):$)@l(GyvV,Cg3y!'
             logged_in_salt: '`!`DUD!E1>IiJQs;$Ax=>2$e@m+oIr),j bY}X!o$>i#>xx#Z7#UrB.);2|&T+4*'
 
-4. Add Wordpress Factories, Firewalls and User Provider to your `security.yml`:
+5. Add Wordpress Factories, Firewalls and User Provider to your `security.yml`:
 
         # app/config/security.yml
         
