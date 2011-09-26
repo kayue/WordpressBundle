@@ -11,12 +11,6 @@ use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-/**
- * AnonymousAuthenticationListener automatically adds a Token if none is
- * already present.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
 class WordpressListener implements ListenerInterface
 {
     private $wordpressUrl;

@@ -1,7 +1,8 @@
 To-do
 =====
 
-1. Create Repositories for common tasks.
+1. Support default login action. Now return "500 Internal Server Error - AuthenticationCredentialsNotFoundException" if user is not logged in. Should redirect user to Wordpress's login page instead.
+2. Create Repositories for common tasks.
 
 Usage 
 =====
@@ -72,12 +73,14 @@ Installation
             logged_in_key: '4f^PtWnv8T2{O#;Ms8z2-`:/PU^=c4~$?]iAZ-n`%=`>P*d):$)@l(GyvV,Cg3y!'
             logged_in_salt: '`!`DUD!E1>IiJQs;$Ax=>2$e@m+oIr),j bY}X!o$>i#>xx#Z7#UrB.);2|&T+4*'
 
-5. Add Wordpress Factories, Firewalls and User Provider to your `security.yml`:
+5. Add Wordpress Factories, Firewalls and User Provider to your `security.yml`. Wordpress authentication is a stateless authentication, no login cookie should be ever created by Symfony2. Default login action is yet to be done, but you could use the login_form's login_path to simulate the same thing first.
 
         # app/config/security.yml
         
         security:
             
+            # ...
+
             providers:
                 wordpress:
                     entity: { class: Hypebeast\WordpressBundle\Entity\User, property: username }
@@ -86,8 +89,13 @@ Installation
                 - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
             
             firewalls:
-                hello:
-                    pattern:    ^/demo/
+                secured_area:
+                    pattern:    ^/demo/secured/
                     wordpress:  true
-                    anonymous:  ~
                     stateless:  true
+                    # anonymous:  ~
+                    # form_login:
+                    #    check_path: /demo/secured/login_check
+                    #    login_path: /demo/secured/login
+                    
+                # ...
