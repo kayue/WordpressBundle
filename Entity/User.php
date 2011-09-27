@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
- * @ORM\Entity(repositoryClass="Hypebeast\WordpressBundle\Repository\UserRepository")
+ * @ORM\Entity
  * @ORM\Table(name="wp_users")
  *
  */
@@ -32,7 +32,7 @@ class User implements UserInterface
     protected $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserMeta", mappedBy="userId")
+     * @ORM\OneToMany(targetEntity="UserMeta", mappedBy="userId", fetch="EAGER")
      */
     protected $metas;
     
