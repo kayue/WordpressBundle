@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="Tests/bootstrap.php">
+  <php>
+    <!-- override these paths in your phpunit.xml if necessary -->
+    <server name="SYMFONY" value="../../../symfony/src" />
+    <server name="DOCTRINE_COMMON" value="../../../doctrine-common/lib" />
+    <server name="DOCTRINE_ORM" value="../../../doctrine/lib" />
+  </php>
+  
+  <testsuites>
+    <testsuite name="WordpressBundle Test Suite">
+      <directory suffix="Test.php">Tests</directory>
+    </testsuite>
+  </testsuites>
+
+  <filter>
+    <whitelist>
+      <directory>.</directory>
+      <exclude>
+        <directory>Tests</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+</phpunit>
