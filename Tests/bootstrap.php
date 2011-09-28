@@ -8,6 +8,17 @@ spl_autoload_register(function($class)
     }
 });
 
+foreach (array('SYMFONY', 'DOCTRINE_COMMON', 'DOCTRINE_ORM') as $component) {
+  if (!isset($_SERVER[$component])) {
+    throw new \RuntimeException("You must set the {$component} path");
+  }
+
+  if (0 === strpos($_SERVER[$component], '..')) {
+    # The path is relative to phpunit.xml, so get the absolute path
+    $_SERVER[$component] = realpath(__DIR__ . "/../{$_SERVER[$component]}");
+  }
+}
+
 require_once $_SERVER['SYMFONY'].'/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 $loader = new Symfony\Component\ClassLoader\UniversalClassLoader();

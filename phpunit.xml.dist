@@ -2,7 +2,7 @@
 
 <phpunit bootstrap="Tests/bootstrap.php">
   <php>
-    <!-- override these paths in your phpunit.xml if necessary -->
+    <!-- override these paths in your phpunit.xml if necessary, relative to this directory -->
     <server name="SYMFONY" value="../../../symfony/src" />
     <server name="DOCTRINE_COMMON" value="../../../doctrine-common/lib" />
     <server name="DOCTRINE_ORM" value="../../../doctrine/lib" />
