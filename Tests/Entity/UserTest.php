@@ -54,7 +54,10 @@ class UserTest extends \PHPUnit_Framework_TestCase {
         ));
         $this->object->addMetas($capabilities);
         
-        $this->assertEquals(array('ROLE_ADMIN', 'ROLE_USER'), $this->object->getRoles());
+        $this->assertEquals(
+                array('ROLE_WP_ADMINISTRATOR', 'ROLE_WP_EDITOR', 'ROLE_WP_SUBSCRIBER'),
+                $this->object->getRoles()
+        );
     }
 
     public function testAddMetas() {

@@ -112,9 +112,10 @@ class User implements UserInterface
             if ($meta->getKey() !== 'wp_capabilities') continue;
             
             $capabilities = unserialize($meta->getValue());
-
-            if(array_key_exists('administrator', $capabilities)) $this->roles[] = 'ROLE_ADMIN';
-            if(array_key_exists('subscriber', $capabilities)) $this->roles[] = 'ROLE_USER';
+            
+            foreach (array_keys($capabilities) as $role) {
+                $this->roles[] = 'ROLE_WP_' . strtoupper($role);
+            }
 
             break;
         }
