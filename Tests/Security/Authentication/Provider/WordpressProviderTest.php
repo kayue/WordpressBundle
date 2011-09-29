@@ -57,21 +57,11 @@ class WordpressProviderTest extends \PHPUnit_Framework_TestCase {
         $password = 'Password123456';
         $expiration = "time's up";
         
-        # Called in authenticate()
-        $token = $this->getMock(
-                'Hypebeast\\WordpressBundle\\Security\\Authentication\\Token\\WordpressUserToken');
-        $token->expects($this->any())->method('getUsername')->will($this->returnValue($username));
-        
-        $user = $this->getMock('Symfony\\Component\\Security\\Core\\User\\UserInterface');
+        $token = $this->getMockToken($username, $password, $expiration);
+        $user = $this->getMockUser($username, $password);
         
         $this->user_provider->expects($this->any())->method('loadUserByUsername')->with($username)
                 ->will($this->returnValue($user));
-        
-        # Called in validateCookie()
-        $user->expects($this->any())->method('getPassword')->will($this->returnValue($password));
-        $user->expects($this->any())->method('getUsername')->will($this->returnValue($username));
-        $token->expects($this->any())->method('getExpiration')
-                ->will($this->returnValue($expiration));
         
         $key = hash_hmac(
                 'md5',
@@ -80,8 +70,6 @@ class WordpressProviderTest extends \PHPUnit_Framework_TestCase {
         );
         $hash = hash_hmac('md5', $username . '|' . $expiration, $key);
         $token->expects($this->any())->method('getHmac')->will($this->returnValue($hash));
-        
-        $user->expects($this->any())->method('getRoles')->will($this->returnValue(array()));
         
         # We should get back a WordpressUserToken, be marked as authenticated, and be set as the user
         $result = $this->object->authenticate($token);
@@ -93,6 +81,24 @@ class WordpressProviderTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($user, $result->getUser());
     }
 
+    /**
+     * @expectedException Symfony\Component\Security\Core\Exception\AuthenticationException
+     */
+    public function testAuthenticateMismatchedToken() {
+        $username = 'jemima';
+        $password = 'Password123456';
+        $expiration = "time's up";
+        
+        $token = $this->getMockToken($username, $password, $expiration);
+        $user = $this->getMockUser($username, $password);
+        $this->user_provider->expects($this->any())->method('loadUserByUsername')->with($username)
+                ->will($this->returnValue($user));
+
+        $token->expects($this->any())->method('getHmac')->will($this->returnValue('incorrectHmac'));
+        
+        $this->object->authenticate($token);
+    }
+
     public function testSupports() {
         $this->assertTrue($this->object->supports(
                 new \Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressUserToken));
@@ -101,6 +107,28 @@ class WordpressProviderTest extends \PHPUnit_Framework_TestCase {
                 'Symfony\\Component\\Security\\Core\\Authentication\\Token\\AbstractToken')));
     }
 
+
+
+    protected function getMockToken($username, $password, $expiration) {
+        $token = $this->getMock(
+                'Hypebeast\\WordpressBundle\\Security\\Authentication\\Token\\WordpressUserToken');
+        
+        $token->expects($this->any())->method('getUsername')->will($this->returnValue($username));
+        $token->expects($this->any())->method('getExpiration')
+                ->will($this->returnValue($expiration));
+        
+        return $token;
+    }
+    
+    protected function getMockUser($username, $password) {
+        $user = $this->getMock('Symfony\\Component\\Security\\Core\\User\\UserInterface');
+
+        $user->expects($this->any())->method('getPassword')->will($this->returnValue($password));
+        $user->expects($this->any())->method('getUsername')->will($this->returnValue($username));
+        $user->expects($this->any())->method('getRoles')->will($this->returnValue(array()));
+        
+        return $user;
+    }
 }
 
 ?>
