@@ -37,7 +37,7 @@ class WordpressProvider implements AuthenticationProviderInterface
     }
 
     // validate Wordpress auth cookie
-    private function validateCookie(UserInterface $user, TokenInterface $token) 
+    private function validateCookie(UserInterface $user, WordpressUserToken $token) 
     {
         // echo $this->site_url;
         $passwordFrag = substr($user->getPassword(), 8, 4);                
