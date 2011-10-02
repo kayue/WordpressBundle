@@ -29,7 +29,6 @@ class WordpressProvider implements AuthenticationProviderInterface
         if ($user && $this->validateCookie($user, $token)) {
             $authenticatedToken = new WordpressUserToken($user->getRoles());
             $authenticatedToken->setUser($user);
-            $authenticatedToken->setAuthenticated(true);
             return $authenticatedToken;
         }
 

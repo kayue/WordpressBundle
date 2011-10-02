@@ -79,7 +79,6 @@ class WordpressProviderTest extends \PHPUnit_Framework_TestCase {
                 'Hypebeast\\WordpressBundle\\Security\\Authentication\\Token\\WordpressUserToken',
                 $result
         );
-        $this->assertTrue($result->isAuthenticated());
         $this->assertEquals($user, $result->getUser());
     }
 
