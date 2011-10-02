@@ -3,6 +3,7 @@
 namespace Hypebeast\WordpressBundle\Tests\Security\Firewall;
 
 use Hypebeast\WordpressBundle\Security\Firewall\WordpressListener;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * Test class for WordpressListener.
@@ -70,6 +71,44 @@ class WordpressListenerTest extends \PHPUnit_Framework_TestCase {
         
         # The authenticated token should get set
         $this->securityContext->expects($this->once())->method('setToken')->with($token);
+        
+        $this->object->handle($event);
+    }
+    
+    public function testHandleFailedAuthenticationRequest() {
+        $request = $this->getMock('Symfony\\Component\\HttpFoundation\\Request');
+        $request->cookies = $this->getMock('Symfony\\Component\\HttpFoundation\\ParameterBag');
+        $request->cookies->expects($this->once())->method('get')
+                ->with('wordpress_logged_in_' . md5($this->wordpress_url))
+                ->will($this->returnValue('mock|cookie|value'));
+        
+        $event = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Event\\GetResponseEvent')
+                ->disableOriginalConstructor()->getMock();
+        $event->expects($this->once())->method('getRequest')->will($this->returnValue($request));
+        
+        # Let's say the provided token doesn't authenticate
+        $this->authenticationManager->expects($this->once())->method('authenticate')
+                ->with($this->isInstanceOf(
+                    'Hypebeast\\WordpressBundle\\Security\\Authentication\\Token\\WordpressUserToken'
+                ))->will($this->throwException(new AuthenticationException('mock exception')));
+        
+        # Any token should get cleared
+        $this->securityContext->expects($this->once())->method('setToken')
+                ->with($this->identicalTo(null));
+        
+        $this->object->handle($event);
+    }
+    
+    public function testHandleNoWordpressCookie() {
+        $request = $this->getMock('Symfony\\Component\\HttpFoundation\\Request');
+        $request->cookies = $this->getMock('Symfony\\Component\\HttpFoundation\\ParameterBag');
+        
+        $event = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Event\\GetResponseEvent')
+                ->disableOriginalConstructor()->getMock();
+        $event->expects($this->once())->method('getRequest')->will($this->returnValue($request));
+
+        $this->authenticationManager->expects($this->never())->method('authenticate');
+        $this->securityContext->expects($this->never())->method('setToken');
         
         $this->object->handle($event);
     }
