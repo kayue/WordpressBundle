@@ -1,8 +1,7 @@
 To-do
 =====
 
-1. Support default login action. Now return "500 Internal Server Error - AuthenticationCredentialsNotFoundException" if user is not logged in. Should redirect user to Wordpress's login page instead.
-2. Create Repositories for common tasks.
+1. Create Repositories for common tasks.
 
 Usage 
 =====

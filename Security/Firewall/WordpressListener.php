@@ -9,61 +9,36 @@ use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterfac
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\SecurityContextInterface;
-use Symfony\Component\Security\Http\Firewall\ListenerInterface;
+use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
 use Symfony\Component\Security\Http\HttpUtils;
+use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
-class WordpressListener implements ListenerInterface
+class WordpressListener extends AbstractAuthenticationListener
 {
     protected $wordpressUrl;
     protected $context;
     protected $authenticationManager;
     protected $logger;
 
-    public function __construct($wordpressUrl, SecurityContextInterface $context, AuthenticationManagerInterface $authenticationManager, LoggerInterface $logger = null)
+    public function __construct($wordpressUrl, SecurityContextInterface $securityContext,
+            AuthenticationManagerInterface $authenticationManager, HttpUtils $httpUtils,
+            LoggerInterface $logger=null)
     {
-        $this->wordpressUrl = $wordpressUrl;
-        $this->securityContext = $context;
-        $this->authenticationManager = $authenticationManager;
-        $this->logger  = $logger;
-    }
-
-    /**
-     * Handles Wordpress user authentication.
-     *
-     * @param GetResponseEvent $event A GetResponseEvent instance
-     */
-    public function handle(GetResponseEvent $event)
-    {
-        $request = $event->getRequest();
+        parent::__construct($securityContext, $authenticationManager,
+                new SessionAuthenticationStrategy(SessionAuthenticationStrategy::NONE), $httpUtils,
+                'wordpress'
+        );
         
-        try {
-            if (null === $returnValue = $this->attemptAuthentication($request)) {
-                return;
-            }
-
-            if ($returnValue instanceof TokenInterface) {
-                $this->securityContext->setToken($returnValue);
-            } else {
-                throw new \RuntimeException('attemptAuthentication() must either return an implementation of TokenInterface, or null.');
-            }
-        } catch (AuthenticationException $e) {
-            $this->securityContext->setToken(null);
-        }
+        $this->wordpressUrl = $wordpressUrl;
+        $this->logger = $logger;
     }
 
-    /**
-     * Performs authentication.
-     *
-     * @param  Request $request A Request instance
-     *
-     * @return TokenInterface The authenticated token, or null if full authentication is not possible
-     *
-     * @throws AuthenticationException if the authentication fails
-     */
-    private function attemptAuthentication(Request $request) 
+    protected function attemptAuthentication(Request $request) 
     {
-        $wordpressLoggedInCookie = "wordpress_logged_in_".md5($this->wordpressUrl);
-
+        $this->options['failure_path']
+                = $this->wordpressUrl . '/wp-login.php?redirect_to=' . $request->getUri();
+        
+        $wordpressLoggedInCookie = 'wordpress_logged_in_' . md5($this->wordpressUrl);
         if(null === $identity = $request->cookies->get($wordpressLoggedInCookie)) {
             if (null !== $this->logger) {
                 $this->logger->debug(sprintf('Wordpress identity cookie "%s" not found.', $wordpressLoggedInCookie));

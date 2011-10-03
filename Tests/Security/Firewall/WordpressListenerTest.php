@@ -28,12 +28,18 @@ class WordpressListenerTest extends \PHPUnit_Framework_TestCase {
         $this->securityContext
                 = $this->getMock('Symfony\\Component\\Security\\Core\\SecurityContextInterface');
         $this->authenticationManager = $this->getMock(
-                'Symfony\\Component\\Security\\Core\\Authentication\\AuthenticationManagerInterface');
+                'Symfony\\Component\\Security\\Core\\Authentication\\AuthenticationManagerInterface'
+        );
+        
+        $this->httpUtils = $this->getMock('Symfony\\Component\\Security\\Http\\HttpUtils');
+        $this->httpUtils->expects($this->any())->method('checkRequestPath')
+                ->will($this->returnValue(true));
         
         $this->object = new WordpressListener(
                 $this->wordpress_url,
                 $this->securityContext,
-                $this->authenticationManager
+                $this->authenticationManager,
+                $this->httpUtils
         );
     }
 
@@ -46,18 +52,6 @@ class WordpressListenerTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testHandleSuccessfulAuthenticationRequest() {
-        $request = $this->getMock('Symfony\\Component\\HttpFoundation\\Request');
-        $request->cookies = $this->getMock('Symfony\\Component\\HttpFoundation\\ParameterBag');
-        $request->cookies->expects($this->once())->method('get')
-                ->with('wordpress_logged_in_' . md5($this->wordpress_url))
-                ->will($this->returnValue(
-                    implode('|', array('expected username', 'expected expiration', 'expected hmac'))
-                ));
-        
-        $event = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Event\\GetResponseEvent')
-                ->disableOriginalConstructor()->getMock();
-        $event->expects($this->once())->method('getRequest')->will($this->returnValue($request));
-        
         $token = $this->getMock(
                 'Symfony\\Component\\Security\\Core\\Authentication\\Token\\TokenInterface');
         # A WordpressUserToken should get instantiated and authenticated
@@ -66,27 +60,31 @@ class WordpressListenerTest extends \PHPUnit_Framework_TestCase {
                     $this->isInstanceOf(
                         'Hypebeast\\WordpressBundle\\Security\\Authentication\\Token\\WordpressUserToken'
                     ),
-                    $this->attributeEqualTo('user', 'expected username'),
-                    $this->attributeEqualTo('expiration', 'expected expiration'),
-                    $this->attributeEqualTo('hmac', 'expected hmac')
+                    $this->attributeEqualTo('user', $username = 'expected username'),
+                    $this->attributeEqualTo('expiration', $expiration = 'expected expiration'),
+                    $this->attributeEqualTo('hmac', $hmac = 'expected hmac')
                 ))->will($this->returnValue($token));
         
         # The authenticated token should get set
         $this->securityContext->expects($this->once())->method('setToken')->with($token);
         
+        # The user should be redirected afterwards
+        $this->httpUtils->expects($this->once())->method('createRedirectResponse')
+                ->with(
+                    $this->isInstanceOf('Symfony\\Component\\HttpFoundation\\Request'),
+                    $this->anything()
+                )->will($this->returnValue(
+                    $this->getMock('Symfony\\Component\\HttpFoundation\\Response')
+                ));
+        
+        $event = $this->getMockEvent("{$username}|{$expiration}|{$hmac}");
+        $event->expects($this->once())->method('setResponse');
+        
         $this->object->handle($event);
     }
     
     public function testHandleFailedAuthenticationRequest() {
-        $request = $this->getMock('Symfony\\Component\\HttpFoundation\\Request');
-        $request->cookies = $this->getMock('Symfony\\Component\\HttpFoundation\\ParameterBag');
-        $request->cookies->expects($this->once())->method('get')
-                ->with('wordpress_logged_in_' . md5($this->wordpress_url))
-                ->will($this->returnValue('mock|cookie|value'));
-        
-        $event = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Event\\GetResponseEvent')
-                ->disableOriginalConstructor()->getMock();
-        $event->expects($this->once())->method('getRequest')->will($this->returnValue($request));
+        $request_url = 'expected request url';
         
         # Let's say the provided token doesn't authenticate
         $this->authenticationManager->expects($this->once())->method('authenticate')
@@ -98,21 +96,53 @@ class WordpressListenerTest extends \PHPUnit_Framework_TestCase {
         $this->securityContext->expects($this->once())->method('setToken')
                 ->with($this->identicalTo(null));
         
+        # The user should be redirected to the Wordpress login
+        $this->httpUtils->expects($this->once())->method('createRedirectResponse')
+                ->with(
+                    $this->isInstanceOf('Symfony\\Component\\HttpFoundation\\Request'),
+                    $this->wordpress_url . '/wp-login.php?redirect_to=' . $request_url
+                )->will($this->returnValue(
+                    $this->getMock('Symfony\\Component\\HttpFoundation\\Response')
+                ));
+        
+        $event = $this->getMockEvent('mock|cookie|value', $request_url);
+        $event->expects($this->once())->method('setResponse');
+        
         $this->object->handle($event);
     }
     
     public function testHandleNoWordpressCookie() {
-        $request = $this->getMock('Symfony\\Component\\HttpFoundation\\Request');
+        $this->authenticationManager->expects($this->never())->method('authenticate');
+        $this->securityContext->expects($this->never())->method('setToken');
+        
+        $this->object->handle($this->getMockEvent(null));
+    }
+    
+    protected function getMockEvent($wordpress_cookie='mock|cookie|value', $request_url='mock url') {
+        
+        $request = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\Request')
+                ->disableOriginalClone()->getMock();
+        
+        $request->expects($this->any())->method('hasSession')->will($this->returnValue(true));
+        $request->expects($this->any())->method('hasPreviousSession')
+                ->will($this->returnValue(true));
+        $session = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\Session')
+                ->disableOriginalConstructor()->getMock();
+        $request->expects($this->any())->method('getSession')->will(
+                $this->returnValue($session));
+        
         $request->cookies = $this->getMock('Symfony\\Component\\HttpFoundation\\ParameterBag');
+        $request->cookies->expects($this->once())->method('get')
+                ->with('wordpress_logged_in_' . md5($this->wordpress_url))
+                ->will($this->returnValue($wordpress_cookie));
+        
+        $request->expects($this->any())->method('getUri')->will($this->returnValue($request_url));
         
         $event = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Event\\GetResponseEvent')
                 ->disableOriginalConstructor()->getMock();
         $event->expects($this->once())->method('getRequest')->will($this->returnValue($request));
-
-        $this->authenticationManager->expects($this->never())->method('authenticate');
-        $this->securityContext->expects($this->never())->method('setToken');
         
-        $this->object->handle($event);
+        return $event;
     }
 
 }

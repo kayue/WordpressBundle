@@ -20,6 +20,7 @@
             <argument>%hypebeast_wordpress.wordpress_url%</argument>
             <argument type="service" id="security.context" />
             <argument type="service" id="security.authentication.manager" />
+            <argument type="service" id="security.http_utils" />
             <argument type="service" id="logger" on-invalid="null" />
         </service>
     </services>
