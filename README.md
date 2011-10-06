@@ -63,16 +63,14 @@ Installation
             );
         }
 
-4. Configure the Wordpress service in your YAML configuration. Logged in Key and Salt can be found in `wp-config.php`.
+4. Configure the Wordpress service in your YAML configuration.
         
         # app/config/config.yml
         
         hypebeast_wordpress:
-            wordpress_url: 'http://127.0.0.1/wordpress'
-            logged_in_key: '4f^PtWnv8T2{O#;Ms8z2-`:/PU^=c4~$?]iAZ-n`%=`>P*d):$)@l(GyvV,Cg3y!'
-            logged_in_salt: '`!`DUD!E1>IiJQs;$Ax=>2$e@m+oIr),j bY}X!o$>i#>xx#Z7#UrB.);2|&T+4*'
+            wordpress_path: /path/to/your/wordpress
 
-5. Add Wordpress Factories, Firewalls and User Provider to your `security.yml`. Wordpress authentication is a stateless authentication, no login cookie should be ever created by Symfony2. Default login action is yet to be done, but you could use the login_form's login_path to simulate the same thing first.
+5. Add Wordpress Factories, Firewalls and User Provider to your `security.yml`. Wordpress authentication is a stateless authentication, no login cookie should be ever created by Symfony2.
 
         # app/config/security.yml
         
@@ -93,8 +91,5 @@ Installation
                     wordpress:  true
                     stateless:  true
                     # anonymous:  ~
-                    # form_login:
-                    #    check_path: /demo/secured/login_check
-                    #    login_path: /demo/secured/login
                     
                 # ...
