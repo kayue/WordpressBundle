@@ -6,8 +6,6 @@ use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 
 class WordpressUserToken extends AbstractToken
 {
-    public $expiration;
-    public $hmac;
 
     public function __construct(array $roles = array()) {
         parent::__construct($roles);
@@ -22,26 +20,6 @@ class WordpressUserToken extends AbstractToken
         }
 
         parent::setAuthenticated(false);
-    }
-
-    public function setExpiration($expiration)
-    {
-        $this->expiration = $expiration;
-    }
-
-    public function getExpiration()
-    {
-        return $this->expiration;
-    }
-
-    public function setHmac($hmac)
-    {
-        $this->hmac = $hmac;
-    }
-
-    public function getHmac()
-    {
-        return $this->hmac;
     }
 
     public function getCredentials()

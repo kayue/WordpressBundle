@@ -1,54 +1,59 @@
 <?php
+
+/**
+ * Contains the WordpressProvider class, part of the Symfony2 Wordpress Bundle
+ *
+ * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
+ * @author     Ka Yue Yeung
+ * @package    Hypebeast\WordpressBundle
+ * @subpackage Security\Authentication\Provider
+ */
+
 namespace Hypebeast\WordpressBundle\Security\Authentication\Provider;
 
 use Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressUserToken;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\NonceExpiredException;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Hypebeast\WordpressBundle\Wordpress\ApiAbstraction;
 
+/**
+ * WordpressProvider will verify that the current user has been authenticated in Wordpress
+ *
+ * @package    Hypebeast\WordpressBundle
+ * @subpackage Security\Authentication\Provider
+ * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
+ * @author     Ka Yue Yeung
+ */
 class WordpressProvider implements AuthenticationProviderInterface
 {
-    private $userProvider;
-    private $loggedInKey;
-    private $loggedInSalt;
+    /**
+     * An abstraction layer for the Wordpress API
+     *
+     * @var ApiAbstraction
+     */
+    protected $api;
 
-    public function __construct(UserProviderInterface $userProvider, $loggedInKey, $loggedInSalt)
+    /**
+     * Constructor
+     *
+     * @param ApiAbstraction $api 
+     */
+    public function __construct(ApiAbstraction $api)
     {
-        $this->userProvider = $userProvider;
-        $this->loggedInKey = $loggedInKey;
-        $this->loggedInSalt = $loggedInSalt;
+        $this->api = $api;
     }
 
     public function authenticate(TokenInterface $token)
     {
-        $user = $this->userProvider->loadUserByUsername($token->getUsername());
-        
-        if ($user && $this->validateCookie($user, $token)) {
-            $authenticatedToken = new WordpressUserToken($user->getRoles());
-            $authenticatedToken->setUser($user);
+        $user = $this->api->wp_get_current_user();
+        if ($user->ID != 0) {
+            $authenticatedToken = new WordpressUserToken($user->roles);
+            $authenticatedToken->setUser($user->user_login);
             return $authenticatedToken;
         }
 
         throw new AuthenticationException('The Wordpress authentication failed.');
-    }
-
-    // validate Wordpress auth cookie
-    private function validateCookie(UserInterface $user, WordpressUserToken $token) 
-    {
-        // echo $this->site_url;
-        $passwordFrag = substr($user->getPassword(), 8, 4);                
-        
-        // from wp_salt()
-        $salt = $this->loggedInKey . $this->loggedInSalt;
-
-        // from wp_hash()
-        $key = hash_hmac('md5', $user->getUsername().$passwordFrag.'|'.$token->getExpiration(), $salt);
-        $hash = hash_hmac('md5', $user->getUsername() . '|' . $token->getExpiration(), $key);
-
-        return $token->getHmac() === $hash;
     }
 
     /**
