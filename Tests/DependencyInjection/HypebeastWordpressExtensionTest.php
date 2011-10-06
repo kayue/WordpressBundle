@@ -38,54 +38,18 @@ class HypebeastWordpressExtensionTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      */
-    public function testLoadRequiresWordpressUrl() {
+    public function testLoadRequiresWordpressPath() {
         $config = $this->mockConfig();
-        unset($config['wordpress_url']);
+        unset($config['wordpress_path']);
         $this->object->load(array($config), new ContainerBuilder);
     }
 
     /**
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      */
-    public function testLoadRequiresNotEmptyWordpressUrl() {
+    public function testLoadRequiresNotEmptyWordpressPath() {
         $config = $this->mockConfig();
-        $config['wordpress_url'] = '';
-        $this->object->load(array($config), new ContainerBuilder);
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
-    public function testLoadRequiresLoggedInKey() {
-        $config = $this->mockConfig();
-        unset($config['logged_in_key']);
-        $this->object->load(array($config), new ContainerBuilder);
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
-    public function testLoadRequiresNotEmptyLoggedInKey() {
-        $config = $this->mockConfig();
-        $config['logged_in_key'] = '';
-        $this->object->load(array($config), new ContainerBuilder);
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
-    public function testLoadRequiresLoggedInSalt() {
-        $config = $this->mockConfig();
-        unset($config['logged_in_salt']);
-        $this->object->load(array($config), new ContainerBuilder);
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
-    public function testLoadRequiresNotEmptyLoggedInSalt() {
-        $config = $this->mockConfig();
-        $config['logged_in_salt'] = '';
+        $config['wordpress_path'] = '';
         $this->object->load(array($config), new ContainerBuilder);
     }
 
@@ -95,14 +59,8 @@ class HypebeastWordpressExtensionTest extends \PHPUnit_Framework_TestCase {
      * @return array
      */
     protected function mockConfig() {
-        $yaml = <<<EOF
-wordpress_url: http://foobar
-logged_in_key: foobar2000
-logged_in_salt: NaCl
-EOF;
-
         $parser = new Parser();
-        return $parser->parse($yaml);
+        return $parser->parse('wordpress_path: /foo/bar');
     }
 
 }

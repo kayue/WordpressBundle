@@ -14,11 +14,10 @@ class WordpressFactory implements SecurityFactoryInterface
         $providerId = 'security.authentication.provider.wordpress.'.$id;
         $container
             ->setDefinition($providerId, new DefinitionDecorator('wordpress.security.authentication.provider'))
-            ->replaceArgument(0, new Reference($userProvider))
         ;
 
         $listenerId = 'security.authentication.listener.wordpress.'.$id;
-        $listener = $container->setDefinition($listenerId, new DefinitionDecorator('wordpress.security.authentication.listener'));
+        $container->setDefinition($listenerId, new DefinitionDecorator('wordpress.security.authentication.listener'));
 
         return array($providerId, $listenerId, $defaultEntryPoint);
     }

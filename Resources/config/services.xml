@@ -5,19 +5,29 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="wordpress.api.loader" 
+                 class="Hypebeast\WordpressBundle\Wordpress\ApiLoader" 
+                 public="false">
+            <argument>%hypebeast_wordpress.wordpress_path%</argument>
+        </service>
+        
+        <service id="wordpress.api.abstraction" 
+                 class="Hypebeast\WordpressBundle\Wordpress\ApiAbstraction" 
+                 public="false">
+            <argument type="service" id="wordpress.api.loader" />
+        </service>
+        
         <service id="wordpress.security.authentication.provider" 
                  class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressProvider" 
                  public="false">
-            <argument /> <!-- User Provider -->
-            <argument>%hypebeast_wordpress.logged_in_key%</argument>
-            <argument>%hypebeast_wordpress.logged_in_salt%</argument>
+            <argument type="service" id="wordpress.api.abstraction" />
         </service>
 
         <service id="wordpress.security.authentication.listener" 
                  class="Hypebeast\WordpressBundle\Security\Firewall\WordpressListener" 
                  public="false">
             <tag name="monolog.logger" channel="security" />
-            <argument>%hypebeast_wordpress.wordpress_url%</argument>
+            <argument type="service" id="wordpress.api.abstraction" />
             <argument type="service" id="security.context" />
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="security.http_utils" />
