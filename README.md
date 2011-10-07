@@ -87,7 +87,11 @@ Installation
             firewalls:
                 secured_area:
                     pattern:    ^/demo/secured/
-                    wordpress:  true
+                    wordpress:
+                        # Set to true if you want the user to be redirected to the Wordpress login 
+                        # if they're not logged in. Otherwise, authentication will pass on to any 
+                        # other active authentication listeners or display a 403 forbidden error
+                        redirect_to_wordpress_on_failure: true
                     stateless:  true
                     # anonymous:  ~
                     

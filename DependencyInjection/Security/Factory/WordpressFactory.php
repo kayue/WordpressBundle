@@ -18,6 +18,11 @@ class WordpressFactory implements SecurityFactoryInterface
 
         $listenerId = 'security.authentication.listener.wordpress.'.$id;
         $container->setDefinition($listenerId, new DefinitionDecorator('wordpress.security.authentication.listener'));
+        
+        if (isset($config['redirect_to_wordpress_on_failure'])) {
+            $container->getDefinition($listenerId)
+                    ->addArgument($config['redirect_to_wordpress_on_failure']);
+        }
 
         return array($providerId, $listenerId, $defaultEntryPoint);
     }

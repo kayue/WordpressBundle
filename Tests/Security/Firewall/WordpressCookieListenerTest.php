@@ -55,13 +55,6 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         $this->httpUtils = $this->getMock('Symfony\\Component\\Security\\Http\\HttpUtils');
         $this->httpUtils->expects($this->any())->method('checkRequestPath')
                 ->will($this->returnValue(true));
-        
-        $this->object = new WordpressCookieListener(
-                $this->wordpressApi,
-                $this->securityContext,
-                $this->authenticationManager,
-                $this->httpUtils
-        );
     }
 
     /**
@@ -83,7 +76,7 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         $event = $this->getMockEvent();
         $event->expects($this->never())->method('setResponse');
         
-        $this->assertNull($this->object->handle($event));
+        $this->assertNull($this->getMockListener()->handle($event));
     }
 
     public function testHandleSuccessfulAuthenticationRequest() {
@@ -109,10 +102,25 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         $event = $this->getMockEvent();
         $event->expects($this->once())->method('setResponse')->with($response);
         
-        $this->object->handle($event);
+        $this->getMockListener()->handle($event);
     }
     
-    public function testHandleFailedAuthenticationRequest() {
+    public function testHandleFailedAuthentication() {
+        # Let's say the provided token doesn't authenticate
+        $this->authenticationManager->expects($this->once())->method('authenticate')
+                ->with($this->isInstanceOf(
+                    'Hypebeast\\WordpressBundle\\Security\\Authentication\\Token\\WordpressCookieToken'
+                ))->will($this->throwException(new AuthenticationException('auth failed')));
+
+        $this->securityContext->expects($this->never())->method('setToken');
+        
+        $event = $this->getMockEvent();
+        $event->expects($this->never())->method('setResponse');
+
+        $this->assertNull($this->getMockListener(false)->handle($event));
+    }
+    
+    public function testHandleFailedAuthenticationWithRedirectToWordpress() {
         # Let's say the provided token doesn't authenticate
         $this->authenticationManager->expects($this->once())->method('authenticate')
                 ->with($this->isInstanceOf(
@@ -138,7 +146,18 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         $event = $this->getMockEvent($requestUrl);
         $event->expects($this->once())->method('setResponse')->with($response);
 
-        $this->object->handle($event);
+        $this->getMockListener(true)->handle($event);
+    }
+    
+    protected function getMockListener($redirectToWordpress=false) {
+        return new WordpressCookieListener(
+                $this->wordpressApi,
+                $this->securityContext,
+                $this->authenticationManager,
+                $this->httpUtils,
+                null,
+                $redirectToWordpress
+        );
     }
     
     protected function getMockEvent($requestUrl='mock url') {

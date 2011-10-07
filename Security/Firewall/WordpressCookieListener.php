@@ -41,11 +41,23 @@ class WordpressCookieListener extends AbstractAuthenticationListener
      * @var ApiAbstraction
      */
     protected $api;
+    
+    /**
+     *
+     * @var SecurityContextInterface
+     */
     protected $securityContext;
+    
+    /**
+     * If true, will redirect to the Wordpress login if the user is not authenticated
+     *
+     * @var boolean
+     */
+    protected $redirectToWordpress = false;
 
     public function __construct(ApiAbstraction $api, SecurityContextInterface $securityContext,
             AuthenticationManagerInterface $authenticationManager, HttpUtils $httpUtils,
-            LoggerInterface $logger=null)
+            LoggerInterface $logger=null, $redirectToWordpress=true)
     {
         parent::__construct($securityContext, $authenticationManager,
                 new SessionAuthenticationStrategy(SessionAuthenticationStrategy::NONE), $httpUtils,
@@ -55,6 +67,7 @@ class WordpressCookieListener extends AbstractAuthenticationListener
         $this->api = $api;
         $this->securityContext = $securityContext;
         $this->logger = $logger;
+        $this->redirectToWordpress = $redirectToWordpress;
     }
 
     protected function attemptAuthentication(Request $request) 
@@ -64,11 +77,24 @@ class WordpressCookieListener extends AbstractAuthenticationListener
             return;
         }
         
-        # Redirect to the Wordpress login and then back to the user's request after they log in
-        $this->options['failure_path'] = $this->api->wp_login_url($request->getUri(), true);
+        try {
+            // Authentication manager uses a list of AuthenticationProviderInterface instances 
+            // to authenticate a Token.
+            return $this->authenticationManager->authenticate(new WordpressCookieToken);
+            
+        } catch (AuthenticationException $e) {
+            if ($this->redirectToWordpress) {
+                # Redirect to Wordpress login, then back to the user's request after they log in
+                $redirect_url = $this->api->wp_login_url($request->getUri(), true);
+                
+                if (null !== $this->logger) {
+                    $this->logger->debug(sprintf('Redirecting to Wordpress login page at %s',
+                            $redirect_url));
+                }
 
-        // Authentication manager uses a list of AuthenticationProviderInterface instances 
-        // to authenticate a Token.
-        return $this->authenticationManager->authenticate(new WordpressCookieToken);
+                $this->securityContext->setToken(null);
+                return $this->httpUtils->createRedirectResponse($request, $redirect_url);
+            }
+        }
     }
 }
