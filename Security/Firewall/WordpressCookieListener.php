@@ -41,6 +41,7 @@ class WordpressCookieListener extends AbstractAuthenticationListener
      * @var ApiAbstraction
      */
     protected $api;
+    protected $securityContext;
 
     public function __construct(ApiAbstraction $api, SecurityContextInterface $securityContext,
             AuthenticationManagerInterface $authenticationManager, HttpUtils $httpUtils,
@@ -52,14 +53,20 @@ class WordpressCookieListener extends AbstractAuthenticationListener
         );
         
         $this->api = $api;
+        $this->securityContext = $securityContext;
         $this->logger = $logger;
     }
 
     protected function attemptAuthentication(Request $request) 
     {
-        # Redirect to the Wordpress login and then back to the user's requst after they log in
-        $this->options['failure_path'] = $this->api->wp_login_url($request->getUri(), true);
+        # Don't try to authenticate again if the user already has been
+        if ($this->securityContext->getToken()) {
+            return;
+        }
         
+        # Redirect to the Wordpress login and then back to the user's request after they log in
+        $this->options['failure_path'] = $this->api->wp_login_url($request->getUri(), true);
+
         // Authentication manager uses a list of AuthenticationProviderInterface instances 
         // to authenticate a Token.
         return $this->authenticationManager->authenticate(new WordpressCookieToken);

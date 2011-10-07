@@ -71,6 +71,20 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
     protected function tearDown() {
         
     }
+    
+    public function testHandleUserIsAlreadyAuthenticated() {
+        $this->securityContext->expects($this->once())->method('getToken')
+                ->will($this->returnValue($this->getMock(
+                    'Symfony\\Component\\Security\\Core\\Authentication\\Token\\TokenInterface')));
+
+        $this->authenticationManager->expects($this->never())->method('authenticate');
+        $this->securityContext->expects($this->never())->method('setToken');
+        
+        $event = $this->getMockEvent();
+        $event->expects($this->never())->method('setResponse');
+        
+        $this->assertNull($this->object->handle($event));
+    }
 
     public function testHandleSuccessfulAuthenticationRequest() {
         $token = $this->getMock(
