@@ -32,6 +32,7 @@
             <argument type="service" id="security.authentication.manager" />
             <argument type="service" id="security.http_utils" />
             <argument type="service" id="logger" on-invalid="null" />
+            <argument type="service" id="event_dispatcher" on-invalid="null"/>
         </service>
     </services>
 </container>

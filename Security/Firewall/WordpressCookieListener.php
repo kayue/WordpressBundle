@@ -20,6 +20,9 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\Security\Http\HttpUtils;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * WordpressCookieListener checks whether the user has been authenticated in Wordpress
@@ -63,6 +66,12 @@ class WordpressCookieListener implements ListenerInterface
     protected $logger;
     
     /**
+     *
+     * @var EventDispatcherInterface
+     */
+    protected $dispatcher;
+    
+    /**
      * If true, will redirect to the Wordpress login if the user is not authenticated
      *
      * @var boolean
@@ -71,16 +80,25 @@ class WordpressCookieListener implements ListenerInterface
 
     public function __construct(ApiAbstraction $api, SecurityContextInterface $securityContext,
             AuthenticationManagerInterface $authenticationManager, HttpUtils $httpUtils,
-            LoggerInterface $logger=null, $redirectToWordpress=true)
+            LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null,
+            $redirectToWordpress = true)
     {
         $this->api = $api;
         $this->securityContext = $securityContext;
         $this->authenticationManager = $authenticationManager;
         $this->httpUtils = $httpUtils;
         $this->logger = $logger;
+        $this->dispatcher = $dispatcher;
         $this->redirectToWordpress = $redirectToWordpress;
     }
 
+    /**
+     * Authenticates the Wordpress cookie in the request. Depending upon $redirectToWordpress, 
+     * either silently returns or redirects to Wordpress login on failure.
+     *
+     * @param GetResponseEvent $event
+     * @return null
+     */
     public function handle(GetResponseEvent $event) 
     {
         # Don't try to authenticate again if the user already has been
@@ -91,8 +109,19 @@ class WordpressCookieListener implements ListenerInterface
         try {
             // Authentication manager uses a list of AuthenticationProviderInterface instances 
             // to authenticate a Token.
-            $this->securityContext->setToken(
-                    $this->authenticationManager->authenticate(new WordpressCookieToken));
+            $token = $this->authenticationManager->authenticate(new WordpressCookieToken);
+            $this->securityContext->setToken($token);
+            
+            # Notify listeners that the user has been logged in
+            if ($this->dispatcher) {
+                $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN,
+                        new InteractiveLoginEvent($event->getRequest(), $token));
+            }
+            
+            if ($this->logger) {
+                $this->logger->debug(sprintf(
+                        'Wordpress cookie for user "%s" authenticated', $token->getUsername()));
+            }
             
         } catch (AuthenticationException $e) {
             if ($this->redirectToWordpress) {
@@ -100,11 +129,12 @@ class WordpressCookieListener implements ListenerInterface
                 $request = $event->getRequest();
                 $redirectUrl = $this->api->wp_login_url($request->getUri(), true);
                 
-                if (null !== $this->logger) {
-                    $this->logger->debug(sprintf('Redirecting to Wordpress login page at %s',
-                            $redirectUrl));
+                if ($this->logger) {
+                    $this->logger->debug(sprintf(
+                            'Redirecting to Wordpress login page at %s', $redirectUrl));
                 }
 
+                # Clear the security token and redirect
                 $this->securityContext->setToken(null);
                 $event->setResponse(
                         $this->httpUtils->createRedirectResponse($request, $redirectUrl));

@@ -36,6 +36,18 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
      * @var Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface 
      */
     protected $authenticationManager;
+    
+    /**
+     *
+     * @var Symfony\Component\Security\Http\HttpUtils
+     */
+    protected $httpUtils;
+    
+    /**
+     *
+     * @var Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    protected $dispatcher;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -53,6 +65,9 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         );
         
         $this->httpUtils = $this->getMock('Symfony\\Component\\Security\\Http\\HttpUtils');
+        
+        $this->dispatcher
+                = $this->getMock('Symfony\\Component\\EventDispatcher\\EventDispatcherInterface');
     }
 
     /**
@@ -88,6 +103,11 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         
         # The authenticated token should get set
         $this->securityContext->expects($this->once())->method('setToken')->with($token);
+        
+        $this->dispatcher->expects($this->once())->method('dispatch')->with(
+                \Symfony\Component\Security\Http\SecurityEvents::INTERACTIVE_LOGIN,
+                $this->isInstanceOf('Symfony\\Component\\Security\\Http\\Event\\InteractiveLoginEvent')
+        );
         
         $this->getMockListener()->handle($this->getMockEvent());
     }
@@ -143,6 +163,7 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
                 $this->authenticationManager,
                 $this->httpUtils,
                 null,
+                $this->dispatcher,
                 $redirectToWordpress
         );
     }
