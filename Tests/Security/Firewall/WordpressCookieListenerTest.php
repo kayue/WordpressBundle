@@ -53,8 +53,6 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         );
         
         $this->httpUtils = $this->getMock('Symfony\\Component\\Security\\Http\\HttpUtils');
-        $this->httpUtils->expects($this->any())->method('checkRequestPath')
-                ->will($this->returnValue(true));
     }
 
     /**
@@ -91,18 +89,7 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         # The authenticated token should get set
         $this->securityContext->expects($this->once())->method('setToken')->with($token);
         
-        # The user should be redirected afterwards
-        $response = $this->getMock('Symfony\\Component\\HttpFoundation\\Response');
-        $this->httpUtils->expects($this->once())->method('createRedirectResponse')
-                ->with(
-                    $this->isInstanceOf('Symfony\\Component\\HttpFoundation\\Request'),
-                    $this->anything()
-                )->will($this->returnValue($response));
-        
-        $event = $this->getMockEvent();
-        $event->expects($this->once())->method('setResponse')->with($response);
-        
-        $this->getMockListener()->handle($event);
+        $this->getMockListener()->handle($this->getMockEvent());
     }
     
     public function testHandleFailedAuthentication() {
@@ -164,19 +151,11 @@ class WordpressCookieListenerTest extends \PHPUnit_Framework_TestCase {
         $request = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\Request')
                 ->disableOriginalClone()->getMock();
         
-        $request->expects($this->any())->method('hasSession')->will($this->returnValue(true));
-        $request->expects($this->any())->method('hasPreviousSession')
-                ->will($this->returnValue(true));
-        $session = $this->getMockBuilder('Symfony\\Component\\HttpFoundation\\Session')
-                ->disableOriginalConstructor()->getMock();
-        $request->expects($this->any())->method('getSession')->will(
-                $this->returnValue($session));
-        
         $request->expects($this->any())->method('getUri')->will($this->returnValue($requestUrl));
         
         $event = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Event\\GetResponseEvent')
                 ->disableOriginalConstructor()->getMock();
-        $event->expects($this->once())->method('getRequest')->will($this->returnValue($request));
+        $event->expects($this->any())->method('getRequest')->will($this->returnValue($request));
         
         return $event;
     }
