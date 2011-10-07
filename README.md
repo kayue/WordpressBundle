@@ -69,17 +69,13 @@ Installation
         hypebeast_wordpress:
             wordpress_path: /path/to/your/wordpress
 
-5. Add Wordpress Factories, Firewalls and User Provider to your `security.yml`. Wordpress authentication is a stateless authentication, no login cookie should be ever created by Symfony2.
+5. Add Wordpress factory and firewall to your `security.yml`. Wordpress authentication is a stateless authentication, no login cookie should be ever created by Symfony2.
 
         # app/config/security.yml
         
         security:
             
             # ...
-
-            providers:
-                wordpress:
-                    entity: { class: Hypebeast\WordpressBundle\Entity\User, property: username }
             
             factories:
                 - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
