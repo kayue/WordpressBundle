@@ -17,13 +17,13 @@
             <argument type="service" id="wordpress.api.loader" />
         </service>
         
-        <service id="wordpress.security.authentication.provider" 
+        <service id="wordpress.security.authentication.provider.cookie" 
                  class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressCookieAuthenticationProvider" 
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
         </service>
 
-        <service id="wordpress.security.authentication.listener" 
+        <service id="wordpress.security.authentication.listener.cookie" 
                  class="Hypebeast\WordpressBundle\Security\Firewall\WordpressCookieListener" 
                  public="false">
             <tag name="monolog.logger" channel="security" />
