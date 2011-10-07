@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contains the WordpressListener class
+ * Contains the WordpressCookieListener class
  *
  * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
  * @author     Ka Yue Yeung
@@ -12,7 +12,7 @@
 namespace Hypebeast\WordpressBundle\Security\Firewall;
 
 use Hypebeast\WordpressBundle\Wordpress\ApiAbstraction;
-use Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressUserToken;
+use Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressCookieToken;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
@@ -25,7 +25,7 @@ use Symfony\Component\Security\Http\HttpUtils;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
 
 /**
- * WordpressListener initiates authentication of the user against Wordpress and redirects to its 
+ * WordpressCookieListener initiates authentication of the user against Wordpress and redirects to its 
  * login mechanism if the user is not already authenticated
  *
  * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
@@ -33,7 +33,7 @@ use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy;
  * @package    Hypebeast\WordpressBundle
  * @subpackage Security\Firewall
  */
-class WordpressListener extends AbstractAuthenticationListener
+class WordpressCookieListener extends AbstractAuthenticationListener
 {
     /**
      * An abstraction layer through which we can access the Wordpress API
@@ -62,6 +62,6 @@ class WordpressListener extends AbstractAuthenticationListener
         
         // Authentication manager uses a list of AuthenticationProviderInterface instances 
         // to authenticate a Token.
-        return $this->authenticationManager->authenticate(new WordpressUserToken());
+        return $this->authenticationManager->authenticate(new WordpressCookieToken);
     }
 }

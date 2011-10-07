@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contains the WordpressProvider class, part of the Symfony2 Wordpress Bundle
+ * Contains the WordpressCookieAuthenticationProvider class, part of the Symfony2 Wordpress Bundle
  *
  * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
  * @author     Ka Yue Yeung
@@ -11,21 +11,22 @@
 
 namespace Hypebeast\WordpressBundle\Security\Authentication\Provider;
 
-use Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressUserToken;
+use Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressCookieToken;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Hypebeast\WordpressBundle\Wordpress\ApiAbstraction;
 
 /**
- * WordpressProvider will verify that the current user has been authenticated in Wordpress
+ * WordpressCookieAuthenticationProvider will verify that the current user has been authenticated
+ * in Wordpress
  *
  * @package    Hypebeast\WordpressBundle
  * @subpackage Security\Authentication\Provider
  * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
  * @author     Ka Yue Yeung
  */
-class WordpressProvider implements AuthenticationProviderInterface
+class WordpressCookieAuthenticationProvider implements AuthenticationProviderInterface
 {
     /**
      * An abstraction layer for the Wordpress API
@@ -48,7 +49,7 @@ class WordpressProvider implements AuthenticationProviderInterface
     {
         $user = $this->api->wp_get_current_user();
         if ($user->ID != 0) {
-            $authenticatedToken = new WordpressUserToken($user->roles);
+            $authenticatedToken = new WordpressCookieToken($user->roles);
             $authenticatedToken->setUser($user->user_login);
             return $authenticatedToken;
         }
@@ -65,6 +66,6 @@ class WordpressProvider implements AuthenticationProviderInterface
      */
     public function supports(TokenInterface $token)
     {
-        return $token instanceof WordpressUserToken;
+        return $token instanceof WordpressCookieToken;
     }
 }
