@@ -16,14 +16,13 @@ Imagine you are in a Controller:
          */
         public function helloAction($name)
         {
-            // retrive current logged in user:
-            $user = $this->get('security.context')->getToken()->getUser();
+            // retrieve currently logged-in user using the Wordpress API
+            $user = $this->get('wordpress.api.abstraction')->wp_get_current_user();
             
-            // retrive user information from repository:
-            $userRepo = $this->getDoctrine()->getRepository('HypebeastWordpressBundle:User');
-            $userRepo->find(2);
+            // retrieve user #2
+            $user = new \WP_User(2);
 
-            return array('username' => $user->getUsername());
+            return array('username' => $user->user_login);
         }
 
         // ...
@@ -32,8 +31,8 @@ Imagine you are in a Controller:
 Installation
 ============
 
-1. Make sure Wordpress's cookies is accessable from your Symfony 2 application. To confirm this, open up Symfony's profiler and look for `wordpress_test_cookie` inside the request tab.
-   If you coudn't find the test cookie in request tab, please try to redefine the COOKIEPATH of Wordpress by editing `wp-config.php`. 
+1. Make sure Wordpress's cookies are accessible from your Symfony 2 application. To confirm this, open up Symfony's profiler and look for `wordpress_test_cookie` inside the request tab.
+   If you can't find the test cookie in request tab, please try to redefine the COOKIEPATH of Wordpress by editing `wp-config.php`. 
    For more information, please read http://codex.wordpress.org/Editing_wp-config.php
 
         // wordpress/wp-config.php
