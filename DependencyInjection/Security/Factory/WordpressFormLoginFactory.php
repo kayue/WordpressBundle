@@ -15,6 +15,11 @@ class WordpressFormLoginFactory extends FormLoginFactory
 
         return $providerId;
     }
+    
+    protected function isRememberMeAware($config)
+    {   
+        return false;
+    }   
 
     public function getKey()
     {
