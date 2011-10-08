@@ -9,7 +9,7 @@ class WordpressFormLoginFactory extends FormLoginFactory
 {
     protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
     {
-        $providerId = 'security.authentication.provider.wordpress.login.' . $id;
+        $providerId = 'wordpress.security.authentication.provider.login.' . $id;
         $container->setDefinition($providerId,
                     new DefinitionDecorator('wordpress.security.authentication.provider.login'));
 

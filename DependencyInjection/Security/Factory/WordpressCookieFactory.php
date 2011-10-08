@@ -11,11 +11,11 @@ class WordpressCookieFactory implements SecurityFactoryInterface
 {
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
-        $providerId = 'security.authentication.provider.wordpress.cookie.' . $id;
+        $providerId = 'wordpress.security.authentication.provider.cookie.' . $id;
         $container->setDefinition($providerId,
                     new DefinitionDecorator('wordpress.security.authentication.provider.cookie'));
 
-        $listenerId = 'security.authentication.listener.wordpress.cookie.' . $id;
+        $listenerId = 'wordpress.security.authentication.listener.cookie.' . $id;
         $container->setDefinition($listenerId,
                 new DefinitionDecorator('wordpress.security.authentication.listener.cookie'));
         
