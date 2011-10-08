@@ -17,12 +17,8 @@ class WordpressCookieFactory implements SecurityFactoryInterface
 
         $listenerId = 'wordpress.security.authentication.listener.cookie.' . $id;
         $container->setDefinition($listenerId,
-                new DefinitionDecorator('wordpress.security.authentication.listener.cookie'));
-        
-        if (isset($config['redirect_to_wordpress_on_failure'])) {
-            $container->getDefinition($listenerId)
-                    ->addArgument($config['redirect_to_wordpress_on_failure']);
-        }
+                    new DefinitionDecorator('wordpress.security.authentication.listener.cookie'))
+                ->addArgument($config['redirect_to_wordpress_on_failure']);
 
         return array($providerId, $listenerId, $defaultEntryPoint);
     }
@@ -38,5 +34,11 @@ class WordpressCookieFactory implements SecurityFactoryInterface
     }
 
     public function addConfiguration(NodeDefinition $node)
-    {}
+    {
+        $node
+            ->children()
+                ->booleanNode('redirect_to_wordpress_on_failure')->defaultValue(true)->end()
+            ->end()
+        ;
+    }
 }
