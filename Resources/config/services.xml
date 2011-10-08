@@ -34,5 +34,11 @@
             <argument type="service" id="logger" on-invalid="null" />
             <argument type="service" id="event_dispatcher" on-invalid="null"/>
         </service>
+        
+        <service id="wordpress.security.authentication.provider.login" 
+                 class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressLoginAuthenticationProvider" 
+                 public="false">
+            <argument type="service" id="wordpress.api.abstraction" />
+        </service>
     </services>
 </container>
