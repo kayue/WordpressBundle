@@ -40,7 +40,7 @@
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
             <argument /> <!-- remember me parameter name -->
-            <argument type="service" id="request" />
+            <argument type="service" id="service_container" />
         </service>
     </services>
 </container>

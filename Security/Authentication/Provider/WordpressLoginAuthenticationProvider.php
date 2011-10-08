@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * WordpressLoginAuthenticationProvider will authenticate the user with Wordpress
@@ -42,9 +42,9 @@ class WordpressLoginAuthenticationProvider implements AuthenticationProviderInte
     
     /**
      *
-     * @var Request
+     * @var ContainerInterface
      */
-    protected $request;
+    protected $container;
 
     /**
      * Constructor
@@ -52,14 +52,14 @@ class WordpressLoginAuthenticationProvider implements AuthenticationProviderInte
      * @param ApiAbstraction $api 
      * @param string $rememberMeParameter the name of the request parameter to use to determine 
      *                                    whether to remember the user
-     * @param Request $request we need the request in order to check whether to use remember me
+     * @param ContainerInterface $container so we can get the request and check the remember-me param
      */
     public function __construct(ApiAbstraction $api, $rememberMeParameter = '_remember_me',
-            Request $request = null)
+            ContainerInterface $container = null)
     {
         $this->api = $api;
         $this->rememberMeParameter = $rememberMeParameter;
-        $this->request = $request;
+        $this->container = $container;
     }
 
     public function authenticate(TokenInterface $token)
@@ -91,11 +91,11 @@ class WordpressLoginAuthenticationProvider implements AuthenticationProviderInte
      */
     protected function isRememberMeRequested()
     {
-        if (!$this->request) {
+        if (!($this->container && $request = $this->container->get('request'))) {
             return false;
         }
 
-        $remember = $this->request->request->get($this->rememberMeParameter, null, true);
+        $remember = $request->request->get($this->rememberMeParameter, null, true);
 
         return $remember === 'true' || $remember === 'on' || $remember === '1' || $remember === 'yes';
     }

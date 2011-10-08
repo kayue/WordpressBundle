@@ -76,7 +76,10 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
     public function testAuthenticateWithRememberMeUsesWordpressRememberMe()
     {
         $request = new Request(array(), array('remember me' => '1'));
-        $provider = new WordpressLoginAuthenticationProvider($this->api, 'remember me', $request);
+        $container = $this->getMock('Symfony\\Component\\DependencyInjection\\ContainerInterface');
+        $container->expects($this->any())->method('get')->with('request')
+                ->will($this->returnValue($request));
+        
         $user = $this->getMock('\WP_User');
         $user->user_login = '';
         $user->roles = array();
@@ -85,6 +88,7 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
                 ->with(array('user_login' => 'user', 'user_password' => 'pass', 'remember' => true))
                 ->will($this->returnValue($user));
         
+        $provider = new WordpressLoginAuthenticationProvider($this->api, 'remember me', $container);
         $provider->authenticate(new UsernamePasswordToken('user', 'pass', 'key'));
     }
     
