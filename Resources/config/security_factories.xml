@@ -8,5 +8,10 @@
                  public="false">
             <tag name="security.listener.factory" />
         </service>
+        <service id="security.authentication.factory.wordpress.login"
+                 class="Hypebeast\WordpressBundle\DependencyInjection\Security\Factory\WordpressFormLoginFactory" 
+                 public="false">
+            <tag name="security.listener.factory" />
+        </service>
     </services>
 </container>
