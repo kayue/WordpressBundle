@@ -39,6 +39,8 @@
                  class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressLoginAuthenticationProvider" 
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
+            <argument /> <!-- remember me parameter name -->
+            <argument type="service" id="request" />
         </service>
     </services>
 </container>

@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * WordpressLoginAuthenticationProvider will authenticate the user with Wordpress
@@ -32,22 +33,41 @@ class WordpressLoginAuthenticationProvider implements AuthenticationProviderInte
      * @var ApiAbstraction
      */
     protected $api;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $rememberMeParameter;
+    
+    /**
+     *
+     * @var Request
+     */
+    protected $request;
 
     /**
      * Constructor
      *
      * @param ApiAbstraction $api 
+     * @param string $rememberMeParameter the name of the request parameter to use to determine 
+     *                                    whether to remember the user
+     * @param Request $request we need the request in order to check whether to use remember me
      */
-    public function __construct(ApiAbstraction $api)
+    public function __construct(ApiAbstraction $api, $rememberMeParameter = '_remember_me',
+            Request $request = null)
     {
         $this->api = $api;
+        $this->rememberMeParameter = $rememberMeParameter;
+        $this->request = $request;
     }
 
     public function authenticate(TokenInterface $token)
     {
         $user = $this->api->wp_signon(array(
                 'user_login' => $token->getUsername(),
-                'user_password' => $token->getCredentials()
+                'user_password' => $token->getCredentials(),
+                'remember' => $this->isRememberMeRequested()
         ));
         
         if ($user instanceof \WP_User) {
@@ -62,6 +82,22 @@ class WordpressLoginAuthenticationProvider implements AuthenticationProviderInte
         }
 
         throw new AuthenticationServiceException('The Wordpress API returned an invalid response');
+    }
+    
+    /**
+     * Checks whether the user requested to be remembered
+     *
+     * @return boolean
+     */
+    protected function isRememberMeRequested()
+    {
+        if (!$this->request) {
+            return false;
+        }
+
+        $remember = $this->request->request->get($this->rememberMeParameter, null, true);
+
+        return $remember === 'true' || $remember === 'on' || $remember === '1' || $remember === 'yes';
     }
 
     public function supports(TokenInterface $token)

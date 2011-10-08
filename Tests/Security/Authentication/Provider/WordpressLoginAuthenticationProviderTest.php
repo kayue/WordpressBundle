@@ -4,6 +4,7 @@ namespace Hypebeast\WordpressBundle\Tests\Security\Authentication\Provider;
 
 use Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressLoginAuthenticationProvider;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Test class for WordpressLoginAuthenticationProvider.
@@ -57,7 +58,7 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
         $user->roles = array('somerole', 'anotherrole');
 
         $this->api->expects($this->once())->method('wp_signon')
-                ->with(array('user_login' => $username, 'user_password' => $password))
+                ->with(array('user_login' => $username, 'user_password' => $password, 'remember' => false))
                 ->will($this->returnValue($user));
 
         $result = $this->object->authenticate($token);
@@ -70,6 +71,21 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
         $this->assertTrue($result->isAuthenticated());
         $this->assertEquals($username, $result->getUsername());
         $this->assertEquals($password, $result->getCredentials());
+    }
+    
+    public function testAuthenticateWithRememberMeUsesWordpressRememberMe()
+    {
+        $request = new Request(array(), array('remember me' => '1'));
+        $provider = new WordpressLoginAuthenticationProvider($this->api, 'remember me', $request);
+        $user = $this->getMock('\WP_User');
+        $user->user_login = '';
+        $user->roles = array();
+
+        $this->api->expects($this->once())->method('wp_signon')
+                ->with(array('user_login' => 'user', 'user_password' => 'pass', 'remember' => true))
+                ->will($this->returnValue($user));
+        
+        $provider->authenticate(new UsernamePasswordToken('user', 'pass', 'key'));
     }
     
     public function testAuthenticateThrowsExceptionOnFailure()
