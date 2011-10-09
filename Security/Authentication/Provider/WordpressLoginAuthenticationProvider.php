@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Hypebeast\WordpressBundle\Utilities\RoleUtilities;
 
 /**
  * WordpressLoginAuthenticationProvider will authenticate the user with Wordpress
@@ -73,7 +74,7 @@ class WordpressLoginAuthenticationProvider implements AuthenticationProviderInte
         if ($user instanceof \WP_User) {
             $authenticatedToken = new UsernamePasswordToken(
                     $user->user_login, $token->getCredentials(), $token->getProviderKey(),
-                    $user->roles);
+                    RoleUtilities::normalise_role_names($user->roles));
             
             return $authenticatedToken;
             

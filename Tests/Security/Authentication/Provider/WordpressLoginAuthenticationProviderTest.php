@@ -4,6 +4,7 @@ namespace Hypebeast\WordpressBundle\Tests\Security\Authentication\Provider;
 
 use Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressLoginAuthenticationProvider;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -71,6 +72,10 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
         $this->assertTrue($result->isAuthenticated());
         $this->assertEquals($username, $result->getUsername());
         $this->assertEquals($password, $result->getCredentials());
+        $this->assertEquals(
+                array(new Role('ROLE_WP_SOMEROLE'), new Role('ROLE_WP_ANOTHERROLE')),
+                $result->getRoles()
+        );
     }
     
     public function testAuthenticateWithRememberMeUsesWordpressRememberMe()

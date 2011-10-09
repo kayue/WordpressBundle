@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Hypebeast\WordpressBundle\Wordpress\ApiAbstraction;
+use Hypebeast\WordpressBundle\Utilities\RoleUtilities;
 
 /**
  * WordpressCookieAuthenticationProvider will verify that the current user has been authenticated
@@ -49,7 +50,8 @@ class WordpressCookieAuthenticationProvider implements AuthenticationProviderInt
     {
         $user = $this->api->wp_get_current_user();
         if ($user->ID != 0) {
-            $authenticatedToken = new WordpressCookieToken($user->roles);
+            $authenticatedToken = new WordpressCookieToken(
+                    RoleUtilities::normalise_role_names($user->roles));
             $authenticatedToken->setUser($user->user_login);
             return $authenticatedToken;
         }

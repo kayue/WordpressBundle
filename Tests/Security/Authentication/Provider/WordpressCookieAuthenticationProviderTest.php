@@ -3,6 +3,7 @@
 namespace Hypebeast\WordpressBundle\Tests\Security\Authentication\Provider;
 
 use Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressCookieAuthenticationProvider;
+use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * Test class for WordpressCookieAuthenticationProvider.
@@ -61,6 +62,10 @@ class WordpressCookieAuthenticationProviderTest extends \PHPUnit_Framework_TestC
         );
         $this->assertTrue($result->isAuthenticated());
         $this->assertEquals($user->user_login, $result->getUser());
+        $this->assertEquals(
+                array(new Role('ROLE_WP_SOMEROLE'), new Role('ROLE_WP_ANOTHERROLE')),
+                $result->getRoles()
+        );
     }
 
     /**
