@@ -1,3 +1,9 @@
+Requirements
+============
+
+* Wordpress >= 3.3r18756
+* Symfony 2.0.x
+
 Usage 
 =====
 
