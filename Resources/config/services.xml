@@ -42,5 +42,11 @@
             <argument /> <!-- remember me parameter name -->
             <argument type="service" id="service_container" />
         </service>
+        
+        <service id="wordpress.security.http.logout" 
+                 class="Hypebeast\WordpressBundle\Security\Http\Logout\WordpressLogoutHandler" 
+                 public="false">
+            <argument type="service" id="wordpress.api.abstraction" />
+        </service>
     </services>
 </container>

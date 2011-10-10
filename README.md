@@ -117,7 +117,6 @@ Caveats
   explicitly globalising variables. The required version of Wordpress core marginally improves this 
   situation (enough to allow us to integrate with it), but beware that other parts of Wordpress or 
   plugins may still have related issues.
-* There is currently no log out handler
 * There is currently no user provider (use the API abstraction, see example above)
 * Authentication errors from Wordpress are passed through unchanged and, since Wordpress uses HTML 
   in its errors, the user may see HTML tags
