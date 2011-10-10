@@ -32,13 +32,16 @@ Imagine you are in a Controller:
 Installation
 ============
 
-1. Make sure Wordpress's cookies are accessible from your Symfony 2 application. To confirm this, open up Symfony's profiler and look for `wordpress_test_cookie` inside the request tab.
-   If you can't find the test cookie in request tab, please try to redefine the COOKIEPATH of Wordpress by editing `wp-config.php`. 
-   For more information, please read http://codex.wordpress.org/Editing_wp-config.php
+1. Make sure Wordpress's cookies are accessible from your Symfony 2 application. To confirm this, 
+   open up Symfony's profiler and look for `wordpress_test_cookie` inside the request tab.  
+   If you can't find the test cookie in request tab, please try to redefine the cookie path or 
+   domain used by Wordpress by editing `wp-config.php`.  
+   For more information, please [read the Wordpress Codex](http://codex.wordpress.org/Editing_wp-config.php)
 
         // wordpress/wp-config.php
 
-        define('COOKIEPATH', '/' );    
+        define('COOKIEPATH', '/' );
+        define('COOKIE_DOMAIN', '.yourdomain.com');
 
 2. Register the namespace `Hypebeast` to your project's autoloader bootstrap script:
 
@@ -106,3 +109,15 @@ their default values. You can omit them if you use the defaults, e.g. `wordpress
                     # anonymous:  ~
                     
                 # ...
+
+Caveats
+=======
+
+* Wordpress assumes it will be run in the global scope, so some of its code doesn't even bother 
+  explicitly globalising variables. The required version of Wordpress core marginally improves this 
+  situation (enough to allow us to integrate with it), but beware that other parts of Wordpress or 
+  plugins may still have related issues.
+* There is currently no log out handler
+* There is currently no user provider (use the API abstraction, see example above)
+* Authentication errors from Wordpress are passed through unchanged and, since Wordpress uses HTML 
+  in its errors, the user may see HTML tags
