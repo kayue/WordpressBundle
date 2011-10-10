@@ -74,9 +74,9 @@ Installation
         hypebeast_wordpress:
             wordpress_path: /path/to/your/wordpress
 
-5. Add Wordpress factory and firewall to your `security.yml`. Wordpress authentication is a stateless authentication, no login cookie should be ever created by Symfony2. Below is a sample configuration. 
-All of the options for the wordpress_* authentication methods are optional and are displayed with 
-their default values. You can omit them if you use the defaults, e.g. `wordpress_cookie: ~` and 
+5. Add Wordpress factory and firewall to your `security.yml`. Below is a sample configuration. All 
+of the options for the wordpress_* authentication methods are optional and are displayed with their 
+default values. You can omit them if you use the defaults, e.g. `wordpress_cookie: ~` and 
 `wordpress_form_login: ~`
 
         # app/config/security.yml
@@ -95,7 +95,8 @@ their default values. You can omit them if you use the defaults, e.g. `wordpress
             firewalls:
                 secured_area:
                     pattern:    ^/demo/secured/
-                    stateless:  true
+                    # Set to true if using Wordpress's log out rather than Symfony's
+                    # stateless:  true
                     wordpress_cookie:
                         # Set to false if you want to use a login form within your Symfony app to 
                         # collect the user's Wordpress credentials (see below) or any other
@@ -121,6 +122,10 @@ their default values. You can omit them if you use the defaults, e.g. `wordpress
 Caveats
 =======
 
+* Because Symfony tracks the user's authentication state independently of Wordpress, if the 
+  stateless is not set to true (see above) and the user logs out in Wordpress, they will not be 
+  logged out of Symfony until they specifically do, or they end their session. To prevent this, you 
+  should use either Symfony's or Wordpress's logout methods exclusively.
 * Wordpress assumes it will be run in the global scope, so some of its code doesn't even bother 
   explicitly globalising variables. The required version of Wordpress core marginally improves this 
   situation (enough to allow us to integrate with it), but beware that other parts of Wordpress or 
