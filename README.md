@@ -1,7 +1,8 @@
 Requirements
 ============
 
-* Wordpress >= 3.3r18756
+* Wordpress 3.3.x (currently in development) with [patches for variable 
+  scope](https://github.com/mrtorrent/WordPress/tree/explicitly_set_globals) (pending commit to core)
 * Symfony 2.0.x
 
 Usage 
@@ -86,6 +87,10 @@ their default values. You can omit them if you use the defaults, e.g. `wordpress
             
             factories:
                 - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
+
+            # There is no user provider, so this is a dummy entry to satisfy the security bundle
+            providers:
+                wordpress: ~
             
             firewalls:
                 secured_area:
@@ -105,6 +110,9 @@ their default values. You can omit them if you use the defaults, e.g. `wordpress
                         # This is the name of the POST parameter that can be used to indicate 
                         # whether the user should be remembered via Wordpress's remember-me cookie
                         remember_me_parameter: _remember_me
+
+                    # You want your users to be able to log out, right? See Symfony docs for options
+                    logout: ~
 
                     # anonymous:  ~
                     
