@@ -53,11 +53,12 @@ class ApiLoaderTest extends \PHPUnit_Framework_TestCase
     
     public function testLoadIncludesSpecifiedBootstrap()
     {
-        $file = new vfsStreamFile('bootstrap.php');
+        $file = new vfsStreamFile('IncludesSpecifiedBootstrap');
         $this->assertNotEmpty($file->write('<?php return "bootstrap loaded";'));
         vfsStreamWrapper::getRoot()->addChild($file);
         
-        $this->assertEquals('bootstrap loaded', $this->object->load('bootstrap.php'));
+        $this->assertEquals('bootstrap loaded',
+                $this->object->load('IncludesSpecifiedBootstrap'));
     }
     
     public function testLoadSetsGlobals()
@@ -65,11 +66,11 @@ class ApiLoaderTest extends \PHPUnit_Framework_TestCase
         unset($GLOBALS['globalA']);
         unset($GLOBALS['globalB']);
         
-        $file = new vfsStreamFile('wp-load.php');
+        $file = new vfsStreamFile('SetsGlobals');
         $this->assertNotEmpty($file->write('<?php $globalA = "a"; $globalB = "b";'));
         vfsStreamWrapper::getRoot()->addChild($file);
         
-        $this->object->load();
+        $this->object->load('SetsGlobals');
         
         $this->assertEquals('a', $GLOBALS['globalA']);
         unset($GLOBALS['globalA']);
@@ -77,10 +78,11 @@ class ApiLoaderTest extends \PHPUnit_Framework_TestCase
         unset($GLOBALS['globalB']);
     }
     
-    public function testLoadDoesNotGlobaliseLocalVariables() {
-        vfsStreamWrapper::getRoot()->addChild(new vfsStreamFile('wp-load.php'));
+    public function testLoadDoesNotGlobaliseLocalVariables()
+    {
+        vfsStreamWrapper::getRoot()->addChild(new vfsStreamFile('DoesNotGlobaliseLocalVariables'));
         
-        $this->object->load();
+        $this->object->load('DoesNotGlobaliseLocalVariables');
         
         $this->assertFalse(isset($GLOBALS['bootstrap']));
         $this->assertFalse(isset($GLOBALS['returnValue']));
@@ -91,7 +93,18 @@ class ApiLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadThrowsExceptionForMissingBootstrap()
     {
-        $this->object->load('bootstrap.php');
+        $this->object->load('ThrowsExceptionForMissingBootstrap');
+    }
+    
+    public function testLoadIncludesBootstrapOnlyOnce()
+    {
+        $file = new vfsStreamFile('IncludesBootstrapOnlyOnce');
+        $this->assertNotEmpty($file->write('<?php return "bootstrap loaded";'));
+        vfsStreamWrapper::getRoot()->addChild($file);
+        
+        $this->assertEquals('bootstrap loaded', $this->object->load('IncludesBootstrapOnlyOnce'));
+        # The *_once functions return true if the file has already been loaded
+        $this->assertTrue($this->object->load('IncludesBootstrapOnlyOnce'));
     }
 
 }

@@ -57,7 +57,7 @@ class ApiLoader
             throw new FileNotFoundException($bootstrap);
         }
         
-        $returnValue = include($bootstrap);
+        $returnValue = require_once $bootstrap;
         
         foreach (get_defined_vars() as $name => $value) {
             if ($name == 'bootstrap' or $name == 'returnValue') continue;
