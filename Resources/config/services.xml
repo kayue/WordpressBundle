@@ -7,13 +7,13 @@
     <services>
         <service id="wordpress.api.loader" 
                  class="Hypebeast\WordpressBundle\Wordpress\ApiLoader" 
-                 public="false">
+                 public="true">
             <argument>%hypebeast_wordpress.wordpress_path%</argument>
         </service>
         
         <service id="wordpress.api.abstraction" 
                  class="Hypebeast\WordpressBundle\Wordpress\ApiAbstraction" 
-                 public="false">
+                 public="true">
             <argument type="service" id="wordpress.api.loader" />
         </service>
         
