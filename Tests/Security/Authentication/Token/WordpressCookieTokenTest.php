@@ -3,7 +3,7 @@
 namespace Hypebeast\WordpressBundle\Tests\Security\Authentication\Token;
 
 use Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressCookieToken;
-use Hypebeast\WordpressBundle\Entity\WordpressUser;
+use Hypebeast\WordpressBundle\Model\WordpressUser;
 
 require_once __DIR__ . '/../../../WpUserMock.php';
 

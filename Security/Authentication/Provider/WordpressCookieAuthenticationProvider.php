@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Hypebeast\WordpressBundle\Wordpress\ApiAbstraction;
-use Hypebeast\WordpressBundle\Entity\WordpressUser;
+use Hypebeast\WordpressBundle\Model\WordpressUser;
 
 /**
  * WordpressCookieAuthenticationProvider will verify that the current user has been authenticated

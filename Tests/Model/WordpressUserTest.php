@@ -1,15 +1,15 @@
 <?php
 
-namespace Hypebeast\WordpressBundle\Tests\Entity;
+namespace Hypebeast\WordpressBundle\Tests\Model;
 
-use Hypebeast\WordpressBundle\Entity\WordpressUser;
+use Hypebeast\WordpressBundle\Model\WordpressUser;
 
 require_once __DIR__ . '/../WpUserMock.php';
 
 /**
  * Test class for WordpressUser.
  * 
- * @covers Hypebeast\WordpressBundle\Entity\WordpressUser
+ * @covers Hypebeast\WordpressBundle\Model\WordpressUser
  */
 class WordpressUserTest extends \PHPUnit_Framework_TestCase
 {

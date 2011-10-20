@@ -4,11 +4,11 @@
  * Contains the WordpressUser class, part of the Symfony WordPress Bundle
  *
  * @package    Hypebeast\WordpressBundle
- * @subpackage Entity
+ * @subpackage Model
  * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
  */
 
-namespace Hypebeast\WordpressBundle\Entity;
+namespace Hypebeast\WordpressBundle\Model;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Hypebeast\WordpressBundle\Utilities\RoleUtilities;
@@ -17,7 +17,7 @@ use Hypebeast\WordpressBundle\Utilities\RoleUtilities;
  * A wrapper of WordPress's WP_User class which implements Symfony's UserInterface
  *
  * @package    Hypebeast\WordpressBundle
- * @subpackage Entity
+ * @subpackage Model
  * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
  */
 class WordpressUser extends \WP_User implements UserInterface

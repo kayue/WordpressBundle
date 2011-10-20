@@ -2,7 +2,7 @@
 namespace Hypebeast\WordpressBundle\Security\Authentication\Token;
 
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
-use Hypebeast\WordpressBundle\Entity\WordpressUser;
+use Hypebeast\WordpressBundle\Model\WordpressUser;
 
 class WordpressCookieToken extends AbstractToken
 {
