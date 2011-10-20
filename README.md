@@ -17,8 +17,8 @@ Imagine you are in a Controller:
          */
         public function helloAction($name)
         {
-            // retrieve currently logged-in user using the WordPress API
-            $user = $this->get('wordpress.api.abstraction')->wp_get_current_user();
+            // retrieve the current user
+            $user = $this->get('security.context')->getToken()->getUser();
             
             // retrieve user #2
             $user = new \WP_User(2);
