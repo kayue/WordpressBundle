@@ -1,8 +1,7 @@
 Requirements
 ============
 
-* Wordpress 3.3.x (currently in development) with [patches for variable 
-  scope](https://github.com/mrtorrent/WordPress/tree/explicitly_set_globals) (pending commit to core)
+* Wordpress 3.3.0 [revision 18993](https://core.trac.wordpress.org/changeset/18993) or higher
 * Symfony 2.0.x
 
 Usage 
