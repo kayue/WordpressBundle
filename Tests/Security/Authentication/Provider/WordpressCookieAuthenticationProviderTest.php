@@ -61,7 +61,8 @@ class WordpressCookieAuthenticationProviderTest extends \PHPUnit_Framework_TestC
                 $result
         );
         $this->assertTrue($result->isAuthenticated());
-        $this->assertEquals($user->user_login, $result->getUser());
+        $this->assertEquals($user->ID, $result->getUser()->ID);
+        $this->assertEquals($user->user_login, $result->getUsername());
         $this->assertEquals(
                 array(new Role('ROLE_WP_SOMEROLE'), new Role('ROLE_WP_ANOTHERROLE')),
                 $result->getRoles()

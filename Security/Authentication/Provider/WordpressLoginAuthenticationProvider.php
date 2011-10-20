@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Hypebeast\WordpressBundle\Utilities\RoleUtilities;
+use Hypebeast\WordpressBundle\Entity\WordpressUser;
 
 /**
  * WordpressLoginAuthenticationProvider will authenticate the user with Wordpress
@@ -65,21 +65,21 @@ class WordpressLoginAuthenticationProvider implements AuthenticationProviderInte
 
     public function authenticate(TokenInterface $token)
     {
-        $user = $this->api->wp_signon(array(
+        $wpUser = $this->api->wp_signon(array(
                 'user_login' => $token->getUsername(),
                 'user_password' => $token->getCredentials(),
                 'remember' => $this->isRememberMeRequested()
         ));
         
-        if ($user instanceof \WP_User) {
+        if ($wpUser instanceof \WP_User) {
+            $user = new WordpressUser($wpUser);
             $authenticatedToken = new UsernamePasswordToken(
-                    $user->user_login, $token->getCredentials(), $token->getProviderKey(),
-                    RoleUtilities::normalise_role_names($user->roles));
+                    $user, $token->getCredentials(), $token->getProviderKey(), $user->getRoles());
             
             return $authenticatedToken;
             
-        } else if ($user instanceof \WP_Error) {
-            throw new AuthenticationException(implode(', ', $user->get_error_messages()));
+        } else if ($wpUser instanceof \WP_Error) {
+            throw new AuthenticationException(implode(', ', $wpUser->get_error_messages()));
         }
 
         throw new AuthenticationServiceException('The Wordpress API returned an invalid response');
