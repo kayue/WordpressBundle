@@ -1,7 +1,7 @@
 Requirements
 ============
 
-* Wordpress 3.3.0 [revision 18993](https://core.trac.wordpress.org/changeset/18993) or higher
+* WordPress 3.3.0 [revision 18993](https://core.trac.wordpress.org/changeset/18993) or higher
 * Symfony 2.0.x
 
 Usage 
@@ -17,7 +17,7 @@ Imagine you are in a Controller:
          */
         public function helloAction($name)
         {
-            // retrieve currently logged-in user using the Wordpress API
+            // retrieve currently logged-in user using the WordPress API
             $user = $this->get('wordpress.api.abstraction')->wp_get_current_user();
             
             // retrieve user #2
@@ -32,11 +32,11 @@ Imagine you are in a Controller:
 Installation
 ============
 
-1. Make sure Wordpress's cookies are accessible from your Symfony 2 application. To confirm this, 
+1. Make sure WordPress's cookies are accessible from your Symfony 2 application. To confirm this, 
    open up Symfony's profiler and look for `wordpress_test_cookie` inside the request tab.  
    If you can't find the test cookie in request tab, please try to redefine the cookie path or 
-   domain used by Wordpress by editing `wp-config.php`.  
-   For more information, please [read the Wordpress Codex](http://codex.wordpress.org/Editing_wp-config.php)
+   domain used by WordPress by editing `wp-config.php`.  
+   For more information, please [read the WordPress Codex](http://codex.wordpress.org/Editing_wp-config.php)
 
         // wordpress/wp-config.php
 
@@ -66,14 +66,14 @@ Installation
             );
         }
 
-4. Configure the Wordpress service in your YAML configuration.
+4. Configure the WordPress service in your YAML configuration.
         
         # app/config/config.yml
         
         hypebeast_wordpress:
             wordpress_path: /path/to/your/wordpress
 
-5. Add Wordpress factory and firewall to your `security.yml`. Below is a sample configuration. All 
+5. Add WordPress factory and firewall to your `security.yml`. Below is a sample configuration. All 
 of the options for the wordpress_* authentication methods are optional and are displayed with their 
 default values. You can omit them if you use the defaults, e.g. `wordpress_cookie: ~` and 
 `wordpress_form_login: ~`
@@ -94,21 +94,21 @@ default values. You can omit them if you use the defaults, e.g. `wordpress_cooki
             firewalls:
                 secured_area:
                     pattern:    ^/demo/secured/
-                    # Set to true if using Wordpress's log out rather than Symfony's
+                    # Set to true if using WordPress's log out rather than Symfony's
                     # stateless:  true
                     wordpress_cookie:
                         # Set to false if you want to use a login form within your Symfony app to 
-                        # collect the user's Wordpress credentials (see below) or any other
+                        # collect the user's WordPress credentials (see below) or any other
                         # authentication provider. Otherwise, the user will be redirected to your 
-                        # Wordpress login if they need to authenticate
+                        # WordPress login if they need to authenticate
                         redirect_to_wordpress_on_failure: true
 
                     # Because this is based on form_login, it accepts all its parameters as well
                     # See the http://symfony.com/doc/2.0/cookbook/security/form_login.html for more 
-                    # details. Omit this if using Wordpress's built-in login, as above
+                    # details. Omit this if using WordPress's built-in login, as above
                     wordpress_form_login:
                         # This is the name of the POST parameter that can be used to indicate 
-                        # whether the user should be remembered via Wordpress's remember-me cookie
+                        # whether the user should be remembered via WordPress's remember-me cookie
                         remember_me_parameter: _remember_me
 
                     # You want your users to be able to log out, right? See Symfony docs for options
@@ -121,14 +121,14 @@ default values. You can omit them if you use the defaults, e.g. `wordpress_cooki
 Caveats
 =======
 
-* Because Symfony tracks the user's authentication state independently of Wordpress, if the 
-  stateless is not set to true (see above) and the user logs out in Wordpress, they will not be 
+* Because Symfony tracks the user's authentication state independently of WordPress, if the 
+  stateless is not set to true (see above) and the user logs out in WordPress, they will not be 
   logged out of Symfony until they specifically do, or they end their session. To prevent this, you 
-  should use either Symfony's or Wordpress's logout methods exclusively.
-* Wordpress assumes it will be run in the global scope, so some of its code doesn't even bother 
-  explicitly globalising variables. The required version of Wordpress core marginally improves this 
-  situation (enough to allow us to integrate with it), but beware that other parts of Wordpress or 
+  should use either Symfony's or WordPress's logout methods exclusively.
+* WordPress assumes it will be run in the global scope, so some of its code doesn't even bother 
+  explicitly globalising variables. The required version of WordPress core marginally improves this 
+  situation (enough to allow us to integrate with it), but beware that other parts of WordPress or 
   plugins may still have related issues.
 * There is currently no user provider (use the API abstraction, see example above)
-* Authentication errors from Wordpress are passed through unchanged and, since Wordpress uses HTML 
+* Authentication errors from WordPress are passed through unchanged and, since WordPress uses HTML 
   in its errors, the user may see HTML tags
