@@ -23,6 +23,19 @@ use Hypebeast\WordpressBundle\Utilities\RoleUtilities;
 class WordpressUser extends \WP_User implements UserInterface
 {
     
+    public function __construct()
+    {
+        $arguments = func_get_args();
+        if (isset($arguments[0]) and $arguments[0] instanceof \WP_User) {
+            foreach ($arguments[0] as $name => $value) {
+                $this->$name = $value;
+            }
+            
+        } else {
+            call_user_func_array(array($this, 'parent::__construct'), $arguments);
+        }
+    }
+    
     public function getRoles()
     {
         return RoleUtilities::normalise_role_names($this->roles);

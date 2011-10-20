@@ -35,6 +35,17 @@ namespace Hypebeast\WordpressBundle\Tests\Entity
         {
 
         }
+
+        public function testInstantiateWithAWpUserCopiesProperties()
+        {
+            $wpUser = new \WP_User;
+            $wpUser->expectedPropertyOne = 'expected value one';
+            $wpUser->expectedPropertyTwo = 'expected value two';
+
+            $user = new WordpressUser($wpUser);
+            $this->assertEquals($user->expectedPropertyOne, $wpUser->expectedPropertyOne);
+            $this->assertEquals($user->expectedPropertyTwo, $wpUser->expectedPropertyTwo);
+        }
         
         public function testGetRolesReturnsTranslatedRoles()
         {
@@ -137,6 +148,6 @@ namespace
     # Mock WP_User class so we don't need WordPress to run tests
     class WP_User
     {
-
+        public function __construct() { }
     }
 }
