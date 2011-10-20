@@ -50,10 +50,7 @@ class WordpressCookieAuthenticationProvider implements AuthenticationProviderInt
     {
         $wpUser = $this->api->wp_get_current_user();
         if ($wpUser->ID != 0) {
-            $user = new WordpressUser($wpUser);
-            $authenticatedToken = new WordpressCookieToken($user->getRoles());
-            $authenticatedToken->setUser($user);
-            return $authenticatedToken;
+            return new WordpressCookieToken(new WordpressUser($wpUser));
         }
 
         throw new AuthenticationException('The Wordpress authentication failed.');

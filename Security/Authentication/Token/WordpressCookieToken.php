@@ -2,13 +2,20 @@
 namespace Hypebeast\WordpressBundle\Security\Authentication\Token;
 
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
+use Hypebeast\WordpressBundle\Entity\WordpressUser;
 
 class WordpressCookieToken extends AbstractToken
 {
 
-    public function __construct(array $roles = array()) {
-        parent::__construct($roles);
-        parent::setAuthenticated(count($roles) > 0);
+    public function __construct(WordpressUser $user = null) {
+        if ($user instanceof WordpressUser) {
+            parent::__construct($user->getRoles());
+            $this->setUser($user);
+            parent::setAuthenticated(true);
+            
+        } else {
+            parent::__construct();
+        }
     }
 
     public function setAuthenticated($isAuthenticated)

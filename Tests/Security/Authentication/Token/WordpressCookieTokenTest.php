@@ -3,6 +3,9 @@
 namespace Hypebeast\WordpressBundle\Tests\Security\Authentication\Token;
 
 use Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressCookieToken;
+use Hypebeast\WordpressBundle\Entity\WordpressUser;
+
+require_once __DIR__ . '/../../../WpUserMock.php';
 
 /**
  * Test class for WordpressCookieToken.
@@ -40,8 +43,11 @@ class WordpressCookieTokenTest extends \PHPUnit_Framework_TestCase {
         $this->object->setAuthenticated(true);
     }
     
-    public function testConstructorWithRolesMarksTokenAsAuthenticated() {
-        $token = new WordpressCookieToken(array('mock role'));
+    public function testConstructorWithUserMarksTokenAsAuthenticated() {
+        $user = new WordpressUser;
+        $user->roles = array('user');
+        
+        $token = new WordpressCookieToken($user);
         $this->assertTrue($token->isAuthenticated());
     }
     
@@ -50,5 +56,3 @@ class WordpressCookieTokenTest extends \PHPUnit_Framework_TestCase {
     }
 
 }
-
-?>
