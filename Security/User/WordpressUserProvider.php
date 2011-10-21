@@ -60,7 +60,7 @@ class WordpressUserProvider implements UserProviderInterface
 
     public function supportsClass($class)
     {
-        return $class == 'Hypebeast\WordpressBundle\Security\User\WordpressUser';
+        return $class == 'Hypebeast\\WordpressBundle\\Security\\User\\WordpressUser';
     }
 
 }

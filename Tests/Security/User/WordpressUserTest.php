@@ -129,7 +129,7 @@ class WordpressUserTest extends \PHPUnit_Framework_TestCase
 
     public function testEqualsReturnsFalseIfUserIsWrongClass()
     {
-        $comparison = $this->getMock('Symfony\Component\Security\Core\User\UserInterface');
+        $comparison = $this->getMock('Symfony\\Component\\Security\\Core\\User\\UserInterface');
         $comparison->ID = 42;
         $this->object->ID = 42;
         $comparison->user_login = 'mickey mouse';
