@@ -73,10 +73,10 @@ Installation
         hypebeast_wordpress:
             wordpress_path: /path/to/your/wordpress
 
-5. Add WordPress factory and firewall to your `security.yml`. Below is a sample configuration. All 
-of the options for the wordpress_* authentication methods are optional and are displayed with their 
-default values. You can omit them if you use the defaults, e.g. `wordpress_cookie: ~` and 
-`wordpress_form_login: ~`
+5. Add the bundle factories, user provider, and authentication providers to your `security.yml`. 
+Below is a sample configuration. All of the options for the wordpress_* authentication methods are 
+optional and are displayed with their default values. You can omit them if you use the defaults, 
+e.g. `wordpress_cookie: ~` and `wordpress_form_login: ~`
 
         # app/config/security.yml
         
@@ -87,9 +87,9 @@ default values. You can omit them if you use the defaults, e.g. `wordpress_cooki
             factories:
                 - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
 
-            # There is no user provider, so this is a dummy entry to satisfy the security bundle
             providers:
-                wordpress: ~
+                wordpress:
+                    id: wordpress.security.user.provider
             
             firewalls:
                 secured_area:
