@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Hypebeast\WordpressBundle\Model\WordpressUser;
+use Hypebeast\WordpressBundle\Security\User\WordpressUser;
 
 /**
  * WordpressLoginAuthenticationProvider will authenticate the user with Wordpress

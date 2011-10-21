@@ -11,7 +11,7 @@
 namespace Hypebeast\WordpressBundle\Security\User;
 
 use Hypebeast\WordpressBundle\Wordpress\ApiAbstraction;
-use Hypebeast\WordpressBundle\Model\WordpressUser;
+use Hypebeast\WordpressBundle\Security\User\WordpressUser;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -60,7 +60,7 @@ class WordpressUserProvider implements UserProviderInterface
 
     public function supportsClass($class)
     {
-        return $class == 'Hypebeast\WordpressBundle\Model\WordpressUser';
+        return $class == 'Hypebeast\WordpressBundle\Security\User\WordpressUser';
     }
 
 }

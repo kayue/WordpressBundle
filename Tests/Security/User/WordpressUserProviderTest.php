@@ -49,7 +49,7 @@ class WordpressUserProviderTest extends \PHPUnit_Framework_TestCase
                 ->with('login', $expectedUser->user_login)->will($this->returnValue($expectedUser));
         
         $return = $this->object->loadUserByUsername($expectedUser->user_login);
-        $this->assertInstanceOf('Hypebeast\WordpressBundle\Model\WordpressUser', $return);
+        $this->assertInstanceOf('Hypebeast\WordpressBundle\Security\User\WordpressUser', $return);
         $this->assertEquals($expectedUser->user_login, $return->getUsername());
         $this->assertAttributeEquals($expectedUser->user_email, 'user_email', $return);
     }
@@ -73,12 +73,12 @@ class WordpressUserProviderTest extends \PHPUnit_Framework_TestCase
         $this->api->expects($this->any())->method('get_user_by')
                 ->with('login', $username = 'stephen.fry')->will($this->returnValue($expectedUser));
         
-        $user = $this->getMockBuilder('Hypebeast\WordpressBundle\Model\WordpressUser')
+        $user = $this->getMockBuilder('Hypebeast\WordpressBundle\Security\User\WordpressUser')
                 ->disableOriginalConstructor()->getMock();
         $user->expects($this->any())->method('getUsername')->will($this->returnValue($username));
         
         $return = $this->object->refreshUser($user);
-        $this->assertInstanceOf('Hypebeast\WordpressBundle\Model\WordpressUser', $return);
+        $this->assertInstanceOf('Hypebeast\WordpressBundle\Security\User\WordpressUser', $return);
         $this->assertAttributeEquals($expectedUser->user_email, 'user_email', $return);
     }
 
@@ -93,7 +93,7 @@ class WordpressUserProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testSupportsClass()
     {
-        $this->assertTrue($this->object->supportsClass('Hypebeast\WordpressBundle\Model\WordpressUser'));
+        $this->assertTrue($this->object->supportsClass('Hypebeast\WordpressBundle\Security\User\WordpressUser'));
         $this->assertFalse($this->object->supportsClass('Hypebeast\WordpressBundle\Entity\User'));
         $this->assertFalse($this->object->supportsClass('Symfony\Component\Security\Core\User\User'));
     }

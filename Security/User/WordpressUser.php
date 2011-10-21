@@ -8,7 +8,7 @@
  * @author     Miquel Rodríguez Telep / Michael Rodríguez-Torrent <mike@themikecam.com>
  */
 
-namespace Hypebeast\WordpressBundle\Model;
+namespace Hypebeast\WordpressBundle\Security\User;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Hypebeast\WordpressBundle\Utilities\RoleUtilities;
