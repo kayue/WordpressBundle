@@ -17,6 +17,12 @@
             <argument type="service" id="wordpress.api.loader" />
         </service>
         
+        <service id="wordpress.security.user.provider"
+                 class="Hypebeast\WordpressBundle\Security\User\WordpressUserProvider"
+                 public="false">
+            <argument type="service" id="wordpress.api.abstraction" />
+        </service>
+        
         <service id="wordpress.security.authentication.provider.cookie" 
                  class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressCookieAuthenticationProvider" 
                  public="false">
