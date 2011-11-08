@@ -3,6 +3,7 @@
 namespace Hypebeast\WordpressBundle\Tests\Security\Authentication\Provider;
 
 use Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressLoginAuthenticationProvider;
+use Hypebeast\WordpressBundle\Security\User\WordpressUser;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +36,9 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
     protected function setUp()
     {
         $this->api = $this->getMockBuilder('Hypebeast\\WordpressBundle\\Wordpress\\ApiAbstraction')
-                        ->disableOriginalConstructor()->setMethods(array('wp_signon'))->getMock();
+                        ->disableOriginalConstructor()
+                        ->setMethods(array('wp_signon', 'get_user_by'))
+                        ->getMock();
 
         $this->object = new WordpressLoginAuthenticationProvider($this->api);
     }
@@ -51,18 +54,20 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
 
     public function testAuthenticateLogsUserIntoWordpress()
     {
-        $token = new UsernamePasswordToken($username = 'user', $password = 'password', 'key');
-
         $user = $this->getMock('\WP_User');
         $user->ID = 99;
-        $user->user_login = $username;
+        $user->user_login = $username = 'user';
         $user->roles = array('somerole', 'anotherrole');
 
         $this->api->expects($this->once())->method('wp_signon')
-                ->with(array('user_login' => $username, 'user_password' => $password, 'remember' => false))
-                ->will($this->returnValue($user));
+                ->with(array(
+                    'user_login' => $username,
+                    'user_password' => $password = 'password',
+                    'remember' => false
+                ))->will($this->returnValue($user));
 
-        $result = $this->object->authenticate($token);
+        $result = $this->object->authenticate(
+                new UsernamePasswordToken($username, $password, $key = 'key'));
 
         # We should get back an equivalent authenticated UsernamePasswordToken
         $this->assertInstanceOf(
@@ -72,6 +77,7 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
         $this->assertTrue($result->isAuthenticated());
         $this->assertEquals($username, $result->getUsername());
         $this->assertEquals($password, $result->getCredentials());
+        $this->assertEquals($key, $result->getProviderKey());
         $this->assertEquals(
                 array(new Role('ROLE_WP_SOMEROLE'), new Role('ROLE_WP_ANOTHERROLE')),
                 $result->getRoles()
@@ -95,6 +101,37 @@ class WordpressLoginAuthenticationProviderTest extends \PHPUnit_Framework_TestCa
         
         $provider = new WordpressLoginAuthenticationProvider($this->api, 'remember me', $container);
         $provider->authenticate(new UsernamePasswordToken('user', 'pass', 'key'));
+    }
+
+    public function testAuthenticateWithCurrentUserReturnsToken()
+    {
+        # Return a mock user from the username lookup
+        $wpUser = $this->getMock('\WP_User');
+        $wpUser->ID = 99;
+        $wpUser->user_login = $username = 'frankenfurter';
+        $wpUser->roles = array('somerole', 'anotherrole');
+
+        $this->api->expects($this->any())->method('get_user_by')->with('login', $username)
+                ->will($this->returnValue($wpUser));
+        $this->api->expects($this->never())->method('wp_signon');
+
+        $user = $this->getMockBuilder('Hypebeast\\WordpressBundle\\Security\\User\\WordpressUser')
+                ->disableOriginalConstructor()->setMethods(array('none'))->getMock();
+        $user->user_login = $username;
+
+        $result = $this->object->authenticate(new UsernamePasswordToken($user, null, 'key'));
+
+        # We should get back an equivalent authenticated UsernamePasswordToken
+        $this->assertInstanceOf(
+                'Symfony\\Component\\Security\\Core\\Authentication\\Token\\UsernamePasswordToken',
+                $result
+        );
+        $this->assertTrue($result->isAuthenticated());
+        $this->assertEquals(new WordpressUser($wpUser), $result->getUser());
+        $this->assertEquals(
+                array(new Role('ROLE_WP_SOMEROLE'), new Role('ROLE_WP_ANOTHERROLE')),
+                $result->getRoles()
+        );
     }
     
     public function testAuthenticateThrowsExceptionOnFailure()

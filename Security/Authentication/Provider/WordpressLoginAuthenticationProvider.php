@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\AuthenticationServiceException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Hypebeast\WordpressBundle\Security\User\WordpressUser;
 
@@ -65,11 +66,17 @@ class WordpressLoginAuthenticationProvider implements AuthenticationProviderInte
 
     public function authenticate(TokenInterface $token)
     {
-        $wpUser = $this->api->wp_signon(array(
-                'user_login' => $token->getUsername(),
-                'user_password' => $token->getCredentials(),
-                'remember' => $this->isRememberMeRequested()
-        ));
+        # If the user is already logged-in, just check that their credentials are still valid
+        if ($token->getUser() instanceof UserInterface) {
+            $wpUser = $this->api->get_user_by('login', $token->getUsername());
+            
+        } else {
+            $wpUser = $this->api->wp_signon(array(
+                    'user_login' => $token->getUsername(),
+                    'user_password' => $token->getCredentials(),
+                    'remember' => $this->isRememberMeRequested()
+            ));
+        }
         
         if ($wpUser instanceof \WP_User) {
             $user = new WordpressUser($wpUser);
