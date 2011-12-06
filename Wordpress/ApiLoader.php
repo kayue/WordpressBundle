@@ -57,6 +57,7 @@ class ApiLoader
             throw new FileNotFoundException($bootstrap);
         }
         
+        global $wp_rewrite;
         $returnValue = require_once $bootstrap;
         
         foreach (get_defined_vars() as $name => $value) {
