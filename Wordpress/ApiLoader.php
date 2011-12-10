@@ -57,9 +57,25 @@ class ApiLoader
             throw new FileNotFoundException($bootstrap);
         }
         
-        global $wp_rewrite;
+        // Stop most of WordPress classes and functions from being loaded.
+        define('SHORTINIT', true);
+
         $returnValue = require_once $bootstrap;
-        
+
+        require(ABSPATH.WPINC.'/formatting.php');
+        require(ABSPATH.WPINC.'/capabilities.php');
+        require(ABSPATH.WPINC.'/user.php');
+        require(ABSPATH.WPINC.'/meta.php');
+        require(ABSPATH.WPINC.'/pluggable.php');
+        wp_cookie_constants();
+
+        // If not logged in, load functions like wp_login_url() to 
+        // generate login link.
+        if(!is_user_logged_in()) {
+            require(ABSPATH.WPINC.'/general-template.php');
+            require(ABSPATH.WPINC.'/link-template.php');
+        }
+
         foreach (get_defined_vars() as $name => $value) {
             if ($name == 'bootstrap' or $name == 'returnValue') continue;
             $GLOBALS[$name] = $value;
