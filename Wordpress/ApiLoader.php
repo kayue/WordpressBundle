@@ -37,9 +37,13 @@ class ApiLoader
      *
      * @param string $wordpress_path path to the Wordpress installation to use
      */
-    public function __construct($wordpress_path)
+    public function __construct($wordpress_path, $shortInit = false)
     {
         $this->wordpress_path = $wordpress_path;
+
+        if(!defined('SHORTINIT')) {
+            define('SHORTINIT', $shortInit);
+        }
     }
     
     /**
@@ -57,23 +61,23 @@ class ApiLoader
             throw new FileNotFoundException($bootstrap);
         }
         
-        // Stop most of WordPress classes and functions from being loaded.
-        define('SHORTINIT', true);
-
         $returnValue = require_once $bootstrap;
 
-        require(ABSPATH.WPINC.'/formatting.php');
-        require(ABSPATH.WPINC.'/capabilities.php');
-        require(ABSPATH.WPINC.'/user.php');
-        require(ABSPATH.WPINC.'/meta.php');
-        require(ABSPATH.WPINC.'/pluggable.php');
-        wp_cookie_constants();
+        // Stop most of WordPress classes and functions from being loaded.
+        if(SHORTINIT) {
+            require(ABSPATH.WPINC.'/formatting.php');
+            require(ABSPATH.WPINC.'/capabilities.php');
+            require(ABSPATH.WPINC.'/user.php');
+            require(ABSPATH.WPINC.'/meta.php');
+            require(ABSPATH.WPINC.'/pluggable.php');
+            wp_cookie_constants();
 
-        // If not logged in, load functions like wp_login_url() to 
-        // generate login link.
-        if(!is_user_logged_in()) {
-            require(ABSPATH.WPINC.'/general-template.php');
-            require(ABSPATH.WPINC.'/link-template.php');
+            // If not logged in, load functions like wp_login_url() to 
+            // generate login link.
+            if(!is_user_logged_in()) {
+                require(ABSPATH.WPINC.'/general-template.php');
+                require(ABSPATH.WPINC.'/link-template.php');
+            }
         }
 
         foreach (get_defined_vars() as $name => $value) {
