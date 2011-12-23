@@ -56,7 +56,12 @@ class ApiLoader
      */
     public function load($bootstrap='wp-load.php')
     {
+        if( $this->isWordpressAlreadyLoaded() ) {
+            return;
+        }
+
         $bootstrap = $this->wordpress_path . DIRECTORY_SEPARATOR . $bootstrap;
+
         if (!file_exists($bootstrap)) {
             throw new FileNotFoundException($bootstrap);
         }
@@ -84,8 +89,20 @@ class ApiLoader
             if ($name == 'bootstrap' or $name == 'returnValue') continue;
             $GLOBALS[$name] = $value;
         }
-        
+
         return $returnValue;
     }
 
+    private function isWordpressAlreadyLoaded()
+    {
+        $includedFiles = get_included_files();
+
+        return in_array(ABSPATH.WPINC.'/formatting.php', $includedFiles) &&
+               in_array(ABSPATH.WPINC.'/capabilities.php', $includedFiles) && 
+               in_array(ABSPATH.WPINC.'/user.php', $includedFiles) && 
+               in_array(ABSPATH.WPINC.'/meta.php', $includedFiles) && 
+               in_array(ABSPATH.WPINC.'/pluggable.php', $includedFiles) &&
+               in_array(ABSPATH.WPINC.'/general-template.php', $includedFiles) && 
+               in_array(ABSPATH.WPINC.'/link-template.php', $includedFiles);
+    }
 }
