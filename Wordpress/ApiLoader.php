@@ -30,16 +30,16 @@ class ApiLoader
      *
      * @var string
      */
-    public $wordpress_path;
+    public $wordpressPath;
 
     /**
      * Constructor
      *
-     * @param string $wordpress_path path to the Wordpress installation to use
+     * @param string $wordpressPath path to the Wordpress installation to use
      */
-    public function __construct($wordpress_path, $shortInit = false)
+    public function __construct($wordpressPath, $shortInit = false)
     {
-        $this->wordpress_path = $wordpress_path;
+        $this->wordpressPath = $wordpressPath;
 
         if(!defined('SHORTINIT')) {
             define('SHORTINIT', $shortInit);
@@ -60,7 +60,7 @@ class ApiLoader
             return;
         }
 
-        $bootstrap = $this->wordpress_path . DIRECTORY_SEPARATOR . $bootstrap;
+        $bootstrap = $this->wordpressPath . DIRECTORY_SEPARATOR . $bootstrap;
 
         if (!file_exists($bootstrap)) {
             throw new FileNotFoundException($bootstrap);
