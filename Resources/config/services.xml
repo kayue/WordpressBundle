@@ -54,5 +54,11 @@
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
         </service>
+
+        <service id="wordpress.twig.extension" 
+                 class="Hypebeast\WordpressBundle\Extensions\WordpressTwigExtension" 
+                 public="true">
+            <tag name="twig.extension" />
+        </service>
     </services>
 </container>
