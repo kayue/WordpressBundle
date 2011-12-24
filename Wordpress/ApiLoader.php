@@ -95,6 +95,10 @@ class ApiLoader
 
     private function isWordpressAlreadyLoaded()
     {
+        if(!defined('ABSPATH') || !defined('WPINC') ) {
+            return false;
+        }
+
         $includedFiles = get_included_files();
 
         return in_array(ABSPATH.WPINC.'/formatting.php', $includedFiles) &&
