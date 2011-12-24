@@ -60,5 +60,12 @@
                  public="true">
             <tag name="twig.extension" />
         </service>
+
+        <service id="wordpress.helper" 
+                 class="Hypebeast\WordpressBundle\Wordpress\Helper" 
+                 public="true">
+            <argument type="service" id="wordpress.api.abstraction" />
+        </service>
+
     </services>
 </container>
