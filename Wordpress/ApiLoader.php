@@ -66,6 +66,9 @@ class ApiLoader
             throw new FileNotFoundException($bootstrap);
         }
         
+        // Work around WordPress's `$wp_rewrite` global. Fixes #2.
+        global $wp_rewrite; 
+        
         $returnValue = require_once $bootstrap;
 
         // Stop most of WordPress classes and functions from being loaded.
