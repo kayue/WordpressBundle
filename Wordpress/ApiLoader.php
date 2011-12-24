@@ -56,6 +56,7 @@ class ApiLoader
      */
     public function load($bootstrap='wp-load.php')
     {
+        // No need to load Wordpress again if it is already loaded.
         if( $this->isWordpressAlreadyLoaded() ) {
             return;
         }
@@ -68,7 +69,7 @@ class ApiLoader
         
         // Work around WordPress's `$wp_rewrite` global. Fixes #2.
         global $wp_rewrite; 
-        
+
         $returnValue = require_once $bootstrap;
 
         // Stop most of WordPress classes and functions from being loaded.
@@ -88,6 +89,7 @@ class ApiLoader
             }
         }
 
+        // Work around WordPress not explicitly globalising variables. See #5
         foreach (get_defined_vars() as $name => $value) {
             if ($name == 'bootstrap' or $name == 'returnValue') continue;
             $GLOBALS[$name] = $value;
