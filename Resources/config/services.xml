@@ -59,6 +59,7 @@
         <service id="wordpress.twig.extension" 
                  class="Hypebeast\WordpressBundle\Extensions\WordpressTwigExtension" 
                  public="true">
+            <argument>%hypebeast_wordpress.debug%</argument>
             <tag name="twig.extension" />
         </service>
 
