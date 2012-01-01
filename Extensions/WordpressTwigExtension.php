@@ -10,6 +10,13 @@ namespace Hypebeast\WordpressBundle\Extensions;
  */
 class WordpressTwigExtension extends \Twig_Extension 
 {
+    protected $debug = false;
+
+    public function __construct($debug)
+    {
+        $this->debug = $debug;
+    }
+    
     public function getName()
     {
         return 'wordpress';
@@ -25,12 +32,13 @@ class WordpressTwigExtension extends \Twig_Extension
     public function __call($function, $arguments) {
         $function = $this->camelcaseToUnderscore($function);
 
-        if (!function_exists($function)) {
-            trigger_error("Call to unexist Wordpress function \"{$function}\"", E_USER_WARNING);
-            return null;
+        // Since a lot of Wordpress plugins are poorly written, the WordpressBundle 
+        // will try to not display any error message.
+        if($this->debug) {        
+            return call_user_func_array($function, $arguments);
         }
 
-        return call_user_func_array($function, $arguments);
+        return @call_user_func_array($function, $arguments);
     }
 
     /** 

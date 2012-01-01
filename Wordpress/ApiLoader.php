@@ -30,16 +30,20 @@ class ApiLoader
      *
      * @var string
      */
-    public $wordpress_path;
+    public $wordpressPath;
 
     /**
      * Constructor
      *
-     * @param string $wordpress_path path to the Wordpress installation to use
+     * @param string $wordpressPath path to the Wordpress installation to use
      */
-    public function __construct($wordpress_path)
+    public function __construct($wordpressPath, $shortInit = false)
     {
-        $this->wordpress_path = $wordpress_path;
+        $this->wordpressPath = $wordpressPath;
+
+        if(!defined('SHORTINIT')) {
+            define('SHORTINIT', $shortInit);
+        }
     }
     
     /**
@@ -52,36 +56,62 @@ class ApiLoader
      */
     public function load($bootstrap='wp-load.php')
     {
-        $bootstrap = $this->wordpress_path . DIRECTORY_SEPARATOR . $bootstrap;
+        // No need to load Wordpress again if it is already loaded.
+        if( $this->isWordpressAlreadyLoaded() ) {
+            return;
+        }
+
+        $bootstrap = $this->wordpressPath . DIRECTORY_SEPARATOR . $bootstrap;
+
         if (!file_exists($bootstrap)) {
             throw new FileNotFoundException($bootstrap);
         }
         
-        // Stop most of WordPress classes and functions from being loaded.
-        define('SHORTINIT', true);
+        // Work around WordPress's `$wp_rewrite` global. Fixes #2.
+        global $wp_rewrite; 
 
         $returnValue = require_once $bootstrap;
 
-        require(ABSPATH.WPINC.'/formatting.php');
-        require(ABSPATH.WPINC.'/capabilities.php');
-        require(ABSPATH.WPINC.'/user.php');
-        require(ABSPATH.WPINC.'/meta.php');
-        require(ABSPATH.WPINC.'/pluggable.php');
-        wp_cookie_constants();
+        // Stop most of WordPress classes and functions from being loaded.
+        if(SHORTINIT) {
+            require(ABSPATH.WPINC.'/formatting.php');
+            require(ABSPATH.WPINC.'/capabilities.php');
+            require(ABSPATH.WPINC.'/user.php');
+            require(ABSPATH.WPINC.'/meta.php');
+            require(ABSPATH.WPINC.'/pluggable.php');
+            wp_cookie_constants();
 
-        // If not logged in, load functions like wp_login_url() to 
-        // generate login link.
-        if(!is_user_logged_in()) {
-            require(ABSPATH.WPINC.'/general-template.php');
-            require(ABSPATH.WPINC.'/link-template.php');
+            // If not logged in, load functions like wp_login_url() to 
+            // generate login link.
+            if(!is_user_logged_in()) {
+                require(ABSPATH.WPINC.'/general-template.php');
+                require(ABSPATH.WPINC.'/link-template.php');
+            }
         }
 
+        // Work around WordPress not explicitly globalising variables. See #5
         foreach (get_defined_vars() as $name => $value) {
             if ($name == 'bootstrap' or $name == 'returnValue') continue;
             $GLOBALS[$name] = $value;
         }
-        
+
         return $returnValue;
     }
 
+    private function isWordpressAlreadyLoaded()
+    {
+        if(!defined('ABSPATH') || !defined('WPINC') ) {
+            return false;
+        }
+
+        $includedFiles = get_included_files();
+
+        return in_array(ABSPATH.WPINC.'/formatting.php', $includedFiles) &&
+               in_array(ABSPATH.WPINC.'/capabilities.php', $includedFiles) && 
+               in_array(ABSPATH.WPINC.'/user.php', $includedFiles) && 
+               in_array(ABSPATH.WPINC.'/meta.php', $includedFiles) && 
+               in_array(ABSPATH.WPINC.'/pluggable.php', $includedFiles) &&
+               in_array(ABSPATH.WPINC.'/general-template.php', $includedFiles) && 
+               in_array(ABSPATH.WPINC.'/link-template.php', $includedFiles);
+    }
 }

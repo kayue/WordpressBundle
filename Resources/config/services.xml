@@ -9,6 +9,7 @@
                  class="Hypebeast\WordpressBundle\Wordpress\ApiLoader" 
                  public="true">
             <argument>%hypebeast_wordpress.wordpress_path%</argument>
+            <argument>%hypebeast_wordpress.short_init%</argument>
         </service>
         
         <service id="wordpress.api.abstraction" 
@@ -58,6 +59,7 @@
         <service id="wordpress.twig.extension" 
                  class="Hypebeast\WordpressBundle\Extensions\WordpressTwigExtension" 
                  public="true">
+            <argument>%hypebeast_wordpress.debug%</argument>
             <tag name="twig.extension" />
         </service>
 
