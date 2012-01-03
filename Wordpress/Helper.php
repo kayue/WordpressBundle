@@ -45,6 +45,19 @@ class Helper
             }
 
             return $title;
-        }, 10, 3);
+        });
+    }
+
+    /**
+     * Set body class of the page.
+     *
+     * @param String $class
+     */
+    public function setBodyClass($class)
+    {
+        $this->api->add_filter('body_class', function($classes) use ($class) {
+            $classes[] = $class;
+            return $classes;
+        });
     }
 }
