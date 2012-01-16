@@ -57,7 +57,7 @@ class ApiLoader
     public function load($bootstrap='wp-load.php')
     {
         // No need to load Wordpress again if it is already loaded.
-        if( $this->isWordpressAlreadyLoaded() ) {
+        if( $this->isWordpressAlreadyLoaded($bootstrap) ) {
             return;
         }
 
@@ -98,20 +98,17 @@ class ApiLoader
         return $returnValue;
     }
 
-    private function isWordpressAlreadyLoaded()
+    /**
+     * Check to see if Wordpress is already loaded.
+     */
+    private function isWordpressAlreadyLoaded($bootstrap)
     {
-        if(!defined('ABSPATH') || !defined('WPINC') ) {
+        // ABSPATH and WPINC must be already defined if Wordpress is loaded
+        if(!defined('ABSPATH') || !defined('WPINC')) {
             return false;
         }
 
-        $includedFiles = get_included_files();
-
-        return in_array(ABSPATH.WPINC.'/formatting.php', $includedFiles) &&
-               in_array(ABSPATH.WPINC.'/capabilities.php', $includedFiles) && 
-               in_array(ABSPATH.WPINC.'/user.php', $includedFiles) && 
-               in_array(ABSPATH.WPINC.'/meta.php', $includedFiles) && 
-               in_array(ABSPATH.WPINC.'/pluggable.php', $includedFiles) &&
-               in_array(ABSPATH.WPINC.'/general-template.php', $includedFiles) && 
-               in_array(ABSPATH.WPINC.'/link-template.php', $includedFiles);
+        // Extra checking.
+        return in_array($bootstrap, get_included_files());
     }
 }
