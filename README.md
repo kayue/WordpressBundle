@@ -73,6 +73,11 @@ Installation
         hypebeast_wordpress:
             wordpress_path: /path/to/your/wordpress
 
+            # Set short_init to true if you only need the WordpressBundle to read user's login state, 
+            # this will make your application run faster by loading less Wordpress classes. It is 
+            # false by default.
+            short_init: false
+
 5. Add the bundle factories, user provider, and authentication providers to your `security.yml`. 
 Below is a sample configuration. All of the options for the wordpress_* authentication methods are 
 optional and are displayed with their default values. You can omit them if you use the defaults, 
