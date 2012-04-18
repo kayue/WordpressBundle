@@ -26,9 +26,9 @@ class Helper
      *
      * @param String $title 
      */
-    public function setTitle($title)
+    public function setTitle($title, $sep = "&raquo;", $seplocation = "right")
     {
-        $this->api->add_filter('wp_title', function($title, $sep = "&raquo;", $seplocation = "right") use ($title) {
+        $this->api->add_filter('wp_title', function($title) use ($title, $sep, $seplocation) {
             $t_sep = '%WP_TITILE_SEP%'; // Temporary separator, for accurate flipping, if necessary
 
             if ( !empty($title) )
