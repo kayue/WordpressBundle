@@ -1,0 +1,21 @@
+Hypebeast\WordpressBundle\Entity\UserMeta:
+  type: entity
+  table: wp_usermeta
+  id:
+    umeta_id:
+      type: bigint
+      length: 20
+      nullable: false
+      generator: { strategy: AUTO }
+  fields:
+    meta_key:
+      type: string
+      length: 255
+    meta_value:
+      type: text
+  manyToOne:
+    user:
+      targetEntity: User
+      joinColumn:
+        name: user_id
+        referencedColumnName: ID

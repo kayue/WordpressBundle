@@ -1,0 +1,27 @@
+Hypebeast\WordpressBundle\Entity\Taxonomy:
+  type: entity
+  table: wp_term_taxonomy
+  id:
+    term_taxonomy_id:
+      type: bigint
+      length: 20
+      nullable: false
+      generator: { strategy: AUTO }
+  fields:
+    taxonomy:
+      type: string
+      length: 32
+    description:
+      type: text
+    parent:
+      type: bigint
+      length: 20
+    count:
+      type: bigint
+      length: 20
+  oneToOne:
+    term:
+      targetEntity: Term
+      joinColumn:
+        name: term_id
+        referencedColumnName: term_id

@@ -1,0 +1,44 @@
+Hypebeast\WordpressBundle\Entity\User:
+  type: entity
+  table: wp_users
+  id:
+    ID:
+      type: bigint
+      length: 20
+      nullable: false
+      generator: { strategy: AUTO }
+  fields:
+    user_login:
+      type: string
+      length: 60
+      unique: true
+    user_pass:
+      type: string
+      length: 64
+    user_nicename:
+      type: string
+      length: 64
+    user_email:
+      type: string
+      length: 100
+    user_url:
+      type: string
+      length: 100
+    user_registered:
+      type: datetime
+    user_activation_key:
+      type: string
+      length: 60
+    user_status:
+      type: integer
+      length: 11
+    display_name:
+      type: string
+      length: 250
+  oneToMany:
+    posts:
+      targetEntity: Post
+      mappedBy: user
+    metas:
+      targetEntity: UserMeta
+      mappedBy: user

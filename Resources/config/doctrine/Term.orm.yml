@@ -1,0 +1,19 @@
+Hypebeast\WordpressBundle\Entity\Term:
+  type: entity
+  table: wp_terms
+  id:
+    term_id:
+      type: bigint
+      length: 20
+      nullable: false
+      generator: { strategy: AUTO }
+  fields:
+    name:
+      type: string
+      length: 200
+    slug:
+      type: string
+      length: 200
+    term_group:
+      type: bigint
+      length: 10

@@ -1,0 +1,106 @@
+Hypebeast\WordpressBundle\Entity\Post:
+  type: entity
+  table: wp_posts
+  id:
+    ID:
+      type: bigint
+      nullable: false
+      generator: { strategy: AUTO }
+  fields:
+    post_author:
+      type: bigint
+      length: 20
+      nullable: false
+    post_date:
+      type: datetime
+      nullable: false
+    post_date_gmt:
+      type: datetime
+      nullable: false
+    post_content:
+      type: text
+      nullable: false
+    post_title:
+      type: text
+      nullable: false
+    post_excerpt:
+      type: text
+      nullable: false
+    post_status:
+      type: string
+      length: 20
+      nullable: false
+    comment_status:
+      type: string
+      length: 20
+      nullable: false
+    ping_status:
+      type: string
+      length: 20
+      nullable: false
+    post_password:
+      type: string
+      length: 20
+      nullable: false
+    post_name:
+      type: string
+      length: 200
+      nullable: false
+    to_ping:
+      type: text
+      nullable: false
+    pinged:
+      type: text
+      nullable: false
+    post_modified:
+      type: datetime
+      nullable: false
+    post_modified_gmt:
+      type: datetime
+      nullable: false
+    post_content_filtered:
+      type: text
+      nullable: false
+    post_parent:
+      type: bigint
+      nullable: false
+    guid:
+      type: string
+      length: 255
+      nullable: false
+    menu_order:
+      type: integer
+      length: 11
+      nullable: false
+    post_type:
+      type: string
+      nullable: false
+    post_mime_type:
+      type: string
+      length: 100
+      nullable: false
+    comment_count:
+      type: bigint
+      length: 20
+      nullable: false
+  oneToMany:
+    metas:
+      targetEntity: PostMeta
+      mappedBy: post
+  manyToOne:
+    user:
+      targetEntity: User
+      joinColumn:
+        name: post_author
+        referencedColumnName: ID
+  manyToMany:
+    taxonomies:
+      targetEntity: Taxonomy
+      joinTable:
+        name: wp_term_relationships
+        joinColumns:
+          object_id:
+            referencedColumnName: ID
+        inverseJoinColumns:
+          term_taxonomy_id:
+            referencedColumnName: term_taxonomy_id
