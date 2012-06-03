@@ -39,6 +39,9 @@ Hypebeast\WordpressBundle\Entity\User:
     posts:
       targetEntity: Post
       mappedBy: user
+    comments:
+      targetEntity: Comment
+      mappedBy: user
     metas:
       targetEntity: UserMeta
       mappedBy: user

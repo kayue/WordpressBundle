@@ -5,21 +5,21 @@ namespace Hypebeast\WordpressBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Hypebeast\WordpressBundle\Entity\UserMeta
+ * Hypebeast\WordpressBundle\Entity\CommentMeta
  *
- * @ORM\Table(name="wp_usermeta")
+ * @ORM\Table(name="wp_commentmeta")
  * @ORM\Entity
  */
-class UserMeta
+class CommentMeta
 {
     /**
-     * @var bigint $umeta_id
+     * @var bigint $meta_id
      *
-     * @ORM\Column(name="umeta_id", type="bigint", length=20)
+     * @ORM\Column(name="meta_id", type="bigint", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $umeta_id;
+    private $meta_id;
 
     /**
      * @var string $meta_key
@@ -36,24 +36,24 @@ class UserMeta
     private $meta_value;
 
     /**
-     * @var Hypebeast\WordpressBundle\Entity\User
+     * @var Hypebeast\WordpressBundle\Entity\Comment
      *
-     * @ORM\ManyToOne(targetEntity="Hypebeast\WordpressBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Hypebeast\WordpressBundle\Entity\Comment", inversedBy="metas")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="ID")
+     *   @ORM\JoinColumn(name="comment_id", referencedColumnName="comment_ID")
      * })
      */
-    private $user;
+    private $comment;
 
 
     /**
-     * Get umeta_id
+     * Get meta_id
      *
      * @return bigint 
      */
-    public function getUmetaId()
+    public function getMetaId()
     {
-        return $this->umeta_id;
+        return $this->meta_id;
     }
 
     /**
@@ -97,22 +97,22 @@ class UserMeta
     }
 
     /**
-     * Set user
+     * Set comment
      *
-     * @param Hypebeast\WordpressBundle\Entity\User $user
+     * @param Hypebeast\WordpressBundle\Entity\Comment $comment
      */
-    public function setUser(\Hypebeast\WordpressBundle\Entity\User $user)
+    public function setComment(\Hypebeast\WordpressBundle\Entity\Comment $comment)
     {
-        $this->user = $user;
+        $this->comment = $comment;
     }
 
     /**
-     * Get user
+     * Get comment
      *
-     * @return Hypebeast\WordpressBundle\Entity\User 
+     * @return Hypebeast\WordpressBundle\Entity\Comment 
      */
-    public function getUser()
+    public function getComment()
     {
-        return $this->user;
+        return $this->comment;
     }
 }

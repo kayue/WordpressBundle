@@ -7,10 +7,6 @@ Hypebeast\WordpressBundle\Entity\Post:
       nullable: false
       generator: { strategy: AUTO }
   fields:
-    post_author:
-      type: bigint
-      length: 20
-      nullable: false
     post_date:
       type: datetime
       nullable: false
@@ -86,6 +82,9 @@ Hypebeast\WordpressBundle\Entity\Post:
   oneToMany:
     metas:
       targetEntity: PostMeta
+      mappedBy: post
+    comments:
+      targetEntity: Comment
       mappedBy: post
   manyToOne:
     user:

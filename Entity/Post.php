@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="wp_posts")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Post
 {
@@ -20,13 +21,6 @@ class Post
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $ID;
-
-    /**
-     * @var bigint $post_author
-     *
-     * @ORM\Column(name="post_author", type="bigint", length=20, nullable=false)
-     */
-    private $post_author;
 
     /**
      * @var datetime $post_date
@@ -68,28 +62,28 @@ class Post
      *
      * @ORM\Column(name="post_status", type="string", length=20, nullable=false)
      */
-    private $post_status;
+    private $post_status = "publish";
 
     /**
      * @var string $comment_status
      *
      * @ORM\Column(name="comment_status", type="string", length=20, nullable=false)
      */
-    private $comment_status;
+    private $comment_status = "open";
 
     /**
      * @var string $ping_status
      *
      * @ORM\Column(name="ping_status", type="string", length=20, nullable=false)
      */
-    private $ping_status;
+    private $ping_status = "open";
 
     /**
      * @var string $post_password
      *
      * @ORM\Column(name="post_password", type="string", length=20, nullable=false)
      */
-    private $post_password;
+    private $post_password = "";
 
     /**
      * @var string $post_name
@@ -103,14 +97,14 @@ class Post
      *
      * @ORM\Column(name="to_ping", type="text", nullable=false)
      */
-    private $to_ping;
+    private $to_ping = "";
 
     /**
      * @var text $pinged
      *
      * @ORM\Column(name="pinged", type="text", nullable=false)
      */
-    private $pinged;
+    private $pinged = "";
 
     /**
      * @var datetime $post_modified
@@ -131,49 +125,49 @@ class Post
      *
      * @ORM\Column(name="post_content_filtered", type="text", nullable=false)
      */
-    private $post_content_filtered;
+    private $post_content_filtered = "";
 
     /**
      * @var bigint $post_parent
      *
      * @ORM\Column(name="post_parent", type="bigint", nullable=false)
      */
-    private $post_parent;
+    private $post_parent = 0;
 
     /**
      * @var string $guid
      *
      * @ORM\Column(name="guid", type="string", length=255, nullable=false)
      */
-    private $guid;
+    private $guid = "";
 
     /**
      * @var integer $menu_order
      *
      * @ORM\Column(name="menu_order", type="integer", length=11, nullable=false)
      */
-    private $menu_order;
+    private $menu_order = 0;
 
     /**
      * @var string $post_type
      *
      * @ORM\Column(name="post_type", type="string", nullable=false)
      */
-    private $post_type;
+    private $post_type = "post";
 
     /**
      * @var string $post_mime_type
      *
      * @ORM\Column(name="post_mime_type", type="string", length=100, nullable=false)
      */
-    private $post_mime_type;
+    private $post_mime_type = "";
 
     /**
      * @var bigint $comment_count
      *
      * @ORM\Column(name="comment_count", type="bigint", length=20, nullable=false)
      */
-    private $comment_count;
+    private $comment_count = 0;
 
     /**
      * @var Hypebeast\WordpressBundle\Entity\PostMeta
@@ -181,6 +175,13 @@ class Post
      * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\PostMeta", mappedBy="post")
      */
     private $metas;
+
+    /**
+     * @var Hypebeast\WordpressBundle\Entity\Comment
+     *
+     * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\Comment", mappedBy="post")
+     */
+    private $comments;
 
     /**
      * @var Hypebeast\WordpressBundle\Entity\User
@@ -209,10 +210,22 @@ class Post
 
     public function __construct()
     {
-        $this->metas = new \Doctrine\Common\Collections\ArrayCollection();
-    $this->taxonomies = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->metas      = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments   = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->taxonomies = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function onPrePersist() 
+    {
+        echo "onPrePersist";
+        $this->post_date = new \DateTime('now');
+        $this->post_date_gmt = new \DateTime('now');
+    }
+
     /**
      * Get ID
      *
@@ -221,26 +234,6 @@ class Post
     public function getID()
     {
         return $this->ID;
-    }
-
-    /**
-     * Set post_author
-     *
-     * @param bigint $postAuthor
-     */
-    public function setPostAuthor($postAuthor)
-    {
-        $this->post_author = $postAuthor;
-    }
-
-    /**
-     * Get post_author
-     *
-     * @return bigint 
-     */
-    public function getPostAuthor()
-    {
-        return $this->post_author;
     }
 
     /**
@@ -681,6 +674,26 @@ class Post
     public function getMetas()
     {
         return $this->metas;
+    }
+
+    /**
+     * Add comments
+     *
+     * @param Hypebeast\WordpressBundle\Entity\Comment $comments
+     */
+    public function addComment(\Hypebeast\WordpressBundle\Entity\Comment $comments)
+    {
+        $this->comments[] = $comments;
+    }
+
+    /**
+     * Get comments
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 
     /**

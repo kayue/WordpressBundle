@@ -92,6 +92,13 @@ class User
     private $posts;
 
     /**
+     * @var Hypebeast\WordpressBundle\Entity\Comment
+     *
+     * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\Comment", mappedBy="user")
+     */
+    private $comments;
+
+    /**
      * @var Hypebeast\WordpressBundle\Entity\UserMeta
      *
      * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\UserMeta", mappedBy="user")
@@ -101,6 +108,7 @@ class User
     public function __construct()
     {
         $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
+    $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     $this->metas = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
@@ -312,6 +320,26 @@ class User
     public function getPosts()
     {
         return $this->posts;
+    }
+
+    /**
+     * Add comments
+     *
+     * @param Hypebeast\WordpressBundle\Entity\Comment $comments
+     */
+    public function addComment(\Hypebeast\WordpressBundle\Entity\Comment $comments)
+    {
+        $this->comments[] = $comments;
+    }
+
+    /**
+     * Get comments
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 
     /**

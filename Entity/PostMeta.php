@@ -24,14 +24,14 @@ class PostMeta
     /**
      * @var string $meta_key
      *
-     * @ORM\Column(name="meta_key", type="string", length=255)
+     * @ORM\Column(name="meta_key", type="string", length=255, nullable=true)
      */
     private $meta_key;
 
     /**
      * @var text $meta_value
      *
-     * @ORM\Column(name="meta_value", type="text")
+     * @ORM\Column(name="meta_value", type="text", nullable=true)
      */
     private $meta_value;
 

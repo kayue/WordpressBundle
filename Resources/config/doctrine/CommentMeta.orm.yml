@@ -1,8 +1,8 @@
-Hypebeast\WordpressBundle\Entity\UserMeta:
+Hypebeast\WordpressBundle\Entity\CommentMeta:
   type: entity
-  table: wp_usermeta
+  table: wp_commentmeta
   id:
-    umeta_id:
+    meta_id:
       type: bigint
       length: 20
       nullable: false
@@ -16,8 +16,9 @@ Hypebeast\WordpressBundle\Entity\UserMeta:
       type: text
       nullable: true
   manyToOne:
-    user:
-      targetEntity: User
+    comment:
+      targetEntity: Comment
+      inversedBy: metas
       joinColumn:
-        name: user_id
-        referencedColumnName: ID
+        name: comment_id
+        referencedColumnName: comment_ID

@@ -11,8 +11,10 @@ Hypebeast\WordpressBundle\Entity\PostMeta:
     meta_key:
       type: string
       length: 255
+      nullable: true
     meta_value:
       type: text
+      nullable: true
   manyToOne:
     post:
       targetEntity: Post

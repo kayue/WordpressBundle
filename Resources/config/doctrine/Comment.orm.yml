@@ -1,0 +1,59 @@
+Hypebeast\WordpressBundle\Entity\Comment:
+  type: entity
+  table: wp_comments
+  id:
+    comment_ID:
+      type: bigint
+      length: 20
+      nullable: false
+      generator: { strategy: AUTO }
+  fields:
+    comment_author:
+      type: text
+    comment_author_email:
+      type: string
+      lenght: 100
+    comment_author_url:
+      type: string
+      lenght: 100
+    comment_author_IP:
+      type: string
+      lenght: 100
+    comment_date:
+      type: datetime
+    comment_date_gmt:
+      type: datetime
+    comment_content:
+      type: text
+    comment_karma:
+      type: integer
+      lenght: 11
+    comment_approved:
+      type: string
+      lenght: 20
+    comment_agent:
+      type: string
+      lenght: 255
+    comment_type:
+      type: string
+      lenght: 20
+    comment_parent:
+      type: bigint
+      lenght: 20
+  manyToOne:
+    post:
+      targetEntity: Post
+      inversedBy: comments
+      joinColumn:
+        name: comment_post_ID
+        referencedColumnName: ID
+    user:
+      targetEntity: User
+      inversedBy: comments
+      joinColumn:
+        name: user_id
+        referencedColumnName: ID
+  oneToMany:
+    metas:
+      targetEntity: CommentMeta
+      mappedBy: comment

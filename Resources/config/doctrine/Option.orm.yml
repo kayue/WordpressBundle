@@ -1,0 +1,26 @@
+Hypebeast\WordpressBundle\Entity\Option:
+  type: entity
+  table: wp_options
+  id:
+    option_id:
+      type: bigint
+      length: 20
+      nullable: false
+      generator: { strategy: AUTO }
+  fields:
+    blog_id:
+      type: integer
+      length: 11
+      nullable: false
+    option_name:
+      type: string
+      length: 64
+      unique: true
+      nullable: false
+    option_value:
+      type: text
+      nullable: false
+    autoload:
+      type: string
+      length: 20
+      nullable: false
