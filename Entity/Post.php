@@ -217,13 +217,22 @@ class Post
 
     /**
      * @ORM\PrePersist
-     * @ORM\PreUpdate
      */
     public function onPrePersist() 
     {
-        echo "onPrePersist";
-        $this->post_date = new \DateTime('now');
-        $this->post_date_gmt = new \DateTime('now');
+        $this->post_date         = new \DateTime('now');
+        $this->post_date_gmt     = new \DateTime('now');
+        $this->post_modified     = new \DateTime('now');
+        $this->post_modified_gmt = new \DateTime('now');
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate() 
+    {
+        $this->post_modified     = new \DateTime('now');
+        $this->post_modified_gmt = new \DateTime('now');
     }
 
     /**

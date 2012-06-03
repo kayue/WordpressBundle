@@ -36,32 +36,30 @@ class PostTest extends WebTestCase
     {
         $postRepository = $this->em->getRepository('HypebeastWordpressBundle:Post');
         $userRepository = $this->em->getRepository('HypebeastWordpressBundle:User');
+        
         $count = count($postRepository->findAll());
-        $user = $userRepository->find(1);
 
         $post = new Post();
         $post->setPostName('Test');
-        $post->setPostDate(new \DateTime());
-        $post->setPostDateGmt(new \DateTime());
-        $post->setPostModified(new \DateTime());
-        $post->setPostModifiedGmt(new \DateTime());
         $post->setPostContent('Content');
         $post->setPostTitle('Title');
         $post->setPostExcerpt('setPostExcerpt');
-        $post->setGuid('http://127.0.0.1/wordpress/?p=5');
-        $post->setUser($user);
+        $post->setUser($userRepository->find(1));
 
         $this->em->persist($post);
         $this->em->flush();
 
+        // get the newly added post for tests
+        $post = $postRepository->find($post->getId());
+
+        $this->assertCount($count + 1, $postRepository->findAll());
         $this->assertEquals('Title', $post->getPostTitle());
 
+        // test update        
         $post->setPostTitle('New Title');
         $this->em->flush();
 
+        $post = $postRepository->find($post->getId());
         $this->assertEquals('New Title', $post->getPostTitle());
-
-        // there should be one more post in the result.
-        $this->assertCount($count + 1, $postRepository->findAll());
     }
 }
