@@ -221,9 +221,9 @@ class Post
     public function onPrePersist()
     {
         $this->date            = new \DateTime('now');
-        $this->dateGmt         = new \DateTime('now');
+        $this->dateGmt         = new \DateTime('now', new \DateTimeZone('GMT'));
         $this->modifiedDate    = new \DateTime('now');
-        $this->modifiedDateGmt = new \DateTime('now');
+        $this->modifiedDateGmt = new \DateTime('now', new \DateTimeZone('GMT'));
     }
 
     /**
@@ -232,7 +232,7 @@ class Post
     public function onPreUpdate()
     {
         $this->modifiedDate     = new \DateTime('now');
-        $this->modifiedDateGmt  = new \DateTime('now');
+        $this->modifiedDateGmt  = new \DateTime('now', new \DateTimeZone('GMT'));
     }
 
     /**
