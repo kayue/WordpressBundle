@@ -107,9 +107,9 @@ class User
 
     public function __construct()
     {
-        $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->posts    = new \Doctrine\Common\Collections\ArrayCollection();
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->metas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->metas    = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
