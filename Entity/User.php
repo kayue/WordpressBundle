@@ -13,76 +13,76 @@ use Doctrine\ORM\Mapping as ORM;
 class User
 {
     /**
-     * @var bigint $ID
+     * @var bigint $id
      *
      * @ORM\Column(name="ID", type="bigint", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $ID;
+    private $id;
 
     /**
-     * @var string $user_login
+     * @var string $username
      *
      * @ORM\Column(name="user_login", type="string", length=60, unique=true)
      */
-    private $user_login;
+    private $username;
 
     /**
-     * @var string $user_pass
+     * @var string $password
      *
      * @ORM\Column(name="user_pass", type="string", length=64)
      */
-    private $user_pass;
+    private $password;
 
     /**
-     * @var string $user_nicename
+     * @var string $nicename
      *
      * @ORM\Column(name="user_nicename", type="string", length=64)
      */
-    private $user_nicename;
+    private $nicename;
 
     /**
-     * @var string $user_email
+     * @var string $email
      *
      * @ORM\Column(name="user_email", type="string", length=100)
      */
-    private $user_email;
+    private $email;
 
     /**
-     * @var string $user_url
+     * @var string $url
      *
      * @ORM\Column(name="user_url", type="string", length=100)
      */
-    private $user_url;
+    private $url;
 
     /**
-     * @var datetime $user_registered
+     * @var datetime $registeredDate
      *
      * @ORM\Column(name="user_registered", type="datetime")
      */
-    private $user_registered;
+    private $registeredDate;
 
     /**
-     * @var string $user_activation_key
+     * @var string $activationKey
      *
      * @ORM\Column(name="user_activation_key", type="string", length=60)
      */
-    private $user_activation_key;
+    private $activationKey;
 
     /**
-     * @var integer $user_status
+     * @var integer $status
      *
      * @ORM\Column(name="user_status", type="integer", length=11)
      */
-    private $user_status;
+    private $status;
 
     /**
-     * @var string $display_name
+     * @var string $displayName
      *
      * @ORM\Column(name="display_name", type="string", length=250)
      */
-    private $display_name;
+    private $displayName;
 
     /**
      * @var Hypebeast\WordpressBundle\Entity\Post
@@ -108,198 +108,198 @@ class User
     public function __construct()
     {
         $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
-    $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
-    $this->metas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->metas = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Get ID
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getID()
+    public function getId()
     {
-        return $this->ID;
+        return $this->id;
     }
 
     /**
-     * Set user_login
+     * Set username
      *
      * @param string $userLogin
      */
-    public function setUserLogin($userLogin)
+    public function setUsername($username)
     {
-        $this->user_login = $userLogin;
+        $this->username = $username;
     }
 
     /**
-     * Get user_login
+     * Get username
      *
-     * @return string 
+     * @return string
      */
-    public function getUserLogin()
+    public function getUsername()
     {
-        return $this->user_login;
+        return $this->username;
     }
 
     /**
-     * Set user_pass
+     * Set password
      *
-     * @param string $userPass
+     * @param string $password
      */
-    public function setUserPass($userPass)
+    public function setPassword($password)
     {
-        $this->user_pass = $userPass;
+        $this->password = $password;
     }
 
     /**
-     * Get user_pass
+     * Get password
      *
-     * @return string 
+     * @return string
      */
-    public function getUserPass()
+    public function getPassword()
     {
-        return $this->user_pass;
+        return $this->password;
     }
 
     /**
-     * Set user_nicename
+     * Set nicename
      *
-     * @param string $userNicename
+     * @param string $nicename
      */
-    public function setUserNicename($userNicename)
+    public function setNicename($nicename)
     {
-        $this->user_nicename = $userNicename;
+        $this->nicename = $nicename;
     }
 
     /**
-     * Get user_nicename
+     * Get nicename
      *
-     * @return string 
+     * @return string
      */
-    public function getUserNicename()
+    public function getNicename()
     {
-        return $this->user_nicename;
+        return $this->nicename;
     }
 
     /**
-     * Set user_email
+     * Set email
      *
      * @param string $userEmail
      */
-    public function setUserEmail($userEmail)
+    public function setEmail($email)
     {
-        $this->user_email = $userEmail;
+        $this->email = $email;
     }
 
     /**
-     * Get user_email
+     * Get email
      *
-     * @return string 
+     * @return string
      */
-    public function getUserEmail()
+    public function getEmail()
     {
-        return $this->user_email;
+        return $this->email;
     }
 
     /**
-     * Set user_url
+     * Set url
      *
-     * @param string $userUrl
+     * @param string $url
      */
-    public function setUserUrl($userUrl)
+    public function setUrl($url)
     {
-        $this->user_url = $userUrl;
+        $this->url = $url;
     }
 
     /**
-     * Get user_url
+     * Get url
      *
-     * @return string 
+     * @return string
      */
-    public function getUserUrl()
+    public function getUrl()
     {
-        return $this->user_url;
+        return $this->url;
     }
 
     /**
-     * Set user_registered
+     * Set registeredDate
      *
-     * @param datetime $userRegistered
+     * @param datetime $userregisteredDate
      */
-    public function setUserRegistered($userRegistered)
+    public function setRegisteredDate($registeredDate)
     {
-        $this->user_registered = $userRegistered;
+        $this->registeredDate = $registeredDate;
     }
 
     /**
-     * Get user_registered
+     * Get registeredDate
      *
-     * @return datetime 
+     * @return datetime
      */
-    public function getUserRegistered()
+    public function getRegisteredDate()
     {
-        return $this->user_registered;
+        return $this->registeredDate;
     }
 
     /**
-     * Set user_activation_key
+     * Set activationKey
      *
-     * @param string $userActivationKey
+     * @param string $activationKey
      */
-    public function setUserActivationKey($userActivationKey)
+    public function setActivationKey($activationKey)
     {
-        $this->user_activation_key = $userActivationKey;
+        $this->activationKey = $activationKey;
     }
 
     /**
-     * Get user_activation_key
+     * Get activationKey
      *
-     * @return string 
+     * @return string
      */
-    public function getUserActivationKey()
+    public function getActivationKey()
     {
-        return $this->user_activation_key;
+        return $this->activationKey;
     }
 
     /**
-     * Set user_status
+     * Set status
      *
-     * @param integer $userStatus
+     * @param integer $status
      */
-    public function setUserStatus($userStatus)
+    public function setStatus($status)
     {
-        $this->user_status = $userStatus;
+        $this->status = $status;
     }
 
     /**
-     * Get user_status
+     * Get status
      *
-     * @return integer 
+     * @return integer
      */
-    public function getUserStatus()
+    public function getStatus()
     {
-        return $this->user_status;
+        return $this->status;
     }
 
     /**
-     * Set display_name
+     * Set displayName
      *
      * @param string $displayName
      */
     public function setDisplayName($displayName)
     {
-        $this->display_name = $displayName;
+        $this->displayName = $displayName;
     }
 
     /**
-     * Get display_name
+     * Get displayName
      *
-     * @return string 
+     * @return string
      */
     public function getDisplayName()
     {
-        return $this->display_name;
+        return $this->displayName;
     }
 
     /**
@@ -315,7 +315,7 @@ class User
     /**
      * Get posts
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getPosts()
     {
@@ -335,7 +335,7 @@ class User
     /**
      * Get comments
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getComments()
     {
@@ -343,19 +343,19 @@ class User
     }
 
     /**
-     * Add metas
+     * Add meta
      *
-     * @param Hypebeast\WordpressBundle\Entity\UserMeta $metas
+     * @param Hypebeast\WordpressBundle\Entity\UserMeta $meta
      */
-    public function addUserMeta(\Hypebeast\WordpressBundle\Entity\UserMeta $metas)
+    public function addMeta(\Hypebeast\WordpressBundle\Entity\UserMeta $meta)
     {
-        $this->metas[] = $metas;
+        $this->metas[] = $meta;
     }
 
     /**
      * Get metas
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getMetas()
     {

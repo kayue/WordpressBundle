@@ -59,6 +59,7 @@ class PostTest extends WebTestCase
         $this->assertEquals($title, $result->getPostTitle());
         $this->assertEquals($content, $result->getPostContent());
         $this->assertEquals($userId, $result->getUser()->getId());
+        $this->assertInternalType('string', $result->getUser()->getMetas()->get(1)->getKey());
 
         return $post;
     }
