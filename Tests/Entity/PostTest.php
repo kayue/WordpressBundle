@@ -40,10 +40,10 @@ class PostTest extends WebTestCase
     public function testNewPost($title, $content, $userId)
     {
         $post = new Post();
-        $post->setPostTitle($title);
-        $post->setPostName($title);
-        $post->setPostContent($content);
-        $post->setPostExcerpt('setPostExcerpt');
+        $post->setTitle($title);
+        $post->setName($title);
+        $post->setContent($content);
+        $post->setExcerpt('setPostExcerpt');
         $post->setUser($this->getUserRepository()->find($userId));
 
         $this->em->persist($post);
@@ -51,13 +51,13 @@ class PostTest extends WebTestCase
 
         $result = $this->getPostRepository()
             ->createQueryBuilder('post')
-            ->orderBy('post.ID', 'DESC')
+            ->orderBy('post.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getSingleResult();
 
-        $this->assertEquals($title, $result->getPostTitle());
-        $this->assertEquals($content, $result->getPostContent());
+        $this->assertEquals($title, $result->getTitle());
+        $this->assertEquals($content, $result->getContent());
         $this->assertEquals($userId, $result->getUser()->getId());
         $this->assertInternalType('string', $result->getUser()->getMetas()->get(1)->getKey());
 

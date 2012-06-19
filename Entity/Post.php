@@ -14,90 +14,90 @@ use Doctrine\ORM\Mapping as ORM;
 class Post
 {
     /**
-     * @var bigint $ID
+     * @var bigint $id
      *
      * @ORM\Column(name="ID", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $ID;
+    private $id;
 
     /**
-     * @var datetime $post_date
+     * @var datetime $date
      *
      * @ORM\Column(name="post_date", type="datetime", nullable=false)
      */
-    private $post_date;
+    private $date;
 
     /**
-     * @var datetime $post_date_gmt
+     * @var datetime $dateGmt
      *
      * @ORM\Column(name="post_date_gmt", type="datetime", nullable=false)
      */
-    private $post_date_gmt;
+    private $dateGmt;
 
     /**
-     * @var text $post_content
+     * @var text $content
      *
      * @ORM\Column(name="post_content", type="text", nullable=false)
      */
-    private $post_content;
+    private $content;
 
     /**
-     * @var text $post_title
+     * @var text $title
      *
      * @ORM\Column(name="post_title", type="text", nullable=false)
      */
-    private $post_title;
+    private $title;
 
     /**
-     * @var text $post_excerpt
+     * @var text $excerpt
      *
      * @ORM\Column(name="post_excerpt", type="text", nullable=false)
      */
-    private $post_excerpt;
+    private $excerpt;
 
     /**
-     * @var string $post_status
+     * @var string $status
      *
      * @ORM\Column(name="post_status", type="string", length=20, nullable=false)
      */
-    private $post_status = "publish";
+    private $status = "publish";
 
     /**
-     * @var string $comment_status
+     * @var string $commentStatus
      *
      * @ORM\Column(name="comment_status", type="string", length=20, nullable=false)
      */
-    private $comment_status = "open";
+    private $commentStatus = "open";
 
     /**
-     * @var string $ping_status
+     * @var string $pingStatus
      *
      * @ORM\Column(name="ping_status", type="string", length=20, nullable=false)
      */
-    private $ping_status = "open";
+    private $pingStatus = "open";
 
     /**
-     * @var string $post_password
+     * @var string $password
      *
      * @ORM\Column(name="post_password", type="string", length=20, nullable=false)
      */
-    private $post_password = "";
+    private $password = "";
 
     /**
-     * @var string $post_name
+     * @var string $name
      *
      * @ORM\Column(name="post_name", type="string", length=200, nullable=false)
      */
-    private $post_name;
+    private $name;
 
     /**
-     * @var text $to_ping
+     * @var text $toPing
      *
      * @ORM\Column(name="to_ping", type="text", nullable=false)
      */
-    private $to_ping = "";
+    private $toPing = "";
 
     /**
      * @var text $pinged
@@ -107,32 +107,32 @@ class Post
     private $pinged = "";
 
     /**
-     * @var datetime $post_modified
+     * @var datetime $modifiedDate
      *
      * @ORM\Column(name="post_modified", type="datetime", nullable=false)
      */
-    private $post_modified;
+    private $modifiedDate;
 
     /**
-     * @var datetime $post_modified_gmt
+     * @var datetime $modifiedDateGmt
      *
      * @ORM\Column(name="post_modified_gmt", type="datetime", nullable=false)
      */
-    private $post_modified_gmt;
+    private $modifiedDateGmt;
 
     /**
-     * @var text $post_content_filtered
+     * @var text $contentFiltered
      *
      * @ORM\Column(name="post_content_filtered", type="text", nullable=false)
      */
-    private $post_content_filtered = "";
+    private $contentFiltered = "";
 
     /**
-     * @var bigint $post_parent
+     * @var bigint $parent
      *
      * @ORM\Column(name="post_parent", type="bigint", nullable=false)
      */
-    private $post_parent = 0;
+    private $parent = 0;
 
     /**
      * @var string $guid
@@ -142,32 +142,32 @@ class Post
     private $guid = "";
 
     /**
-     * @var integer $menu_order
+     * @var integer $menuOrder
      *
      * @ORM\Column(name="menu_order", type="integer", length=11, nullable=false)
      */
-    private $menu_order = 0;
+    private $menuOrder = 0;
 
     /**
-     * @var string $post_type
+     * @var string $type
      *
      * @ORM\Column(name="post_type", type="string", nullable=false)
      */
-    private $post_type = "post";
+    private $type = "post";
 
     /**
-     * @var string $post_mime_type
+     * @var string $mimeType
      *
      * @ORM\Column(name="post_mime_type", type="string", length=100, nullable=false)
      */
-    private $post_mime_type = "";
+    private $mimeType = "";
 
     /**
-     * @var bigint $comment_count
+     * @var bigint $commentCount
      *
      * @ORM\Column(name="comment_count", type="bigint", length=20, nullable=false)
      */
-    private $comment_count = 0;
+    private $commentCount = 0;
 
     /**
      * @var Hypebeast\WordpressBundle\Entity\PostMeta
@@ -218,251 +218,251 @@ class Post
     /**
      * @ORM\PrePersist
      */
-    public function onPrePersist() 
+    public function onPrePersist()
     {
-        $this->post_date         = new \DateTime('now');
-        $this->post_date_gmt     = new \DateTime('now');
-        $this->post_modified     = new \DateTime('now');
-        $this->post_modified_gmt = new \DateTime('now');
+        $this->date            = new \DateTime('now');
+        $this->dateGmt         = new \DateTime('now');
+        $this->modifiedDate    = new \DateTime('now');
+        $this->modifiedDateGmt = new \DateTime('now');
     }
 
     /**
      * @ORM\PreUpdate
      */
-    public function onPreUpdate() 
+    public function onPreUpdate()
     {
-        $this->post_modified     = new \DateTime('now');
-        $this->post_modified_gmt = new \DateTime('now');
+        $this->modifiedDate     = new \DateTime('now');
+        $this->modifiedDateGmt  = new \DateTime('now');
     }
 
     /**
      * Get ID
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getID()
+    public function getId()
     {
-        return $this->ID;
+        return $this->id;
     }
 
     /**
-     * Set post_date
+     * Set date
      *
-     * @param datetime $postDate
+     * @param datetime $date
      */
-    public function setPostDate($postDate)
+    public function setDate($date)
     {
-        $this->post_date = $postDate;
+        $this->date = $date;
     }
 
     /**
-     * Get post_date
+     * Get date
      *
-     * @return datetime 
+     * @return datetime
      */
-    public function getPostDate()
+    public function getDate()
     {
-        return $this->post_date;
+        return $this->date;
     }
 
     /**
-     * Set post_date_gmt
+     * Set dateGmt
      *
-     * @param datetime $postDateGmt
+     * @param datetime $dateGmt
      */
-    public function setPostDateGmt($postDateGmt)
+    public function setDateGmt($dateGmt)
     {
-        $this->post_date_gmt = $postDateGmt;
+        $this->dateGmt = $dateGmt;
     }
 
     /**
-     * Get post_date_gmt
+     * Get dateGmt
      *
-     * @return datetime 
+     * @return datetime
      */
-    public function getPostDateGmt()
+    public function getDateGmt()
     {
-        return $this->post_date_gmt;
+        return $this->dateGmt;
     }
 
     /**
-     * Set post_content
+     * Set content
      *
-     * @param text $postContent
+     * @param text $content
      */
-    public function setPostContent($postContent)
+    public function setContent($content)
     {
-        $this->post_content = $postContent;
+        $this->content = $content;
     }
 
     /**
-     * Get post_content
+     * Get content
      *
-     * @return text 
+     * @return text
      */
-    public function getPostContent()
+    public function getContent()
     {
-        return $this->post_content;
+        return $this->content;
     }
 
     /**
-     * Set post_title
+     * Set title
      *
-     * @param text $postTitle
+     * @param text $title
      */
-    public function setPostTitle($postTitle)
+    public function setTitle($title)
     {
-        $this->post_title = $postTitle;
+        $this->title = $title;
     }
 
     /**
-     * Get post_title
+     * Get title
      *
-     * @return text 
+     * @return text
      */
-    public function getPostTitle()
+    public function getTitle()
     {
-        return $this->post_title;
+        return $this->title;
     }
 
     /**
-     * Set post_excerpt
+     * Set excerpt
      *
-     * @param text $postExcerpt
+     * @param text $excerpt
      */
-    public function setPostExcerpt($postExcerpt)
+    public function setExcerpt($excerpt)
     {
-        $this->post_excerpt = $postExcerpt;
+        $this->excerpt = $excerpt;
     }
 
     /**
-     * Get post_excerpt
+     * Get excerpt
      *
-     * @return text 
+     * @return text
      */
-    public function getPostExcerpt()
+    public function getExcerpt()
     {
-        return $this->post_excerpt;
+        return $this->excerpt;
     }
 
     /**
-     * Set post_status
+     * Set status
      *
-     * @param string $postStatus
+     * @param string $status
      */
-    public function setPostStatus($postStatus)
+    public function setStatus($status)
     {
-        $this->post_status = $postStatus;
+        $this->status = $status;
     }
 
     /**
-     * Get post_status
+     * Get status
      *
-     * @return string 
+     * @return string
      */
-    public function getPostStatus()
+    public function getStatus()
     {
-        return $this->post_status;
+        return $this->status;
     }
 
     /**
-     * Set comment_status
+     * Set commentStatus
      *
      * @param string $commentStatus
      */
     public function setCommentStatus($commentStatus)
     {
-        $this->comment_status = $commentStatus;
+        $this->commentStatus = $commentStatus;
     }
 
     /**
-     * Get comment_status
+     * Get commentStatus
      *
-     * @return string 
+     * @return string
      */
     public function getCommentStatus()
     {
-        return $this->comment_status;
+        return $this->commentStatus;
     }
 
     /**
-     * Set ping_status
+     * Set pingStatus
      *
      * @param string $pingStatus
      */
     public function setPingStatus($pingStatus)
     {
-        $this->ping_status = $pingStatus;
+        $this->pingStatus = $pingStatus;
     }
 
     /**
-     * Get ping_status
+     * Get pingStatus
      *
-     * @return string 
+     * @return string
      */
     public function getPingStatus()
     {
-        return $this->ping_status;
+        return $this->pingStatus;
     }
 
     /**
-     * Set post_password
+     * Set password
      *
-     * @param string $postPassword
+     * @param string $password
      */
-    public function setPostPassword($postPassword)
+    public function setPassword($password)
     {
-        $this->post_password = $postPassword;
+        $this->password = $password;
     }
 
     /**
-     * Get post_password
+     * Get password
      *
-     * @return string 
+     * @return string
      */
-    public function getPostPassword()
+    public function getPassword()
     {
-        return $this->post_password;
+        return $this->password;
     }
 
     /**
-     * Set post_name
+     * Set name
      *
-     * @param string $postName
+     * @param string $name
      */
-    public function setPostName($postName)
+    public function setName($name)
     {
-        $this->post_name = $postName;
+        $this->name = $name;
     }
 
     /**
-     * Get post_name
+     * Get name
      *
-     * @return string 
+     * @return string
      */
-    public function getPostName()
+    public function getName()
     {
-        return $this->post_name;
+        return $this->name;
     }
 
     /**
-     * Set to_ping
+     * Set toPing
      *
      * @param text $toPing
      */
     public function setToPing($toPing)
     {
-        $this->to_ping = $toPing;
+        $this->toPing = $toPing;
     }
 
     /**
-     * Get to_ping
+     * Get toPing
      *
-     * @return text 
+     * @return text
      */
     public function getToPing()
     {
-        return $this->to_ping;
+        return $this->toPing;
     }
 
     /**
@@ -478,7 +478,7 @@ class Post
     /**
      * Get pinged
      *
-     * @return text 
+     * @return text
      */
     public function getPinged()
     {
@@ -486,83 +486,83 @@ class Post
     }
 
     /**
-     * Set post_modified
+     * Set modifiedDate
      *
-     * @param datetime $postModified
+     * @param datetime $modifiedDate
      */
-    public function setPostModified($postModified)
+    public function setModifiedDate($modifiedDate)
     {
-        $this->post_modified = $postModified;
+        $this->modifiedDate = $modifiedDate;
     }
 
     /**
-     * Get post_modified
+     * Get modifiedDate
      *
-     * @return datetime 
+     * @return datetime
      */
-    public function getPostModified()
+    public function getModifiedDate()
     {
-        return $this->post_modified;
+        return $this->modifiedDate;
     }
 
     /**
-     * Set post_modified_gmt
+     * Set modifiedDateGmt
      *
-     * @param datetime $postModifiedGmt
+     * @param datetime $modifiedDateGmt
      */
-    public function setPostModifiedGmt($postModifiedGmt)
+    public function setModifiedDateGmt($modifiedDateGmt)
     {
-        $this->post_modified_gmt = $postModifiedGmt;
+        $this->modifiedDateGmt = $modifiedDateGmt;
     }
 
     /**
-     * Get post_modified_gmt
+     * Get modifiedDateGmt
      *
-     * @return datetime 
+     * @return datetime
      */
-    public function getPostModifiedGmt()
+    public function getModifiedDateGmt()
     {
-        return $this->post_modified_gmt;
+        return $this->modifiedDateGmt;
     }
 
     /**
-     * Set post_content_filtered
+     * Set contentFiltered
      *
-     * @param text $postContentFiltered
+     * @param text $contentFiltered
      */
-    public function setPostContentFiltered($postContentFiltered)
+    public function setContentFiltered($contentFiltered)
     {
-        $this->post_content_filtered = $postContentFiltered;
+        $this->contentFiltered = $contentFiltered;
     }
 
     /**
-     * Get post_content_filtered
+     * Get contentFiltered
      *
-     * @return text 
+     * @return text
      */
-    public function getPostContentFiltered()
+    public function getContentFiltered()
     {
-        return $this->post_content_filtered;
+        return $this->contentFiltered;
     }
 
     /**
-     * Set post_parent
+     * Set parent
      *
-     * @param bigint $postParent
+     * @param bigint $parent
      */
-    public function setPostParent($postParent)
+    public function setParent($parent)
     {
-        $this->post_parent = $postParent;
+        $this->parent = $parent;
     }
 
     /**
-     * Get post_parent
+     * Get parent
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getPostParent()
+    public function getParent()
     {
-        return $this->post_parent;
+        return $this->parent;
     }
 
     /**
@@ -578,7 +578,7 @@ class Post
     /**
      * Get guid
      *
-     * @return string 
+     * @return string
      */
     public function getGuid()
     {
@@ -586,83 +586,83 @@ class Post
     }
 
     /**
-     * Set menu_order
+     * Set menuOrder
      *
      * @param integer $menuOrder
      */
     public function setMenuOrder($menuOrder)
     {
-        $this->menu_order = $menuOrder;
+        $this->menuOrder = $menuOrder;
     }
 
     /**
-     * Get menu_order
+     * Get menuOrder
      *
-     * @return integer 
+     * @return integer
      */
     public function getMenuOrder()
     {
-        return $this->menu_order;
+        return $this->menuOrder;
     }
 
     /**
-     * Set post_type
+     * Set type
      *
-     * @param string $postType
+     * @param string $type
      */
-    public function setPostType($postType)
+    public function setType($type)
     {
-        $this->post_type = $postType;
+        $this->type = $type;
     }
 
     /**
-     * Get post_type
+     * Get type
      *
-     * @return string 
+     * @return string
      */
-    public function getPostType()
+    public function getType()
     {
-        return $this->post_type;
+        return $this->type;
     }
 
     /**
-     * Set post_mime_type
+     * Set mimeType
      *
-     * @param string $postMimeType
+     * @param string $mimeType
      */
-    public function setPostMimeType($postMimeType)
+    public function setMimeType($mimeType)
     {
-        $this->post_mime_type = $postMimeType;
+        $this->mimeType = $mimeType;
     }
 
     /**
-     * Get post_mime_type
+     * Get mimeType
      *
-     * @return string 
+     * @return string
      */
-    public function getPostMimeType()
+    public function getMimeType()
     {
-        return $this->post_mime_type;
+        return $this->mimeType;
     }
 
     /**
-     * Set comment_count
+     * Set commentCount
      *
      * @param bigint $commentCount
      */
     public function setCommentCount($commentCount)
     {
-        $this->comment_count = $commentCount;
+        $this->commentCount = $commentCount;
     }
 
     /**
-     * Get comment_count
+     * Get commentCount
      *
-     * @return bigint 
+     * @return bigint
      */
     public function getCommentCount()
     {
-        return $this->comment_count;
+        return $this->commentCount;
     }
 
     /**
@@ -678,7 +678,7 @@ class Post
     /**
      * Get metas
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getMetas()
     {
@@ -698,7 +698,7 @@ class Post
     /**
      * Get comments
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getComments()
     {
@@ -718,7 +718,7 @@ class Post
     /**
      * Get user
      *
-     * @return Hypebeast\WordpressBundle\Entity\User 
+     * @return Hypebeast\WordpressBundle\Entity\User
      */
     public function getUser()
     {
@@ -738,7 +738,7 @@ class Post
     /**
      * Get taxonomies
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getTaxonomies()
     {
