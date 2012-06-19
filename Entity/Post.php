@@ -129,6 +129,7 @@ class Post
 
     /**
      * @var bigint $parent
+     * @todo do self referencing one-to-one relationships
      *
      * @ORM\Column(name="post_parent", type="bigint", nullable=false)
      */
