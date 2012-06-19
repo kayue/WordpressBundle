@@ -65,6 +65,15 @@ class PostTest extends WebTestCase
     }
 
     /**
+     * Get page meta
+     */
+    public function testPostMeta()
+    {
+        $page = $this->getPostRepository()->findOneByType('page');
+        $this->assertEquals('default', $page->getMetas()->get(0)->getValue());
+    }
+
+    /**
      * Create new post with a non-exist user id
      *
      * @expectedException ErrorException
