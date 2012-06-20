@@ -13,34 +13,34 @@ use Doctrine\ORM\Mapping as ORM;
 class Option
 {
     /**
-     * @var bigint $option_id
+     * @var bigint $id
      *
      * @ORM\Column(name="option_id", type="bigint", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $option_id;
+    private $id;
 
     /**
-     * @var integer $blog_id
+     * @var integer $blogId
      *
      * @ORM\Column(name="blog_id", type="integer", length=11, nullable=false)
      */
-    private $blog_id;
+    private $blogId;
 
     /**
-     * @var string $option_name
+     * @var string $name
      *
      * @ORM\Column(name="option_name", type="string", length=64, nullable=false, unique=true)
      */
-    private $option_name;
+    private $name;
 
     /**
-     * @var text $option_value
+     * @var text $value
      *
      * @ORM\Column(name="option_value", type="text", nullable=false)
      */
-    private $option_value;
+    private $value;
 
     /**
      * @var string $autoload
@@ -51,73 +51,73 @@ class Option
 
 
     /**
-     * Get option_id
+     * Get id
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getOptionId()
+    public function getId()
     {
-        return $this->option_id;
+        return $this->id;
     }
 
     /**
-     * Set blog_id
+     * Set blogId
      *
      * @param integer $blogId
      */
     public function setBlogId($blogId)
     {
-        $this->blog_id = $blogId;
+        $this->blogId = $blogId;
     }
 
     /**
-     * Get blog_id
+     * Get blogId
      *
-     * @return integer 
+     * @return integer
      */
     public function getBlogId()
     {
-        return $this->blog_id;
+        return $this->blogId;
     }
 
     /**
-     * Set option_name
+     * Set name
      *
-     * @param string $optionName
+     * @param string $name
      */
-    public function setOptionName($optionName)
+    public function setName($name)
     {
-        $this->option_name = $optionName;
+        $this->name = $name;
     }
 
     /**
-     * Get option_name
+     * Get name
      *
-     * @return string 
+     * @return string
      */
-    public function getOptionName()
+    public function getName()
     {
-        return $this->option_name;
+        return $this->name;
     }
 
     /**
-     * Set option_value
+     * Set value
      *
-     * @param text $optionValue
+     * @param text $value
      */
-    public function setOptionValue($optionValue)
+    public function setValue($value)
     {
-        $this->option_value = $optionValue;
+        $this->value = $value;
     }
 
     /**
-     * Get option_value
+     * Get value
      *
-     * @return text 
+     * @return text
      */
-    public function getOptionValue()
+    public function getValue()
     {
-        return $this->option_value;
+        return $this->value;
     }
 
     /**
@@ -133,7 +133,7 @@ class Option
     /**
      * Get autoload
      *
-     * @return string 
+     * @return string
      */
     public function getAutoload()
     {
