@@ -671,9 +671,9 @@ class Post
      *
      * @param Hypebeast\WordpressBundle\Entity\PostMeta $metas
      */
-    public function addPostMeta(\Hypebeast\WordpressBundle\Entity\PostMeta $metas)
+    public function addMeta(\Hypebeast\WordpressBundle\Entity\PostMeta $meta)
     {
-        $this->metas[] = $metas;
+        $this->metas[] = $meta;
     }
 
     /**
