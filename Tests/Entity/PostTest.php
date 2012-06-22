@@ -67,10 +67,14 @@ class PostTest extends WebTestCase
     /**
      * Get page meta
      */
-    public function testPostMeta()
+    public function testGetPostMetasByKey()
     {
         $page = $this->getPostRepository()->findOneByType('page');
-        $this->assertEquals('default', $page->getMetas()->get(0)->getValue());
+
+        $this->assertEquals(
+            $page->getMetasByKey($page->getMetas()->get(0)->getKey())->first()->getValue(),
+            $page->getMetas()->get(0)->getValue()
+        );
     }
 
     /**
