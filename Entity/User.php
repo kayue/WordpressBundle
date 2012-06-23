@@ -15,7 +15,7 @@ class User
     /**
      * @var bigint $id
      *
-     * @ORM\Column(name="ID", type="bigint", length=20)
+     * @ORM\Column(name="ID", type="wordpressid", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
