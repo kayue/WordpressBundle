@@ -129,22 +129,7 @@ class PostTest extends WebTestCase
      */
     public function testNewPostWithNonExistUser()
     {
-        $post = $this->testNewPost('Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.', 999);
-    }
-
-    /**
-     * Return a post with user id equal to zero
-     */
-    public function testPostWithUserIdZero()
-    {
-        // No solution to this issue yet, test skip.
-        $this->markTestSkipped();
-
-        $post = $this->getPostRepository()->find(5);
-
-        $post->getUser(); // return a user proxy
-
-        $post->getUser()->getID(); // throw an EntityNotFoundException
+        $this->testNewPost('Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.', 999);
     }
 
     public function postProvider()
