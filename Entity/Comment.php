@@ -118,7 +118,7 @@ class Comment
      *
      * @ORM\ManyToOne(targetEntity="Hypebeast\WordpressBundle\Entity\Post", inversedBy="comments")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="comment_post_ID", referencedColumnName="ID")
+     *   @ORM\JoinColumn(name="comment_post_ID", referencedColumnName="ID", nullable=false)
      * })
      */
     private $post;
@@ -142,9 +142,7 @@ class Comment
         $this->agent = "";
         $this->type = "";
         $this->parent = 0;
-
-        // TODO: set default user to 0
-        $this->user = 0;
+        $this->user = null;
 
         $this->metas = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -461,6 +459,10 @@ class Comment
     public function setUser(\Hypebeast\WordpressBundle\Entity\User $user)
     {
         $this->user = $user;
+
+        $this->author      = $user->getDisplayName();
+        $this->authorUrl   = $user->getUrl();
+        $this->authorEmail = $user->getEmail();
     }
 
     /**

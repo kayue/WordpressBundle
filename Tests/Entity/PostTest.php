@@ -65,33 +65,48 @@ class PostTest extends WebTestCase
         return $post;
     }
 
-    public function testGetComments()
+    /**
+     * Create comment test
+     *
+     * @dataProvider commentProvider
+     */
+    public function testNewComment($author, $authorEmail, $content, $userId)
     {
-        $post = $this->getPostRepository()->findOneById(1);
+        $post  = $this->getPostRepository()->findOneById(1);
+        $count = $post->getComments()->count();
+        $user  = null;
 
-        $this->assertCount(1, $post->getComments());
-        $this->assertEquals('Mr WordPress', $post->getComments()->first()->getAuthor());
-        $this->assertEmpty($post->getComments()->first()->getAuthorEmail());
-        $this->assertEquals('http://wordpress.org/', $post->getComments()->first()->getAuthorUrl());
-        $this->assertEmpty($post->getComments()->first()->getAuthorIp());
-        $this->assertNotEmpty($post->getComments()->first()->getContent());
-        $this->assertEquals($post, $post->getComments()->first()->getPost());
-    }
-
-    public function testNewComment()
-    {
-        $post = $this->getPostRepository()->findOneById(1);
+        if($userId !== null) {
+            $user = $this->getUserRepository()->find($userId);
+        }
 
         $comment = new Comment();
-        $comment->setAuthor('Lorem');
-        $comment->setAuthorEmail('lorem@example.com');
-        $comment->setContent('The message lorem ipsum dolor sit amet.');
-        $comment->setPost($post);
+        $comment->setContent($content);
 
-        $this->em->persist($comment);
+        if($user) {
+            $comment->setUser($user);
+        } else {
+            $comment->setAuthor($author);
+            $comment->setAuthorEmail($authorEmail);
+        }
+
+        $post->addComment($comment);
+
+        $this->em->persist($post);
         $this->em->flush();
 
-        $this->assertCount(2, $post->getComments());
+        // start assert
+        $this->assertCount($count + 1, $post->getComments());
+        $this->assertEquals($content, $post->getComments()->last()->getContent());
+        $this->assertEquals($user, $post->getComments()->last()->getUser());
+
+        if($user) {
+            $this->assertEquals($user->getDisplayName(), $post->getComments()->last()->getAuthor());
+            $this->assertEquals($user->getEmail(), $post->getComments()->last()->getAuthorEmail());
+        } else {
+            $this->assertEquals($author, $post->getComments()->last()->getAuthor());
+            $this->assertEquals($authorEmail, $post->getComments()->last()->getAuthorEmail());
+        }
     }
 
     /**
@@ -137,6 +152,14 @@ class PostTest extends WebTestCase
         return array(
             array('Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 1),
             array('Sed ut perspiciatis unde', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', 1)
+        );
+    }
+
+    public function commentProvider()
+    {
+        return array(
+            array('Peter', 'peter@example.com', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', null),
+            array('Mary', 'peter@example.com', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', 1)
         );
     }
 

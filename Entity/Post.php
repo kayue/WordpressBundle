@@ -180,7 +180,7 @@ class Post
     /**
      * @var Hypebeast\WordpressBundle\Entity\Comment
      *
-     * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\Comment", mappedBy="post")
+     * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\Comment", mappedBy="post", cascade={"persist"})
      */
     private $comments;
 
@@ -699,13 +699,14 @@ class Post
     }
 
     /**
-     * Add comments
+     * Add comment
      *
-     * @param Hypebeast\WordpressBundle\Entity\Comment $comments
+     * @param Hypebeast\WordpressBundle\Entity\Comment $comment
      */
-    public function addComment(\Hypebeast\WordpressBundle\Entity\Comment $comments)
+    public function addComment(\Hypebeast\WordpressBundle\Entity\Comment $comment)
     {
-        $this->comments[] = $comments;
+        $comment->setPost($this);
+        $this->comments[] = $comment;
     }
 
     /**
