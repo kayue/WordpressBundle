@@ -9,101 +9,102 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="wp_comments")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Comment
 {
     /**
-     * @var bigint $comment_ID
+     * @var bigint $id
      *
      * @ORM\Column(name="comment_ID", type="bigint", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $comment_ID;
+    private $id;
 
     /**
-     * @var text $comment_author
+     * @var text $author
      *
      * @ORM\Column(name="comment_author", type="text")
      */
-    private $comment_author;
+    private $author;
 
     /**
-     * @var string $comment_author_email
+     * @var string $authorEmail
      *
      * @ORM\Column(name="comment_author_email", type="string")
      */
-    private $comment_author_email;
+    private $authorEmail;
 
     /**
-     * @var string $comment_author_url
+     * @var string $authorUrl
      *
      * @ORM\Column(name="comment_author_url", type="string")
      */
-    private $comment_author_url;
+    private $authorUrl;
 
     /**
-     * @var string $comment_author_IP
+     * @var string $authorIp
      *
      * @ORM\Column(name="comment_author_IP", type="string")
      */
-    private $comment_author_IP;
+    private $authorIp;
 
     /**
-     * @var datetime $comment_date
+     * @var datetime $date
      *
      * @ORM\Column(name="comment_date", type="datetime")
      */
-    private $comment_date;
+    private $date;
 
     /**
-     * @var datetime $comment_date_gmt
+     * @var datetime $dateGmt
      *
      * @ORM\Column(name="comment_date_gmt", type="datetime")
      */
-    private $comment_date_gmt;
+    private $dateGmt;
 
     /**
-     * @var text $comment_content
+     * @var text $content
      *
      * @ORM\Column(name="comment_content", type="text")
      */
-    private $comment_content;
+    private $content;
 
     /**
-     * @var integer $comment_karma
+     * @var integer $karma
      *
      * @ORM\Column(name="comment_karma", type="integer")
      */
-    private $comment_karma;
+    private $karma;
 
     /**
-     * @var string $comment_approved
+     * @var string $approved
      *
      * @ORM\Column(name="comment_approved", type="string")
      */
-    private $comment_approved;
+    private $approved;
 
     /**
-     * @var string $comment_agent
+     * @var string $agent
      *
      * @ORM\Column(name="comment_agent", type="string")
      */
-    private $comment_agent;
+    private $agent;
 
     /**
-     * @var string $comment_type
+     * @var string $type
      *
      * @ORM\Column(name="comment_type", type="string")
      */
-    private $comment_type;
+    private $type;
 
     /**
-     * @var bigint $comment_parent
+     * @var bigint $parent
      *
      * @ORM\Column(name="comment_parent", type="bigint")
      */
-    private $comment_parent;
+    private $parent;
 
     /**
      * @var Hypebeast\WordpressBundle\Entity\CommentMeta
@@ -134,257 +135,282 @@ class Comment
 
     public function __construct()
     {
+        $this->authorUrl = "";
+        $this->authorIp = "";
+        $this->karma = 0;
+        $this->approved = 1;
+        $this->agent = "";
+        $this->type = "";
+        $this->parent = 0;
+
+        // TODO: set default user to 0
+        $this->user = 0;
+
         $this->metas = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
-    /**
-     * Get comment_ID
-     *
-     * @return bigint 
-     */
-    public function getCommentID()
+
+    public function __toString()
     {
-        return $this->comment_ID;
+        return $this->getContent();
     }
 
     /**
-     * Set comment_author
-     *
-     * @param text $commentAuthor
+     * @ORM\PrePersist
      */
-    public function setCommentAuthor($commentAuthor)
+    public function onPrePersist()
     {
-        $this->comment_author = $commentAuthor;
+        $this->date    = new \DateTime('now');
+        $this->dateGmt = new \DateTime('now', new \DateTimeZone('GMT'));
     }
 
     /**
-     * Get comment_author
+     * Get id
      *
-     * @return text 
+     * @return bigint
      */
-    public function getCommentAuthor()
+    public function getId()
     {
-        return $this->comment_author;
+        return $this->id;
     }
 
     /**
-     * Set comment_author_email
+     * Set author
      *
-     * @param string $commentAuthorEmail
+     * @param text $author
      */
-    public function setCommentAuthorEmail($commentAuthorEmail)
+    public function setAuthor($author)
     {
-        $this->comment_author_email = $commentAuthorEmail;
+        $this->author = $author;
     }
 
     /**
-     * Get comment_author_email
+     * Get author
      *
-     * @return string 
+     * @return text
      */
-    public function getCommentAuthorEmail()
+    public function getAuthor()
     {
-        return $this->comment_author_email;
+        return $this->author;
     }
 
     /**
-     * Set comment_author_url
+     * Set authorEmail
      *
-     * @param string $commentAuthorUrl
+     * @param string $authorEmail
      */
-    public function setCommentAuthorUrl($commentAuthorUrl)
+    public function setAuthorEmail($authorEmail)
     {
-        $this->comment_author_url = $commentAuthorUrl;
+        $this->authorEmail = $authorEmail;
     }
 
     /**
-     * Get comment_author_url
+     * Get authorEmail
      *
-     * @return string 
+     * @return string
      */
-    public function getCommentAuthorUrl()
+    public function getAuthorEmail()
     {
-        return $this->comment_author_url;
+        return $this->authorEmail;
     }
 
     /**
-     * Set comment_author_IP
+     * Set authorUrl
      *
-     * @param string $commentAuthorIP
+     * @param string $authorUrl
      */
-    public function setCommentAuthorIP($commentAuthorIP)
+    public function setAuthorUrl($authorUrl)
     {
-        $this->comment_author_IP = $commentAuthorIP;
+        $this->authorUrl = $authorUrl;
     }
 
     /**
-     * Get comment_author_IP
+     * Get authorUrl
      *
-     * @return string 
+     * @return string
      */
-    public function getCommentAuthorIP()
+    public function getAuthorUrl()
     {
-        return $this->comment_author_IP;
+        return $this->authorUrl;
     }
 
     /**
-     * Set comment_date
+     * Set authorIp
      *
-     * @param datetime $commentDate
+     * @param string $authorIp
      */
-    public function setCommentDate($commentDate)
+    public function setAuthorIp($authorIp)
     {
-        $this->comment_date = $commentDate;
+        $this->authorIp = $authorIp;
     }
 
     /**
-     * Get comment_date
+     * Get authorIp
      *
-     * @return datetime 
+     * @return string
      */
-    public function getCommentDate()
+    public function getAuthorIp()
     {
-        return $this->comment_date;
+        return $this->authorIp;
     }
 
     /**
-     * Set comment_date_gmt
+     * Set date
      *
-     * @param datetime $commentDateGmt
+     * @param datetime $date
      */
-    public function setCommentDateGmt($commentDateGmt)
+    public function setDate($date)
     {
-        $this->comment_date_gmt = $commentDateGmt;
+        $this->date = $date;
     }
 
     /**
-     * Get comment_date_gmt
+     * Get date
      *
-     * @return datetime 
+     * @return datetime
      */
-    public function getCommentDateGmt()
+    public function getDate()
     {
-        return $this->comment_date_gmt;
+        return $this->date;
     }
 
     /**
-     * Set comment_content
+     * Set date_gmt
+     *
+     * @param datetime $dateGmt
+     */
+    public function setDateGmt($dateGmt)
+    {
+        $this->dateGmt = $dateGmt;
+    }
+
+    /**
+     * Get date_gmt
+     *
+     * @return datetime
+     */
+    public function getDateGmt()
+    {
+        return $this->dateGmt;
+    }
+
+    /**
+     * Set content
      *
      * @param text $commentContent
      */
-    public function setCommentContent($commentContent)
+    public function setContent($commentContent)
     {
-        $this->comment_content = $commentContent;
+        $this->content = $commentContent;
     }
 
     /**
-     * Get comment_content
+     * Get content
      *
-     * @return text 
+     * @return text
      */
-    public function getCommentContent()
+    public function getContent()
     {
-        return $this->comment_content;
+        return $this->content;
     }
 
     /**
-     * Set comment_karma
+     * Set karma
      *
-     * @param integer $commentKarma
+     * @param integer $karma
      */
-    public function setCommentKarma($commentKarma)
+    public function setKarma($karma)
     {
-        $this->comment_karma = $commentKarma;
+        $this->karma = $karma;
     }
 
     /**
-     * Get comment_karma
+     * Get karma
      *
-     * @return integer 
+     * @return integer
      */
-    public function getCommentKarma()
+    public function getKarma()
     {
-        return $this->comment_karma;
+        return $this->karma;
     }
 
     /**
-     * Set comment_approved
+     * Set approved
      *
-     * @param string $commentApproved
+     * @param string $approved
      */
-    public function setCommentApproved($commentApproved)
+    public function setApproved($approved)
     {
-        $this->comment_approved = $commentApproved;
+        $this->approved = $approved ? 1 : 0;
     }
 
     /**
-     * Get comment_approved
+     * Get approved
      *
-     * @return string 
+     * @return string
      */
-    public function getCommentApproved()
+    public function getApproved()
     {
-        return $this->comment_approved;
+        return $this->approved === 1;
     }
 
     /**
-     * Set comment_agent
+     * Set agent
      *
-     * @param string $commentAgent
+     * @param string $agent
      */
-    public function setCommentAgent($commentAgent)
+    public function setAgent($agent)
     {
-        $this->comment_agent = $commentAgent;
+        $this->agent = $agent;
     }
 
     /**
-     * Get comment_agent
+     * Get agent
      *
-     * @return string 
+     * @return string
      */
-    public function getCommentAgent()
+    public function getAgent()
     {
-        return $this->comment_agent;
+        return $this->agent;
     }
 
     /**
-     * Set comment_type
+     * Set type
      *
      * @param string $commentType
      */
-    public function setCommentType($commentType)
+    public function setType($commentType)
     {
-        $this->comment_type = $commentType;
+        $this->type = $commentType;
     }
 
     /**
-     * Get comment_type
+     * Get type
      *
-     * @return string 
+     * @return string
      */
-    public function getCommentType()
+    public function getType()
     {
-        return $this->comment_type;
+        return $this->type;
     }
 
     /**
-     * Set comment_parent
+     * Set parent
      *
-     * @param bigint $commentParent
+     * @param bigint $parent
      */
-    public function setCommentParent($commentParent)
+    public function setParent($parent)
     {
-        $this->comment_parent = $commentParent;
+        $this->parent = $parent;
     }
 
     /**
-     * Get comment_parent
+     * Get parent
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getCommentParent()
+    public function getParent()
     {
-        return $this->comment_parent;
+        return $this->parent;
     }
 
     /**
@@ -400,7 +426,7 @@ class Comment
     /**
      * Get metas
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getMetas()
     {
@@ -420,7 +446,7 @@ class Comment
     /**
      * Get post
      *
-     * @return Hypebeast\WordpressBundle\Entity\Post 
+     * @return Hypebeast\WordpressBundle\Entity\Post
      */
     public function getPost()
     {
@@ -440,10 +466,20 @@ class Comment
     /**
      * Get user
      *
-     * @return Hypebeast\WordpressBundle\Entity\User 
+     * @return Hypebeast\WordpressBundle\Entity\User | null
      */
     public function getUser()
     {
+        if($this->user instanceof \Doctrine\ORM\Proxy\Proxy) {
+            try {
+                // prevent lazy loading the user entity becuase it might not exist
+                $this->user->__load();
+            } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+                // return null if user does not exist
+                $this->user = null;
+            }
+        }
+
         return $this->user;
     }
 }

@@ -3,6 +3,7 @@
 namespace Hypebeast\WordpressBundle\Tests\Entity;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Hypebeast\WordpressBundle\Entity\Comment;
 use Hypebeast\WordpressBundle\Entity\Post;
 use Hypebeast\WordpressBundle\Entity\User;
 
@@ -62,6 +63,35 @@ class PostTest extends WebTestCase
         $this->assertInternalType('string', $result->getUser()->getMetas()->get(1)->getKey());
 
         return $post;
+    }
+
+    public function testGetComments()
+    {
+        $post = $this->getPostRepository()->findOneById(1);
+
+        $this->assertCount(1, $post->getComments());
+        $this->assertEquals('Mr WordPress', $post->getComments()->first()->getAuthor());
+        $this->assertEmpty($post->getComments()->first()->getAuthorEmail());
+        $this->assertEquals('http://wordpress.org/', $post->getComments()->first()->getAuthorUrl());
+        $this->assertEmpty($post->getComments()->first()->getAuthorIp());
+        $this->assertNotEmpty($post->getComments()->first()->getContent());
+        $this->assertEquals($post, $post->getComments()->first()->getPost());
+    }
+
+    public function testNewComment()
+    {
+        $post = $this->getPostRepository()->findOneById(1);
+
+        $comment = new Comment();
+        $comment->setAuthor('Lorem');
+        $comment->setAuthorEmail('lorem@example.com');
+        $comment->setContent('The message lorem ipsum dolor sit amet.');
+        $comment->setPost($post);
+
+        $this->em->persist($comment);
+        $this->em->flush();
+
+        $this->assertCount(2, $post->getComments());
     }
 
     /**
