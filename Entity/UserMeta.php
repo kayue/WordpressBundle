@@ -109,10 +109,20 @@ class UserMeta
     /**
      * Get user
      *
-     * @return Hypebeast\WordpressBundle\Entity\User
+     * @return Hypebeast\WordpressBundle\Entity\User | null
      */
     public function getUser()
     {
+        if($this->user instanceof \Doctrine\ORM\Proxy\Proxy) {
+            try {
+                // prevent lazy loading the user entity becuase it might not exist
+                $this->user->__load();
+            } catch (\Doctrine\ORM\EntityNotFoundException $e) {
+                // return null if user does not exist
+                $this->user = null;
+            }
+        }
+
         return $this->user;
     }
 }
