@@ -361,4 +361,16 @@ class User
     {
         return $this->metas;
     }
+
+    /**
+     * Get metas by meta key
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getMetasByKey($key)
+    {
+        return $this->getMetas()->filter(function($meta) use ($key) {
+            return $meta->getKey() === $key;
+        });
+    }
 }
