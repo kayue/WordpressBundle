@@ -88,7 +88,6 @@ class PostTest extends WebTestCase
     public function testNewComment($author, $authorEmail, $content, $userId, $parentId)
     {
         $post   = $this->getPostRepository()->findOneById(1);
-        $count  = $post->getCommentCount();
         $user   = null;
         $parent = null;
 
@@ -120,7 +119,7 @@ class PostTest extends WebTestCase
         $this->em->flush();
 
         // start assert
-        $this->assertCount($count + 1, $post->getComments());
+        $this->assertCount($post->getCommentCount(), $post->getComments());
         $this->assertEquals($content, $post->getComments()->last()->getContent());
         $this->assertEquals($user, $post->getComments()->last()->getUser());
 

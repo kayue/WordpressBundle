@@ -762,7 +762,7 @@ class Post
     {
         $comment->setPost($this);
         $this->comments[] = $comment;
-        $this->commentCount = $this->getComments()->count() + 1;
+        $this->commentCount = $this->getComments()->count();
     }
 
     /**
