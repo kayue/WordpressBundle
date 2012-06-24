@@ -13,13 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Term
 {
     /**
-     * @var bigint $term_id
+     * @var bigint $id
      *
-     * @ORM\Column(name="term_id", type="bigint", length=20)
+     * @ORM\Column(name="term_id", type="wordpressid", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $term_id;
+    private $id;
 
     /**
      * @var string $name
@@ -36,21 +36,21 @@ class Term
     private $slug;
 
     /**
-     * @var bigint $term_group
+     * @var bigint $group
      *
      * @ORM\Column(name="term_group", type="bigint", length=10)
      */
-    private $term_group;
+    private $group;
 
 
     /**
-     * Get term_id
+     * Get id
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getTermId()
+    public function getId()
     {
-        return $this->term_id;
+        return $this->id;
     }
 
     /**
@@ -66,7 +66,7 @@ class Term
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -86,7 +86,7 @@ class Term
     /**
      * Get slug
      *
-     * @return string 
+     * @return string
      */
     public function getSlug()
     {
@@ -94,22 +94,22 @@ class Term
     }
 
     /**
-     * Set term_group
+     * Set group
      *
-     * @param bigint $termGroup
+     * @param bigint $group
      */
-    public function setTermGroup($termGroup)
+    public function setGroup($group)
     {
-        $this->term_group = $termGroup;
+        $this->group = $group;
     }
 
     /**
-     * Get term_group
+     * Get group
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getTermGroup()
+    public function getGroup()
     {
-        return $this->term_group;
+        return $this->group;
     }
 }
