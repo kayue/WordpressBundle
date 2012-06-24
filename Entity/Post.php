@@ -328,6 +328,7 @@ class Post
             $content = substr($content, 0, $pos);
         }
 
+        return $content;
     }
 
     /**
@@ -761,6 +762,7 @@ class Post
     {
         $comment->setPost($this);
         $this->comments[] = $comment;
+        $this->commentCount = $this->getComments()->count() + 1;
     }
 
     /**
