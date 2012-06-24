@@ -63,11 +63,6 @@ class Post
     private $excerptLength = 100;
 
     /**
-     * @var int excerpt delimiter
-     */
-    private $excerptDelimiter = '…';
-
-    /**
      * @var string $status
      *
      * @ORM\Column(name="post_status", type="string", length=20, nullable=false)
@@ -333,9 +328,6 @@ class Post
             $content = substr($content, 0, $pos);
         }
 
-        $result = $content.$this->getExcerptDelimiter();
-
-        return $result;
     }
 
     /**
@@ -406,26 +398,6 @@ class Post
     public function getExcerptLength()
     {
         return $this->excerptLength;
-    }
-
-    /**
-     * Set excerpt delimiter
-     *
-     * @param int $excerptDelimiter
-     */
-    public function setExcerptDelimiter($excerptDelimiter)
-    {
-        $this->excerptDelimiter = (int)$excerptDelimiter;
-    }
-
-    /**
-     * Get excerpt delimiter
-     *
-     * @return int
-     */
-    public function getExcerptDelimiter()
-    {
-        return $this->excerptDelimiter;
     }
 
     /**

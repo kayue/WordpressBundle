@@ -77,7 +77,7 @@ class PostTest extends WebTestCase
         $post->setExcerptLength(30);
         $post->setContent($content);
 
-        $this->assertLessThanOrEqual(30 + 2, strlen($post->getExcerpt()));
+        $this->assertLessThanOrEqual(30, strlen($post->getExcerpt()));
     }
 
     /**
@@ -88,7 +88,7 @@ class PostTest extends WebTestCase
     public function testNewComment($author, $authorEmail, $content, $userId, $parentId)
     {
         $post   = $this->getPostRepository()->findOneById(1);
-        $count  = $post->getComments()->count();
+        $count  = $post->getCommentCount();
         $user   = null;
         $parent = null;
 
