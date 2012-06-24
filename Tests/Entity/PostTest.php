@@ -70,18 +70,27 @@ class PostTest extends WebTestCase
      *
      * @dataProvider commentProvider
      */
-    public function testNewComment($author, $authorEmail, $content, $userId)
+    public function testNewComment($author, $authorEmail, $content, $userId, $parentId)
     {
-        $post  = $this->getPostRepository()->findOneById(1);
-        $count = $post->getComments()->count();
-        $user  = null;
+        $post   = $this->getPostRepository()->findOneById(1);
+        $count  = $post->getComments()->count();
+        $user   = null;
+        $parent = null;
 
         if($userId !== null) {
             $user = $this->getUserRepository()->find($userId);
         }
 
+        if($parentId !== null) {
+            $parent = $this->getCommentRepository()->find($parentId);
+        }
+
         $comment = new Comment();
         $comment->setContent($content);
+
+        if($parent) {
+            $comment->setParent($parent);
+        }
 
         if($user) {
             $comment->setUser($user);
@@ -99,6 +108,10 @@ class PostTest extends WebTestCase
         $this->assertCount($count + 1, $post->getComments());
         $this->assertEquals($content, $post->getComments()->last()->getContent());
         $this->assertEquals($user, $post->getComments()->last()->getUser());
+
+        if($parent) {
+            $this->assertEquals($parent, $post->getComments()->last()->getParent());
+        }
 
         if($user) {
             $this->assertEquals($user->getDisplayName(), $post->getComments()->last()->getAuthor());
@@ -143,14 +156,20 @@ class PostTest extends WebTestCase
     public function commentProvider()
     {
         return array(
-            array('Peter', 'peter@example.com', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', null),
-            array('Mary', 'peter@example.com', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', 1)
+            array('Peter', 'peter@example.com', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', null, null),
+            array('Mary', 'peter@example.com', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', null, 1),
+            array('Tom', 'tom@example.com', 'Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 1, null),
         );
     }
 
     protected function getPostRepository()
     {
         return $this->em->getRepository('HypebeastWordpressBundle:Post');
+    }
+
+    protected function getCommentRepository()
+    {
+        return $this->em->getRepository('HypebeastWordpressBundle:Comment');
     }
 
     protected function getUserRepository()

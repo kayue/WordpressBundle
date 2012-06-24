@@ -16,7 +16,7 @@ class Comment
     /**
      * @var bigint $id
      *
-     * @ORM\Column(name="comment_ID", type="bigint", length=20)
+     * @ORM\Column(name="comment_ID", type="wordpressid", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -102,7 +102,8 @@ class Comment
     /**
      * @var bigint $parent
      *
-     * @ORM\Column(name="comment_parent", type="bigint")
+     * @ORM\OneToOne(targetEntity="Comment")
+     * @ORM\JoinColumn(name="comment_parent", referencedColumnName="comment_ID")
      */
     private $parent;
 
@@ -141,7 +142,7 @@ class Comment
         $this->approved = 1;
         $this->agent = "";
         $this->type = "";
-        $this->parent = 0;
+        $this->parent = null;
         $this->user = null;
 
         $this->metas = new \Doctrine\Common\Collections\ArrayCollection();
@@ -394,17 +395,17 @@ class Comment
     /**
      * Set parent
      *
-     * @param bigint $parent
+     * @param Hypebeast\WordpressBundle\Entity\Comment $comment
      */
-    public function setParent($parent)
+    public function setParent(\Hypebeast\WordpressBundle\Entity\Comment $comment)
     {
-        $this->parent = $parent;
+        $this->parent = $comment;
     }
 
     /**
      * Get parent
      *
-     * @return bigint
+     * @return Hypebeast\WordpressBundle\Entity\Comment
      */
     public function getParent()
     {
@@ -412,13 +413,13 @@ class Comment
     }
 
     /**
-     * Add metas
+     * Add meta
      *
-     * @param Hypebeast\WordpressBundle\Entity\CommentMeta $metas
+     * @param Hypebeast\WordpressBundle\Entity\CommentMeta $meta
      */
-    public function addCommentMeta(\Hypebeast\WordpressBundle\Entity\CommentMeta $metas)
+    public function addMeta(\Hypebeast\WordpressBundle\Entity\CommentMeta $meta)
     {
-        $this->metas[] = $metas;
+        $this->metas[] = $meta;
     }
 
     /**
