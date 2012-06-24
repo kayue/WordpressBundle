@@ -16,7 +16,7 @@ class Post
     /**
      * @var bigint $id
      *
-     * @ORM\Column(name="ID", type="bigint")
+     * @ORM\Column(name="ID", type="wordpressid")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -56,6 +56,16 @@ class Post
      * @ORM\Column(name="post_excerpt", type="text", nullable=false)
      */
     private $excerpt;
+
+    /**
+     * @var int excerpt length
+     */
+    private $excerptLength = 100;
+
+    /**
+     * @var int excerpt delimiter
+     */
+    private $excerptDelimiter = '…';
 
     /**
      * @var string $status
@@ -294,6 +304,38 @@ class Post
     public function setContent($content)
     {
         $this->content = $content;
+
+        $this->excerpt = $this->trimContent($content);
+    }
+
+    /**
+     * Cut string to n symbols and add delim but do not break words.
+     *
+     * @param string string we are operating with
+     * @param integer character count to cut to
+     * @param string|NULL delimiter. Default: '...'
+     * @return string processed string
+     **/
+    public function trimContent($content)
+    {
+        $content = strip_tags($content);
+        $length = $this->getExcerptLength();
+
+        if (strlen($content) <= $length) {
+            // return origin content if not needed
+            return $content;
+        }
+
+        $content = substr($content, 0, $length);
+        $pos = strrpos($content, " ");
+
+        if ($pos > 0) {
+            $content = substr($content, 0, $pos);
+        }
+
+        $result = $content.$this->getExcerptDelimiter();
+
+        return $result;
     }
 
     /**
@@ -344,6 +386,46 @@ class Post
     public function getExcerpt()
     {
         return $this->excerpt;
+    }
+
+    /**
+     * Set excerpt length
+     *
+     * @param int $excerptLength
+     */
+    public function setExcerptLength($excerptLength)
+    {
+        $this->excerptLength = (int)$excerptLength;
+    }
+
+    /**
+     * Get excerpt length
+     *
+     * @return int
+     */
+    public function getExcerptLength()
+    {
+        return $this->excerptLength;
+    }
+
+    /**
+     * Set excerpt delimiter
+     *
+     * @param int $excerptDelimiter
+     */
+    public function setExcerptDelimiter($excerptDelimiter)
+    {
+        $this->excerptDelimiter = (int)$excerptDelimiter;
+    }
+
+    /**
+     * Get excerpt delimiter
+     *
+     * @return int
+     */
+    public function getExcerptDelimiter()
+    {
+        return $this->excerptDelimiter;
     }
 
     /**

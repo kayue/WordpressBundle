@@ -44,7 +44,6 @@ class PostTest extends WebTestCase
         $post->setTitle($title);
         $post->setName($title);
         $post->setContent($content);
-        $post->setExcerpt('setPostExcerpt');
         $post->setUser($this->getUserRepository()->find($userId));
 
         $this->em->persist($post);
@@ -63,6 +62,22 @@ class PostTest extends WebTestCase
         $this->assertInternalType('string', $result->getUser()->getMetas()->get(1)->getKey());
 
         return $post;
+    }
+
+    /**
+     * Create post test
+     *
+     * @dataProvider postProvider
+     */
+    public function testPostExcerpt($title, $content, $userId)
+    {
+        $post = new Post();
+        $post->setTitle($title);
+        $post->setName($title);
+        $post->setExcerptLength(30);
+        $post->setContent($content);
+
+        $this->assertLessThanOrEqual(30 + 2, strlen($post->getExcerpt()));
     }
 
     /**
@@ -148,8 +163,8 @@ class PostTest extends WebTestCase
     public function postProvider()
     {
         return array(
-            array('Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 1),
-            array('Sed ut perspiciatis unde', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', 1)
+            array('Lorem ipsum dolor sit amet', 'Lorem ipsum <strong>dolor sit amet</strong>, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 1),
+            array('Sed ut perspiciatis unde', 'Sed ut perspiciatis unde <em>omnis iste natus</em> error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', 1)
         );
     }
 
