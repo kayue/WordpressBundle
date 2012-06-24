@@ -13,27 +13,27 @@ use Doctrine\ORM\Mapping as ORM;
 class CommentMeta
 {
     /**
-     * @var bigint $meta_id
+     * @var bigint $id
      *
      * @ORM\Column(name="meta_id", type="bigint", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $meta_id;
+    private $id;
 
     /**
-     * @var string $meta_key
+     * @var string $key
      *
      * @ORM\Column(name="meta_key", type="string", length=255, nullable=true)
      */
-    private $meta_key;
+    private $key;
 
     /**
-     * @var text $meta_value
+     * @var text $value
      *
      * @ORM\Column(name="meta_value", type="text", nullable=true)
      */
-    private $meta_value;
+    private $value;
 
     /**
      * @var Hypebeast\WordpressBundle\Entity\Comment
@@ -45,55 +45,54 @@ class CommentMeta
      */
     private $comment;
 
-
     /**
-     * Get meta_id
+     * Get id
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getMetaId()
+    public function getId()
     {
-        return $this->meta_id;
+        return $this->id;
     }
 
     /**
-     * Set meta_key
+     * Set key
      *
-     * @param string $metaKey
+     * @param string $key
      */
-    public function setMetaKey($metaKey)
+    public function setKey($key)
     {
-        $this->meta_key = $metaKey;
+        $this->key = $key;
     }
 
     /**
-     * Get meta_key
+     * Get key
      *
-     * @return string 
+     * @return string
      */
-    public function getMetaKey()
+    public function getKey()
     {
-        return $this->meta_key;
+        return $this->key;
     }
 
     /**
-     * Set meta_value
+     * Set value
      *
-     * @param text $metaValue
+     * @param text $value
      */
-    public function setMetaValue($metaValue)
+    public function setValue($value)
     {
-        $this->meta_value = $metaValue;
+        $this->value = $value;
     }
 
     /**
-     * Get meta_value
+     * Get value
      *
-     * @return text 
+     * @return text
      */
-    public function getMetaValue()
+    public function getValue()
     {
-        return $this->meta_value;
+        return $this->value;
     }
 
     /**
@@ -109,7 +108,7 @@ class CommentMeta
     /**
      * Get comment
      *
-     * @return Hypebeast\WordpressBundle\Entity\Comment 
+     * @return Hypebeast\WordpressBundle\Entity\Comment
      */
     public function getComment()
     {
