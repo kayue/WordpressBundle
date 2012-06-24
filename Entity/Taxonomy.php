@@ -13,13 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Taxonomy
 {
     /**
-     * @var bigint $term_taxonomy_id
+     * @var bigint $id
      *
-     * @ORM\Column(name="term_taxonomy_id", type="bigint", length=20)
+     * @ORM\Column(name="term_taxonomy_id", type="wordpressid", length=20)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $term_taxonomy_id;
+    private $id;
 
     /**
      * @var string $taxonomy
@@ -61,13 +61,13 @@ class Taxonomy
 
 
     /**
-     * Get term_taxonomy_id
+     * Get id
      *
-     * @return bigint 
+     * @return bigint
      */
-    public function getTermTaxonomyId()
+    public function getId()
     {
-        return $this->term_taxonomy_id;
+        return $this->id;
     }
 
     /**
@@ -83,7 +83,7 @@ class Taxonomy
     /**
      * Get taxonomy
      *
-     * @return string 
+     * @return string
      */
     public function getTaxonomy()
     {
@@ -103,7 +103,7 @@ class Taxonomy
     /**
      * Get description
      *
-     * @return text 
+     * @return text
      */
     public function getDescription()
     {
@@ -123,7 +123,7 @@ class Taxonomy
     /**
      * Get parent
      *
-     * @return bigint 
+     * @return bigint
      */
     public function getParent()
     {
@@ -143,7 +143,7 @@ class Taxonomy
     /**
      * Get count
      *
-     * @return bigint 
+     * @return bigint
      */
     public function getCount()
     {
@@ -163,7 +163,7 @@ class Taxonomy
     /**
      * Get term
      *
-     * @return Hypebeast\WordpressBundle\Entity\Term 
+     * @return Hypebeast\WordpressBundle\Entity\Term
      */
     public function getTerm()
     {
