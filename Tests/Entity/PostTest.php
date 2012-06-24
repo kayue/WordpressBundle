@@ -42,7 +42,7 @@ class PostTest extends WebTestCase
     {
         $post = new Post();
         $post->setTitle($title);
-        $post->setName($title);
+        $post->setSlug($title);
         $post->setContent($content);
         $post->setUser($this->getUserRepository()->find($userId));
 
@@ -73,7 +73,7 @@ class PostTest extends WebTestCase
     {
         $post = new Post();
         $post->setTitle($title);
-        $post->setName($title);
+        $post->setSlug($title);
         $post->setExcerptLength(30);
         $post->setContent($content);
 

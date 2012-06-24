@@ -91,11 +91,11 @@ class Post
     private $password = "";
 
     /**
-     * @var string $name
+     * @var string $slug
      *
      * @ORM\Column(name="post_name", type="string", length=200, nullable=false)
      */
-    private $name;
+    private $slug;
 
     /**
      * @var text $toPing
@@ -482,23 +482,23 @@ class Post
     }
 
     /**
-     * Set name
+     * Set post slug
      *
-     * @param string $name
+     * @param string $slug
      */
-    public function setName($name)
+    public function setSlug($slug)
     {
-        $this->name = $name;
+        $this->slug = $slug;
     }
 
     /**
-     * Get name
+     * Get post slug
      *
      * @return string
      */
-    public function getName()
+    public function getSlug()
     {
-        return $this->name;
+        return $this->slug;
     }
 
     /**
