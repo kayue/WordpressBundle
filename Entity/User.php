@@ -101,7 +101,7 @@ class User
     /**
      * @var Hypebeast\WordpressBundle\Entity\UserMeta
      *
-     * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\UserMeta", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\UserMeta", mappedBy="user", cascade={"persist"})
      */
     private $metas;
 
@@ -330,6 +330,8 @@ class User
     public function addMeta(\Hypebeast\WordpressBundle\Entity\UserMeta $meta)
     {
         $this->metas[] = $meta;
+
+        $meta->setUser($this);
     }
 
     /**
