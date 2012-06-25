@@ -303,16 +303,6 @@ class User
     }
 
     /**
-     * Add posts
-     *
-     * @param Hypebeast\WordpressBundle\Entity\Post $posts
-     */
-    public function addPost(\Hypebeast\WordpressBundle\Entity\Post $posts)
-    {
-        $this->posts[] = $posts;
-    }
-
-    /**
      * Get posts
      *
      * @return Doctrine\Common\Collections\Collection
@@ -320,16 +310,6 @@ class User
     public function getPosts()
     {
         return $this->posts;
-    }
-
-    /**
-     * Add comments
-     *
-     * @param Hypebeast\WordpressBundle\Entity\Comment $comments
-     */
-    public function addComment(\Hypebeast\WordpressBundle\Entity\Comment $comments)
-    {
-        $this->comments[] = $comments;
     }
 
     /**
