@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hypebeast\WordpressBundle\Entity\Comment
  *
- * @ORM\Table(name="wp_comments")
+ * @ORM\Table(name="comments")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

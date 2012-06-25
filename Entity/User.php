@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hypebeast\WordpressBundle\Entity\User
  *
- * @ORM\Table(name="wp_users")
+ * @ORM\Table(name="users")
  * @ORM\Entity
  */
 class User

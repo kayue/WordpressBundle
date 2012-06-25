@@ -1,0 +1,26 @@
+services:
+    wordpress.api.loader:
+        class:      "Hypebeast\WordpressBundle\Wordpress\ApiLoader"
+        public:     true
+        arguments:  [%hypebeast_wordpress.wordpress_path%, %hypebeast_wordpress.short_init%]
+
+    wordpress.api.abstraction:
+        class:      Hypebeast\WordpressBundle\Wordpress\ApiAbstraction
+        public:     true
+        arguments:  [@wordpress.api.loader]
+
+    wordpress.security.user.provider:
+        class:      Hypebeast\WordpressBundle\Security\User\WordpressUserProvider
+        public:     false
+        arguments:  [@wordpress.api.abstraction]
+
+    wordpress.security.authentication.provider.cookie:
+        class:      Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressCookieAuthenticationProvider
+        public:     false
+        arguments:  [@wordpress.api.abstraction]
+
+    wordpress.security.authentication.listener.cookie:
+        class:      Hypebeast\WordpressBundle\Security\Firewall\WordpressCookieListener
+        public:     false
+        tags:
+            - {monolog.logger: }

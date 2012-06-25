@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hypebeast\WordpressBundle\Entity\Option
  *
- * @ORM\Table(name="wp_options")
+ * @ORM\Table(name="options")
  * @ORM\Entity
  */
 class Option

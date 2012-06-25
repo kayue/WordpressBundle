@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hypebeast\WordpressBundle\Entity\Post
  *
- * @ORM\Table(name="wp_posts")
+ * @ORM\Table(name="posts")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

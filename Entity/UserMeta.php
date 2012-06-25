@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hypebeast\WordpressBundle\Entity\UserMeta
  *
- * @ORM\Table(name="wp_usermeta")
+ * @ORM\Table(name="usermeta")
  * @ORM\Entity
  */
 class UserMeta

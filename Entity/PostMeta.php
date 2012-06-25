@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hypebeast\WordpressBundle\Entity\PostMeta
  *
- * @ORM\Table(name="wp_postmeta")
+ * @ORM\Table(name="postmeta")
  * @ORM\Entity
  */
 class PostMeta

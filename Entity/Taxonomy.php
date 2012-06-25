@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hypebeast\WordpressBundle\Entity\Taxonomy
  *
- * @ORM\Table(name="wp_term_taxonomy")
+ * @ORM\Table(name="term_taxonomy")
  * @ORM\Entity
  */
 class Taxonomy

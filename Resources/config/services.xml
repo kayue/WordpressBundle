@@ -5,33 +5,33 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="wordpress.api.loader" 
-                 class="Hypebeast\WordpressBundle\Wordpress\ApiLoader" 
+        <service id="wordpress.api.loader"
+                 class="Hypebeast\WordpressBundle\Wordpress\ApiLoader"
                  public="true">
             <argument>%hypebeast_wordpress.wordpress_path%</argument>
             <argument>%hypebeast_wordpress.short_init%</argument>
         </service>
-        
-        <service id="wordpress.api.abstraction" 
-                 class="Hypebeast\WordpressBundle\Wordpress\ApiAbstraction" 
+
+        <service id="wordpress.api.abstraction"
+                 class="Hypebeast\WordpressBundle\Wordpress\ApiAbstraction"
                  public="true">
             <argument type="service" id="wordpress.api.loader" />
         </service>
-        
+
         <service id="wordpress.security.user.provider"
                  class="Hypebeast\WordpressBundle\Security\User\WordpressUserProvider"
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
         </service>
-        
-        <service id="wordpress.security.authentication.provider.cookie" 
-                 class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressCookieAuthenticationProvider" 
+
+        <service id="wordpress.security.authentication.provider.cookie"
+                 class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressCookieAuthenticationProvider"
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
         </service>
 
-        <service id="wordpress.security.authentication.listener.cookie" 
-                 class="Hypebeast\WordpressBundle\Security\Firewall\WordpressCookieListener" 
+        <service id="wordpress.security.authentication.listener.cookie"
+                 class="Hypebeast\WordpressBundle\Security\Firewall\WordpressCookieListener"
                  public="false">
             <tag name="monolog.logger" channel="security" />
             <argument type="service" id="wordpress.api.abstraction" />
@@ -41,31 +41,38 @@
             <argument type="service" id="logger" on-invalid="null" />
             <argument type="service" id="event_dispatcher" on-invalid="null"/>
         </service>
-        
-        <service id="wordpress.security.authentication.provider.login" 
-                 class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressLoginAuthenticationProvider" 
+
+        <service id="wordpress.security.authentication.provider.login"
+                 class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressLoginAuthenticationProvider"
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
             <argument /> <!-- remember me parameter name -->
             <argument type="service" id="service_container" />
         </service>
-        
-        <service id="wordpress.security.http.logout" 
-                 class="Hypebeast\WordpressBundle\Security\Http\Logout\WordpressLogoutHandler" 
+
+        <service id="wordpress.security.http.logout"
+                 class="Hypebeast\WordpressBundle\Security\Http\Logout\WordpressLogoutHandler"
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
         </service>
 
-        <service id="wordpress.twig.extension" 
-                 class="Hypebeast\WordpressBundle\Extensions\WordpressTwigExtension" 
+        <service id="wordpress.twig.extension"
+                 class="Hypebeast\WordpressBundle\Extensions\WordpressTwigExtension"
                  public="true">
             <tag name="twig.extension" />
         </service>
 
-        <service id="wordpress.helper" 
-                 class="Hypebeast\WordpressBundle\Wordpress\Helper" 
+        <service id="wordpress.helper"
+                 class="Hypebeast\WordpressBundle\Wordpress\Helper"
                  public="true">
             <argument type="service" id="wordpress.api.abstraction" />
+        </service>
+
+        <service id="wordpress.subscriber"
+                 class="Hypebeast\WordpressBundle\Subscriber\TablePrefixSubscriber"
+                 public="true">
+            <argument>wp_</argument>
+            <tag name="doctrine.event_subscriber"></tag>
         </service>
 
     </services>

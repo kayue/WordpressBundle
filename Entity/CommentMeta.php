@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Hypebeast\WordpressBundle\Entity\CommentMeta
  *
- * @ORM\Table(name="wp_commentmeta")
+ * @ORM\Table(name="commentmeta")
  * @ORM\Entity
  */
 class CommentMeta
