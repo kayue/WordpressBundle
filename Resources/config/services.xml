@@ -71,7 +71,7 @@
         <service id="wordpress.subscriber"
                  class="Hypebeast\WordpressBundle\Subscriber\TablePrefixSubscriber"
                  public="true">
-            <argument>wp_</argument>
+            <argument>%hypebeast_wordpress.table_prefix%</argument>
             <tag name="doctrine.event_subscriber"></tag>
         </service>
 
