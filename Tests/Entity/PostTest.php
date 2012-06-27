@@ -42,7 +42,6 @@ class PostTest extends WebTestCase
     {
         $post = new Post();
         $post->setTitle($title);
-        $post->setSlug($title);
         $post->setContent($content);
         $post->setUser($this->getUserRepository()->find($userId));
 
@@ -73,11 +72,32 @@ class PostTest extends WebTestCase
     {
         $post = new Post();
         $post->setTitle($title);
-        $post->setSlug($title);
         $post->setExcerptLength(30);
         $post->setContent($content);
 
         $this->assertLessThanOrEqual(30, strlen($post->getExcerpt()));
+    }
+
+    /**
+     * Test post slug
+     *
+     * @dataProvider postProvider
+     */
+    public function testPostSlug($title, $content, $userId)
+    {
+        $post = new Post();
+        $post->setTitle($title);
+        $post->setContent($content);
+
+        $this->em->persist($post);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertEquals(
+            1,
+            preg_match('/^[0-9a-z_-]+$/', $post->getSlug()),
+            'Post slug "'.$post->getSlug().'" should only contain numbers, lowercase characters dash, and underscore.'
+        );
     }
 
     /**
@@ -163,7 +183,8 @@ class PostTest extends WebTestCase
     {
         return array(
             array('Lorem ipsum dolor sit amet', 'Lorem ipsum <strong>dolor sit amet</strong>, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 1),
-            array('Sed ut perspiciatis unde', 'Sed ut perspiciatis unde <em>omnis iste natus</em> error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', 1)
+            array('Sed ut perspiciatis unde', 'Sed ut perspiciatis unde <em>omnis iste natus</em> error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.', 1),
+            array('Sed \ [ ] % ^!@#$%^&* fsad', 'Aenean commodo ligula eget dolor. Aenean massa. ', 1)
         );
     }
 

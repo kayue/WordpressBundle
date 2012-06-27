@@ -3,6 +3,7 @@
 namespace Hypebeast\WordpressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Hypebeast\WordpressBundle\Entity\Post
@@ -94,6 +95,7 @@ class Post
      * @var string $slug
      *
      * @ORM\Column(name="post_name", type="string", length=200, nullable=false)
+     * @Gedmo\Slug(fields={"title"})
      */
     private $slug;
 
