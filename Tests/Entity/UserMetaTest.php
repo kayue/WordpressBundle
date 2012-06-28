@@ -20,7 +20,7 @@ class UserMetaTest extends WebTestCase
         $kernel = static::createKernel();
         $kernel->boot();
 
-        $this->em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $this->em = $kernel->getContainer()->get('doctrine')->getEntityManager();
 
         $this->em->getConnection()->beginTransaction();
     }

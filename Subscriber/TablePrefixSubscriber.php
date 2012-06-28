@@ -27,19 +27,35 @@ class TablePrefixSubscriber implements EventSubscriber
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $args)
     {
+        // do not apply prefix if not a WordpressBundle Entitiy
         if($args->getClassMetadata()->namespace !== "Hypebeast\WordpressBundle\Entity") {
             return;
         }
 
         $classMetadata = $args->getClassMetadata();
-        $classMetadata->setTableName($this->prefix . $classMetadata->getTableName());
+        $prefix = $this->getTablePrefix($args);
+
+        $classMetadata->setTableName($prefix . $classMetadata->getTableName());
 
         foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
             if ($mapping['type'] == \Doctrine\ORM\Mapping\ClassMetadataInfo::MANY_TO_MANY) {
                 $mappedTableName = $classMetadata->associationMappings[$fieldName]['joinTable']['name'];
-                $classMetadata->associationMappings[$fieldName]['joinTable']['name'] = $this->prefix . $mappedTableName;
+                $classMetadata->associationMappings[$fieldName]['joinTable']['name'] = $prefix . $mappedTableName;
             }
         }
     }
 
+    private function getTablePrefix(LoadClassMetadataEventArgs $args)
+    {
+        $prefix = $this->prefix;
+
+        // append blog id to prefix, if needed.
+        if( method_exists($args->getEntityManager()->getMetadataFactory(), 'getBlogId') &&
+            $args->getClassMetadata()->name !== "Hypebeast\WordpressBundle\Entity\User" &&
+            $args->getClassMetadata()->name !== "Hypebeast\WordpressBundle\Entity\UserMeta") {
+            $prefix .= $args->getEntityManager()->getMetadataFactory()->getBlogId().'_';
+        }
+
+        return $prefix;
+    }
 }
