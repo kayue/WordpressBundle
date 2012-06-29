@@ -129,7 +129,7 @@ e.g. `wordpress_cookie: ~` and `wordpress_form_login: ~`
 Multiple Blogs With Multiple Entity Manager
 ===========================================
 
-```
+```php
 # app/config/config.yml
 
 doctrine:
@@ -146,7 +146,7 @@ doctrine:
                 class_metadata_factory_name: Acme\DemoBundle\ORM\Mapping\ClassMetadataFactory
 ```
 
-```
+```php
 <?php
 // Acme/DemoBundle/ORM/Mapping/ClassMetadataFactory.php
 
@@ -162,7 +162,7 @@ class ClassMetadataFactory extends ClassMetadataFactoryInterface
 }
 ```
 
-```
+```php
 <?php
 // Acme/DemoBundle/Controller/DefaultController.php
 
