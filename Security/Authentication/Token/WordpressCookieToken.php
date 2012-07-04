@@ -1,17 +1,18 @@
 <?php
 namespace Hypebeast\WordpressBundle\Security\Authentication\Token;
 
-use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 use Hypebeast\WordpressBundle\Security\User\WordpressUser;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class WordpressCookieToken extends AbstractToken
 {
-    public function __construct(WordpressUser $user = null) {
-        if ($user instanceof WordpressUser) {
+    public function __construct(UserInterface $user = null) {
+        if ($user instanceof UserInterface) {
             parent::__construct($user->getRoles());
-            $this->setUser($user);
             parent::setAuthenticated(true);
 
+            $this->setUser($user);
         } else {
             parent::__construct();
         }
