@@ -28,6 +28,7 @@
                  class="Hypebeast\WordpressBundle\Security\Authentication\Provider\WordpressCookieAuthenticationProvider"
                  public="false">
             <argument type="service" id="wordpress.api.abstraction" />
+            <argument /> <!-- User Provider -->
         </service>
 
         <service id="wordpress.security.authentication.listener.cookie"

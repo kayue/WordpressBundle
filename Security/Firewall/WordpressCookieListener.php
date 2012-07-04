@@ -40,37 +40,37 @@ class WordpressCookieListener implements ListenerInterface
      * @var ApiAbstraction
      */
     protected $api;
-    
+
     /**
      *
      * @var SecurityContextInterface
      */
     protected $securityContext;
-    
+
     /**
      *
      * @var AuthenticationManagerInterface
      */
     protected $authenticationManager;
-    
+
     /**
      *
      * @var HttpUtils
      */
     protected $httpUtils;
-    
+
     /**
      *
      * @var LoggerInterface
      */
     protected $logger;
-    
+
     /**
      *
      * @var EventDispatcherInterface
      */
     protected $dispatcher;
-    
+
     /**
      * If true, will redirect to the Wordpress login if the user is not authenticated
      *
@@ -93,42 +93,42 @@ class WordpressCookieListener implements ListenerInterface
     }
 
     /**
-     * Authenticates the Wordpress cookie in the request. Depending upon $redirectToWordpress, 
+     * Authenticates the Wordpress cookie in the request. Depending upon $redirectToWordpress,
      * either silently returns or redirects to Wordpress login on failure.
      *
      * @param GetResponseEvent $event
      * @return null
      */
-    public function handle(GetResponseEvent $event) 
+    public function handle(GetResponseEvent $event)
     {
         # Don't try to authenticate again if the user already has been
         if ($this->securityContext->getToken()) {
             return;
         }
-        
+
         try {
-            // Authentication manager uses a list of AuthenticationProviderInterface instances 
+            // Authentication manager uses a list of AuthenticationProviderInterface instances
             // to authenticate a Token.
             $token = $this->authenticationManager->authenticate(new WordpressCookieToken);
             $this->securityContext->setToken($token);
-            
+
             # Notify listeners that the user has been logged in
             if ($this->dispatcher) {
                 $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN,
                         new InteractiveLoginEvent($event->getRequest(), $token));
             }
-            
+
             if ($this->logger) {
                 $this->logger->debug(sprintf(
                         'Wordpress cookie for user "%s" authenticated', $token->getUsername()));
             }
-            
+
         } catch (AuthenticationException $e) {
             if ($this->redirectToWordpress) {
                 # Redirect to Wordpress login, then back to the user's request after they log in
                 $request = $event->getRequest();
                 $redirectUrl = $this->api->wp_login_url($request->getUri(), true);
-                
+
                 if ($this->logger) {
                     $this->logger->debug(sprintf(
                             'Redirecting to Wordpress login page at %s', $redirectUrl));

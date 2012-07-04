@@ -12,11 +12,12 @@
 namespace Hypebeast\WordpressBundle\Security\Authentication\Provider;
 
 use Hypebeast\WordpressBundle\Security\Authentication\Token\WordpressCookieToken;
+use Hypebeast\WordpressBundle\Security\User\WordpressUser;
+use Hypebeast\WordpressBundle\Wordpress\ApiAbstraction;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Hypebeast\WordpressBundle\Wordpress\ApiAbstraction;
-use Hypebeast\WordpressBundle\Security\User\WordpressUser;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
  * WordpressCookieAuthenticationProvider will verify that the current user has been authenticated
@@ -39,18 +40,20 @@ class WordpressCookieAuthenticationProvider implements AuthenticationProviderInt
     /**
      * Constructor
      *
-     * @param ApiAbstraction $api 
+     * @param ApiAbstraction $api
      */
-    public function __construct(ApiAbstraction $api)
+    public function __construct(ApiAbstraction $api, UserProviderInterface $userProvider)
     {
-        $this->api = $api;
+        $this->api          = $api;
+        $this->userProvider = $userProvider;
     }
 
     public function authenticate(TokenInterface $token)
     {
         $wpUser = $this->api->wp_get_current_user();
+
         if ($wpUser->ID != 0) {
-            return new WordpressCookieToken(new WordpressUser($wpUser));
+            return new WordpressCookieToken($this->userProvider->loadUserByUsername($wpUser->user_login));
         }
 
         throw new AuthenticationException('The Wordpress authentication failed.');
