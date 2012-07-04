@@ -3,6 +3,7 @@
 namespace Hypebeast\WordpressBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Hypebeast\WordpressBundle\Entity\User
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="users")
  * @ORM\Entity
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var bigint $id
@@ -354,5 +355,70 @@ class User
         return $this->getMetas()->filter(function($meta) use ($key) {
             return $meta->getKey() === $key;
         });
+    }
+
+    /**
+     * Returns the roles granted to the user.
+     *
+     * <code>
+     * public function getRoles()
+     * {
+     *     return array('ROLE_USER');
+     * }
+     * </code>
+     *
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return Role[] The user roles
+     */
+    function getRoles()
+    {
+
+        return array('ROLE_USER');
+    }
+
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string The salt
+     */
+    function getSalt()
+    {
+
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     *
+     * @return void
+     */
+    function eraseCredentials()
+    {
+
+    }
+
+    /**
+     * Returns whether or not the given user is equivalent to *this* user.
+     *
+     * The equality comparison should neither be done by referential equality
+     * nor by comparing identities (i.e. getId() === getId()).
+     *
+     * However, you do not need to compare every attribute, but only those that
+     * are relevant for assessing whether re-authentication is required.
+     *
+     * @param UserInterface $user
+     *
+     * @return Boolean
+     */
+    function equals(UserInterface $user)
+    {
+        return ($this->getId() === $user->getId()) && ($this->getUsername() === $user->getUsername());
     }
 }
