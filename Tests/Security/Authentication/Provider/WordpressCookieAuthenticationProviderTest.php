@@ -30,9 +30,11 @@ class WordpressCookieAuthenticationProviderTest extends \PHPUnit_Framework_TestC
      */
     protected function setUp() {
         $this->api = $this->getMockBuilder('Hypebeast\\WordpressBundle\\Wordpress\\ApiAbstraction')
-                ->disableOriginalConstructor()->setMethods(array('wp_get_current_user'))->getMock();
-        
-        $this->object = new WordpressCookieAuthenticationProvider($this->api);
+            ->disableOriginalConstructor()
+            ->setMethods(array('wp_get_current_user'))
+            ->getMock();
+
+        $this->object = new WordpressCookieAuthenticationProvider($this->api, $this->getProvider());
     }
 
     /**
@@ -92,4 +94,15 @@ class WordpressCookieAuthenticationProviderTest extends \PHPUnit_Framework_TestC
     }
 }
 
-?>
+    protected function getProvider()
+    {
+        $provider = $this->getMock('Symfony\Component\Security\Core\User\UserProviderInterface');
+        $provider
+            ->expects($this->any())
+            ->method('supportsClass')
+            ->will($this->returnValue(true))
+        ;
+
+        return $provider;
+    }
+}
