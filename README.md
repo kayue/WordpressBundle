@@ -97,7 +97,7 @@ e.g. `wordpress_cookie: ~` and `wordpress_form_login: ~`
 
             providers:
                 wordpress:
-                    id: wordpress.security.user.provider
+                    entity: { class: Hypebeast\WordpressBundle\Entity\User, property: username }
 
             firewalls:
                 secured_area:
