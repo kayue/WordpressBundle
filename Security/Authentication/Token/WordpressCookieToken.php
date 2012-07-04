@@ -6,13 +6,12 @@ use Hypebeast\WordpressBundle\Security\User\WordpressUser;
 
 class WordpressCookieToken extends AbstractToken
 {
-
     public function __construct(WordpressUser $user = null) {
         if ($user instanceof WordpressUser) {
             parent::__construct($user->getRoles());
             $this->setUser($user);
             parent::setAuthenticated(true);
-            
+
         } else {
             parent::__construct();
         }
