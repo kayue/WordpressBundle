@@ -31,7 +31,7 @@ class PostMeta
     /**
      * @var text $value
      *
-     * @ORM\Column(name="meta_value", type="text", nullable=true)
+     * @ORM\Column(name="meta_value", type="wordpressmeta", nullable=true)
      */
     private $value;
 
