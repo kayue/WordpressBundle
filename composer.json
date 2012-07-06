@@ -1,6 +1,7 @@
 {
     "name": "101medialab/wordpress-bundle",
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "stof/doctrine-extensions-bundle": "dev-master"
     }
 }
