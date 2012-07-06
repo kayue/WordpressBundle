@@ -6,5 +6,6 @@
     },
     "autoload": {
         "psr-0": { "Hypebeast\\WordpressBundle": "" }
-    }
+    },
+    "target-dir": "Hypebeast/WordpressBundle"
 }
