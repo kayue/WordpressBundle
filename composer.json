@@ -1,5 +1,5 @@
 {
-    "name": "101medialab/wordpress-bundle",
+    "name": "hypebeast/wordpress-bundle",
     "require": {
         "php": ">=5.3.3"
     }
