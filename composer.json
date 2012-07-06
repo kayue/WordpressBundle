@@ -1,0 +1,6 @@
+{
+    "name": "101medialab/wordpress-bundle",
+    "require": {
+        "php": ">=5.3.3"
+    }
+}
