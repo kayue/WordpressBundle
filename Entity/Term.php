@@ -42,6 +42,13 @@ class Term
      */
     private $group;
 
+    /**
+     * @var Hypebeast\WordpressBundle\Entity\Taxonomy
+     *
+     * @ORM\OneToOne(targetEntity="Taxonomy", mappedBy="term")
+     **/
+    private $taxonomy;
+
 
     /**
      * Get id
@@ -111,5 +118,25 @@ class Term
     public function getGroup()
     {
         return $this->group;
+    }
+
+    /**
+     * Set taxonomy
+     *
+     * @param Hypebeast\WordpressBundle\Entity\Taxonomy $taxonomy
+     */
+    public function setTaxonomy(\Hypebeast\WordpressBundle\Entity\Taxonomy $taxonomy)
+    {
+        $this->taxonomy = $taxonomy;
+    }
+
+    /**
+     * Get taxonomy
+     *
+     * @return Hypebeast\WordpressBundle\Entity\Taxonomy
+     */
+    public function getTaxonomy()
+    {
+        return $this->taxonomy;
     }
 }

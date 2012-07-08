@@ -22,11 +22,11 @@ class Taxonomy
     private $id;
 
     /**
-     * @var string $taxonomy
+     * @var string $name
      *
      * @ORM\Column(name="taxonomy", type="string", length=32)
      */
-    private $taxonomy;
+    private $name;
 
     /**
      * @var text $description
@@ -52,7 +52,7 @@ class Taxonomy
     /**
      * @var Hypebeast\WordpressBundle\Entity\Term
      *
-     * @ORM\OneToOne(targetEntity="Hypebeast\WordpressBundle\Entity\Term")
+     * @ORM\OneToOne(targetEntity="Hypebeast\WordpressBundle\Entity\Term", inversedBy="taxonomy")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="term_id", referencedColumnName="term_id", unique=true)
      * })
@@ -71,23 +71,23 @@ class Taxonomy
     }
 
     /**
-     * Set taxonomy
+     * Set name
      *
-     * @param string $taxonomy
+     * @param string $name
      */
-    public function setTaxonomy($taxonomy)
+    public function setName($name)
     {
-        $this->taxonomy = $taxonomy;
+        $this->name = $name;
     }
 
     /**
-     * Get taxonomy
+     * Get name
      *
      * @return string
      */
-    public function getTaxonomy()
+    public function getName()
     {
-        return $this->taxonomy;
+        return $this->name;
     }
 
     /**
