@@ -37,12 +37,15 @@ class TablePrefixSubscriber implements EventSubscriber
 
         $classMetadata->setTableName($prefix . $classMetadata->getTableName());
 
-        foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
-            if ($mapping['type'] == \Doctrine\ORM\Mapping\ClassMetadataInfo::MANY_TO_MANY) {
-                $mappedTableName = $classMetadata->associationMappings[$fieldName]['joinTable']['name'];
-                $classMetadata->associationMappings[$fieldName]['joinTable']['name'] = $prefix . $mappedTableName;
-            }
-        }
+        // TODO: Looks like we don't need these lines for many to many anymore, it might
+        // result in duplicated table prefix.
+
+        // foreach ($classMetadata->getAssociationMappings() as $fieldName => $mapping) {
+        //     if ($mapping['type'] == \Doctrine\ORM\Mapping\ClassMetadataInfo::MANY_TO_MANY) {
+        //         $mappedTableName = $classMetadata->associationMappings[$fieldName]['joinTable']['name'];
+        //         $classMetadata->associationMappings[$fieldName]['joinTable']['name'] = $prefix . $mappedTableName;
+        //     }
+        // }
     }
 
     private function getTablePrefix(LoadClassMetadataEventArgs $args)
