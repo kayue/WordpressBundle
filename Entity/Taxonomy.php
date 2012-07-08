@@ -59,6 +59,17 @@ class Taxonomy
      */
     private $term;
 
+    /**
+     * @var Hypebeast\WordpressBundle\Entity\Post
+     *
+     * @ORM\ManyToMany(targetEntity="Post", mappedBy="taxonomies")
+     **/
+    private $posts;
+
+    public function __construct()
+    {
+        $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -168,5 +179,25 @@ class Taxonomy
     public function getTerm()
     {
         return $this->term;
+    }
+
+    /**
+     * Add post
+     *
+     * @param Hypebeast\WordpressBundle\Entity\Post $post
+     */
+    public function addPosts(\Hypebeast\WordpressBundle\Entity\Post $post)
+    {
+        $this->posts[] = $post;
+    }
+
+    /**
+     * Get posts
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getPosts()
+    {
+        return $this->posts;
     }
 }

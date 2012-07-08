@@ -204,7 +204,7 @@ class Post
     /**
      * @var Hypebeast\WordpressBundle\Entity\Taxonomy
      *
-     * @ORM\ManyToMany(targetEntity="Hypebeast\WordpressBundle\Entity\Taxonomy")
+     * @ORM\ManyToMany(targetEntity="Hypebeast\WordpressBundle\Entity\Taxonomy", inversedBy="posts")
      * @ORM\JoinTable(name="wp_term_relationships",
      *   joinColumns={
      *     @ORM\JoinColumn(name="object_id", referencedColumnName="ID")
@@ -810,11 +810,11 @@ class Post
     /**
      * Add taxonomies
      *
-     * @param Hypebeast\WordpressBundle\Entity\Taxonomy $taxonomies
+     * @param Hypebeast\WordpressBundle\Entity\Taxonomy $taxonomy
      */
-    public function addTaxonomy(\Hypebeast\WordpressBundle\Entity\Taxonomy $taxonomies)
+    public function addTaxonomy(\Hypebeast\WordpressBundle\Entity\Taxonomy $taxonomy)
     {
-        $this->taxonomies[] = $taxonomies;
+        $this->taxonomies[] = $taxonomy;
     }
 
     /**
