@@ -376,9 +376,17 @@ class User implements UserInterface
     function getRoles()
     {
         $roles = array();
-        $capabilities = $this->getMetasByKey('wp_capabilities')->first()->getValue();
+        $metas = $this->getMetasByKey('wp_capabilities');
 
-        if(!is_array($capabilities)) return array();
+        if($metas->isEmpty()) {
+            return array();
+        }
+
+        $capabilities = $capabilities->first()->getValue();
+
+        if(!is_array($capabilities)) {
+            return array();
+        }
 
         foreach($capabilities as $role => $value) {
             $roles[] = 'ROLE_'.strtoupper($role);
