@@ -382,7 +382,7 @@ class User implements UserInterface
             return array();
         }
 
-        $capabilities = $capabilities->first()->getValue();
+        $capabilities = $metas->first()->getValue();
 
         if(!is_array($capabilities)) {
             return array();
