@@ -135,12 +135,19 @@ class Post
     private $contentFiltered = "";
 
     /**
-     * @var bigint $parent
+     * @var Hypebeast\WordpressBundle\Entity\Post $parent
      *
-     * @ORM\OneToOne(targetEntity="Post")
+     * @ORM\ManyToOne(targetEntity="Post", inversedBy="children")
      * @ORM\JoinColumn(name="post_parent", referencedColumnName="ID")
      */
-    private $parent = 0;
+    private $parent;
+
+    /**
+     * @var Hypebeast\WordpressBundle\Entity\Post $children
+     *
+     * @ORM\OneToMany(targetEntity="Post", mappedBy="parent")
+     */
+    private $children;
 
     /**
      * @var string $guid
@@ -221,6 +228,7 @@ class Post
         $this->metas      = new \Doctrine\Common\Collections\ArrayCollection();
         $this->comments   = new \Doctrine\Common\Collections\ArrayCollection();
         $this->taxonomies = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children   = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -606,7 +614,7 @@ class Post
     /**
      * Set parent
      *
-     * @param bigint $parent
+     * @param \Hypebeast\WordpressBundle\Entity\Post $parent
      */
     public function setParent($parent)
     {
@@ -616,11 +624,32 @@ class Post
     /**
      * Get parent
      *
-     * @return bigint
+     * @return \Hypebeast\WordpressBundle\Entity\Post
      */
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \Hypebeast\WordpressBundle\Entity\Post
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Set parent
+     *
+     * @param \Hypebeast\WordpressBundle\Entity\Post $child
+     */
+    public function addChild(\Hypebeast\WordpressBundle\Entity\Post $child)
+    {
+        $child->setParent($this);
+        $this->children[] = $child;
     }
 
     /**
