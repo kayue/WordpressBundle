@@ -138,7 +138,7 @@ class Post
      * @var bigint $parent
      *
      * @ORM\OneToOne(targetEntity="Post")
-     * @ORM\JoinColumn(name="post_parent", referencedColumnName="id")
+     * @ORM\JoinColumn(name="post_parent", referencedColumnName="ID")
      */
     private $parent = 0;
 
