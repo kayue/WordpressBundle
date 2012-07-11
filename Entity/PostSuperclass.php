@@ -760,6 +760,7 @@ class PostSuperclass
      */
     public function addMeta(\Hypebeast\WordpressBundle\Entity\PostMeta $meta)
     {
+        $meta->setPost($this);
         $this->metas[] = $meta;
     }
 
