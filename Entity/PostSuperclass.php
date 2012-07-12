@@ -8,6 +8,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Hypebeast\WordpressBundle\Entity\Post
  *
+ * @ORM\Table(name="posts")
+ * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\MappedSuperclass
  */

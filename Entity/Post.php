@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="posts")
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
+ * @Orm\MappedSuperclass
  */
 class Post extends PostSuperclass
 {
