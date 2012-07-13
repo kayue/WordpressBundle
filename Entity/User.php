@@ -389,7 +389,7 @@ class User implements UserInterface
         }
 
         foreach($capabilities as $role => $value) {
-            $roles[] = 'ROLE_'.strtoupper($role);
+            $roles[] = 'ROLE_WP_'.strtoupper($role);
         }
 
         return $roles;
