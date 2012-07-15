@@ -187,7 +187,7 @@ class Post
     /**
      * @var Hypebeast\WordpressBundle\Entity\PostMeta
      *
-     * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\PostMeta", mappedBy="post")
+     * @ORM\OneToMany(targetEntity="Hypebeast\WordpressBundle\Entity\PostMeta", mappedBy="post", cascade={"persist"})
      */
     private $metas;
 
