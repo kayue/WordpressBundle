@@ -61,6 +61,7 @@
                  class="Hypebeast\WordpressBundle\Extensions\WordpressTwigExtension"
                  public="true">
             <tag name="twig.extension" />
+            <argument type="service" id="doctrine" />
         </service>
 
         <service id="wordpress.helper"

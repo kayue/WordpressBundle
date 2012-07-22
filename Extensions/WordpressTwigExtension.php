@@ -2,6 +2,9 @@
 
 namespace Hypebeast\WordpressBundle\Extensions;
 
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Hypebeast\WordpressBundle\Entity\Post;
+
 /**
  * Twig extension for accessing Wordpress template function in Twig
  * through a global object in Twig.
@@ -10,6 +13,13 @@ namespace Hypebeast\WordpressBundle\Extensions;
  */
 class WordpressTwigExtension extends \Twig_Extension
 {
+    protected $doctrine;
+
+    public function __construct(RegistryInterface $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
     /**
      * Returns the name of the extension.
      *
@@ -134,7 +144,10 @@ class WordpressTwigExtension extends \Twig_Extension
         $pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
         $pee = preg_replace('!(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
         if ( $br ) {
-            $pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', array(&$this, 'autopNewlinePreservationHelper'), $pee);
+            $pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', function($matches) {
+                // newline preservation help function for wpautop
+                return str_replace("\n", "<WPPreserveNewline />", $matches[0]);
+            }, $pee);
             $pee = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $pee); // optionally make line breaks
             $pee = str_replace('<WPPreserveNewline />', "\n", $pee);
         }
@@ -148,14 +161,80 @@ class WordpressTwigExtension extends \Twig_Extension
         return $pee;
     }
 
+    public function getThumbnail(Post $post, $size = 'thumbnail')
+    {
+        if($size === 'thumbnail') {
+            $size = array(300, 200);
+        }
+
+        $metas = $post->getMetasByKey('_thumbnail_id');
+
+        // return null if no thumbnail set
+        if($metas->isEmpty()) {
+            return null;
+        }
+
+        $thumbnail = $this->doctrine->getRepository('HypebeastWordpressBundle:Post')->find($metas->first()->getValue());
+        $basename = $this->basename($thumbnail->getGuid());
+        $nearestSize = $this->getNearestSize($thumbnail, $size);
+
+        return str_replace($basename, $nearestSize['file'], $thumbnail->getGuid());
+    }
+
     /**
-     * Newline preservation help function for wpautop
+     * i18n friendly version of basename()
      *
-     * @param array $matches preg_replace_callback matches array
+     * @param string $path A path.
+     * @param string $suffix If the filename ends in suffix this will also be cut off.
      * @return string
      */
-    private function autopNewlinePreservationHelper($matches)
+    private function basename($path, $suffix = '') {
+        return urldecode(basename( str_replace( '%2F', '/', urlencode( $path ) ), $suffix ) );
+    }
+
+    private function getNearestSize($attachment, $target = array(300, 200))
     {
-        return str_replace("\n", "<WPPreserveNewline />", $matches[0]);
+        // TODO: Check attachment is an image
+        $allSizes = $this->getAllSizes($attachment);
+        $nearest = null;
+        $nearestKey = null;
+
+        list($x1, $y1) = $target;
+
+        foreach ($allSizes as $key => $size) {
+            $x2 = $size['width'];
+            $y2 = $size['height'];
+
+            $distance = sqrt(pow($x1 - $x2, 2) + pow($y1 - $y2, 2));
+
+            if(!$nearest || $distance < $nearest) {
+                $nearest = $distance;
+                $nearestKey = $key;
+            }
+        }
+
+        return $allSizes[$nearestKey];
+    }
+
+    private function getAllSizes($attachment)
+    {
+        $metadata = $attachment->getMetasByKey('_wp_attachment_metadata');
+
+        if($metadata->isEmpty()) {
+            return null;
+        }
+
+        $metadata = $metadata->first()->getValue();
+
+        $originalSize = array(
+            'width'  => $metadata['width'],
+            'height' => $metadata['height'],
+            'file'   => $this->basename($attachment->getGuid()),
+        );
+
+        $allSizes = $metadata['sizes'];
+        $allSizes['original'] = $originalSize;
+
+        return $allSizes;
     }
 }
