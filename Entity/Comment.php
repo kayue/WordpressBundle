@@ -339,7 +339,11 @@ class Comment
      */
     public function setApproved($approved)
     {
-        $this->approved = $approved ? 1 : 0;
+        if(is_bool($approved)) {
+            $this->approved = $approved ? 1 : 0;
+        }
+
+        $this->approved = $approved;
     }
 
     /**
@@ -349,7 +353,7 @@ class Comment
      */
     public function getApproved()
     {
-        return $this->approved === 1;
+        return $this->approved;
     }
 
     /**
