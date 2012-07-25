@@ -167,14 +167,25 @@ class WordpressTwigExtension extends \Twig_Extension
             $size = array(300, 200);
         }
 
-        $metas = $post->getMetasByKey('_thumbnail_id');
+        if ($post->getType() == 'post' || $post->getType() == 'page'){
 
-        // return null if no thumbnail set
-        if($metas->isEmpty()) {
-            return null;
-        }
+            $metas = $post->getMetasByKey('_thumbnail_id');
 
-        $thumbnail = $this->doctrine->getRepository('HypebeastWordpressBundle:Post')->find($metas->first()->getValue());
+            if($metas->isEmpty()) {
+                $children = $post->getChildren();
+                if (count($children) == 0) return null;
+
+                $thumbnail = $children->first();
+            } else {
+                $thumbnail = $this->doctrine->getRepository('HypebeastWordpressBundle:Post')->find($metas->first()->getValue());
+            }
+
+        } else if ($post->getType() == 'attachment'){
+
+            $thumbnail = $post;
+
+        } else return null;
+
         $basename = $this->basename($thumbnail->getGuid());
         $nearestSize = $this->getNearestSize($thumbnail, $size, $keepRatio);
 
