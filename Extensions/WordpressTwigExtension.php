@@ -217,7 +217,6 @@ class WordpressTwigExtension extends \Twig_Extension
 
     private function getNearestSize($attachment, $target = array(300, 200), $keepRatio = false)
     {
-        // TODO: Check attachment is an image
         $allSizes = $this->getAllSizes($attachment);
         $nearest = null;
         $nearestKey = null;
