@@ -161,7 +161,7 @@ class WordpressTwigExtension extends \Twig_Extension
         return $pee;
     }
 
-    public function getThumbnail(Post $post, $size = 'thumbnail')
+    public function getThumbnail(Post $post, $size = 'thumbnail', $keepRatio = false)
     {
         if($size === 'thumbnail') {
             $size = array(300, 200);
@@ -176,7 +176,7 @@ class WordpressTwigExtension extends \Twig_Extension
 
         $thumbnail = $this->doctrine->getRepository('HypebeastWordpressBundle:Post')->find($metas->first()->getValue());
         $basename = $this->basename($thumbnail->getGuid());
-        $nearestSize = $this->getNearestSize($thumbnail, $size);
+        $nearestSize = $this->getNearestSize($thumbnail, $size, $keepRatio);
 
         return str_replace($basename, $nearestSize['file'], $thumbnail->getGuid());
     }
@@ -192,7 +192,7 @@ class WordpressTwigExtension extends \Twig_Extension
         return urldecode(basename( str_replace( '%2F', '/', urlencode( $path ) ), $suffix ) );
     }
 
-    private function getNearestSize($attachment, $target = array(300, 200))
+    private function getNearestSize($attachment, $target = array(300, 200), $keepRatio = false)
     {
         // TODO: Check attachment is an image
         $allSizes = $this->getAllSizes($attachment);
@@ -201,17 +201,22 @@ class WordpressTwigExtension extends \Twig_Extension
 
         list($x1, $y1) = $target;
 
-        foreach ($allSizes as $key => $size) {
-            $x2 = $size['width'];
-            $y2 = $size['height'];
+        do {
+            foreach ($allSizes as $key => $size) {
+                $x2 = $size['width'];
+                $y2 = $size['height'];
 
-            $distance = sqrt(pow($x1 - $x2, 2) + pow($y1 - $y2, 2));
+                $distance = sqrt(pow($x1 - $x2, 2) + pow($y1 - $y2, 2));
 
-            if(!$nearest || $distance < $nearest) {
-                $nearest = $distance;
-                $nearestKey = $key;
+                if(!$nearest || $distance < $nearest) {
+                    if (!$keepRatio || (abs($y2 / $x2 - $y1 / $x1) < 0.00001)){
+                        $nearest = $distance;
+                        $nearestKey = $key;
+                    }
+                }
             }
-        }
+            $keepRatio = false;
+        } while ($nearestKey !== null);
 
         return $allSizes[$nearestKey];
     }
