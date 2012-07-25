@@ -216,7 +216,7 @@ class WordpressTwigExtension extends \Twig_Extension
                 }
             }
             $keepRatio = false;
-        } while ($nearestKey !== null);
+        } while ($nearestKey === null);
 
         return $allSizes[$nearestKey];
     }
