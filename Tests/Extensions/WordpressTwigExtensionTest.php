@@ -60,7 +60,7 @@ class WordpressTwigExtensionTest extends WebTestCase
 
         $meta = new PostMeta();
         $meta->setKey('_wp_attachment_metadata');
-        $meta->setValue(serialize($this->createSizeArray($w, $h, $sizes, $fileName, $ext)));
+        $meta->setValue($this->createSizeArray($w, $h, $sizes, $fileName, $ext));
         $attach->addMeta($meta);
 
         $this->em->persist($meta);
@@ -69,12 +69,12 @@ class WordpressTwigExtensionTest extends WebTestCase
         $this->em->flush();
     }
 
-    private function createTestPost($path, $fileName, $ext){
+    private function createTestPost($path, $fileName, $ext, $width, $height, $sizes){
         $post = new Post();
         $post->setTitle(rand());
         $post->setContent(rand());
         $this->em->persist($post);
-        $this->createTestAttachment($path, $fileName, $ext, $post, 600, 400, array(array(600, 400), array(300, 200), array(200, 150)));
+        $this->createTestAttachment($path, $fileName, $ext, $post, $width, $height, $sizes);
 
         $this->em->flush();
 
@@ -83,7 +83,8 @@ class WordpressTwigExtensionTest extends WebTestCase
 
     public function testGetThumbnail()
     {
-        $post = $this->createTestPost('http://www.example.com/', 'file', 'jpg');
+        $post = $this->createTestPost('http://www.example.com/', 'file', 'jpg',  
+            600, 400, array(array(600, 400), array(300, 200), array(200, 150)));
 
         $result = $this->instance->getThumbnail($post);
 

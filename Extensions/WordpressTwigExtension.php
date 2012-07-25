@@ -229,8 +229,7 @@ class WordpressTwigExtension extends \Twig_Extension
                 $y2 = $size['height'];
 
                 $distance = sqrt(pow($x1 - $x2, 2) + pow($y1 - $y2, 2));
-
-                if(!$nearest || $distance < $nearest) {
+                if($nearest === null || $distance < $nearest) {
                     if (!$keepRatio || (abs($y2 / $x2 - $y1 / $x1) < 0.00001)){
                         $nearest = $distance;
                         $nearestKey = $key;
