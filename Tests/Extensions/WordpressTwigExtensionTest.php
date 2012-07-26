@@ -69,26 +69,127 @@ class WordpressTwigExtensionTest extends WebTestCase
         $this->em->flush();
     }
 
-    private function createTestPost($path, $fileName, $ext, $width, $height, $sizes){
+    private function createTestPost($attachments){
         $post = new Post();
         $post->setTitle(rand());
         $post->setContent(rand());
         $this->em->persist($post);
-        $this->createTestAttachment($path, $fileName, $ext, $post, $width, $height, $sizes);
+
+        foreach ($attachments as $attachment){
+            if (empty($attachment['mimeType'])){
+                $attachment['mimeType'] = 'image/jpeg';
+            }
+            $this->createTestAttachment($attachment['path'], $attachment['fileName'], $attachment['ext'], 
+                $post, $attachment['width'], $attachment['height'], $attachment['sizes'], $attachment['mimeType']);
+        }
 
         $this->em->flush();
 
         return $post;
     }
 
-    public function testGetThumbnail()
+    public function testGetPostThumbnail()
     {
-        $post = $this->createTestPost('http://www.example.com/', 'file', 'jpg',  
-            600, 400, array(array(600, 400), array(300, 200), array(200, 150)));
-
+        //contain exact size of thumbnail 300x200
+        $post = $this->createTestPost(array(
+            array(
+                'path' => 'http://www.example.com/', 
+                'fileName' => 'file', 
+                'ext' => 'jpg',  
+                'width' => 600, 
+                'height' => 400, 
+                'sizes' => array(array(600, 400), array(300, 200), array(200, 150))
+            )
+        ));
         $result = $this->instance->getThumbnail($post);
-
         $this->assertEquals('http://www.example.com/file-300x200.jpg', $result);
+
+        //standard input
+        $post = $this->createTestPost(array(
+            array(
+                'path' => 'http://www.example.com/', 
+                'fileName' => 'file', 
+                'ext' => 'jpg',  
+                'width' => 800, 
+                'height' => 600, 
+                'sizes' => array(array(800, 600), array(600, 400), array(400, 200), array(200, 100))
+            )
+        ));
+        $result = $this->instance->getThumbnail($post);
+        $this->assertEquals('http://www.example.com/file-400x200.jpg', $result);
+
+        //all larger than thumbnail
+        $post = $this->createTestPost(array(
+            array(
+                'path' => 'http://www.example.com/', 
+                'fileName' => 'file', 
+                'ext' => 'jpg',  
+                'width' => 1024, 
+                'height' => 768, 
+                'sizes' => array(array(1024, 768), array(800, 600), array(640, 480), array(480, 320))
+            )
+        ));
+        $result = $this->instance->getThumbnail($post);
+        $this->assertEquals('http://www.example.com/file-480x320.jpg', $result);
+
+        //all smaller than thumbnail
+        $post = $this->createTestPost(array(
+            array(
+                'path' => 'http://www.example.com/', 
+                'fileName' => 'file', 
+                'ext' => 'jpg',  
+                'width' => 120, 
+                'height' => 120, 
+                'sizes' => array(array(120, 120), array(60, 60), array(30, 30))
+            )
+        ));
+        $result = $this->instance->getThumbnail($post);
+        $this->assertEquals('http://www.example.com/file-120x120.jpg', $result);
+
+        //only one sizes
+        $post = $this->createTestPost(array(
+            array(
+                'path' => 'http://www.example.com/', 
+                'fileName' => 'file', 
+                'ext' => 'jpg',  
+                'width' => 1024, 
+                'height' => 768, 
+                'sizes' => array(array(1024, 768))
+            )
+        ));
+        $result = $this->instance->getThumbnail($post);
+        $this->assertEquals('http://www.example.com/file-1024x768.jpg', $result);
+
+        //no sizes at all
+        $post = $this->createTestPost(array(
+            array(
+                'path' => 'http://www.example.com/', 
+                'fileName' => 'file', 
+                'ext' => 'jpg',  
+                'width' => 1024, 
+                'height' => 768, 
+                'sizes' => array()
+            )
+        ));
+        $result = $this->instance->getThumbnail($post);
+        $this->assertNull($result);
+
+        //test for file name, paths too.
+        $post = $this->createTestPost(array(
+            array(
+                'path' => 'http://www.google.com/', 
+                'fileName' => 'upload', 
+                'ext' => 'png',  
+                'width' => 800, 
+                'height' => 600, 
+                'sizes' => array(array(800, 600), array(600, 400), array(400, 200), array(200, 100)),
+                'mimeType' => 'image/png'
+             )
+        ));
+        $result = $this->instance->getThumbnail($post);
+        $this->assertEquals('http://www.google.com/upload-400x200.png', $result);
+
+
     }
 
 
