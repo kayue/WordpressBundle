@@ -64,6 +64,11 @@ class WordpressTwigExtensionTest extends WebTestCase
         $meta->setPost($post);
         $attach->addMeta($meta);
 
+        $this->em->persist($meta);
+        $this->em->persist($attach);
+
+        $this->em->flush();
+
         if ($feature){
             $featureMeta = new PostMeta();
             $featureMeta->setKey('_thumbnail_id');
@@ -72,9 +77,6 @@ class WordpressTwigExtensionTest extends WebTestCase
             $post->addMeta($featureMeta);
             $this->em->persist($featureMeta);
         }
-
-        $this->em->persist($meta);
-        $this->em->persist($attach);
 
         $this->em->flush();
     }
