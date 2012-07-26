@@ -186,7 +186,9 @@ class WordpressTwigExtension extends \Twig_Extension
                 if ($thumbnail === null) return null;
 
             } else {
+
                 $thumbnail = $this->doctrine->getRepository('HypebeastWordpressBundle:Post')->find($metas->first()->getValue());
+
             }
 
         } else if ($post->getType() == 'attachment'){
@@ -196,7 +198,7 @@ class WordpressTwigExtension extends \Twig_Extension
         } else return null;
 
         //check if the attachment is an image
-        if (strpos($thumbnail->getMimeType(), 'image') === false) return null;
+        if (!$thumbnail || strpos($thumbnail->getMimeType(), 'image') === false) return null;
 
         $basename = $this->basename($thumbnail->getGuid());
         $nearestSize = $this->getNearestSize($thumbnail, $size, $keepRatio);
