@@ -202,7 +202,7 @@ class WordpressTwigExtension extends \Twig_Extension
 
         $basename = $this->basename($thumbnail->getGuid());
         $nearestSize = $this->getNearestSize($thumbnail, $size, $keepRatio);
-
+        
         return str_replace($basename, $nearestSize['file'], $thumbnail->getGuid());
     }
 

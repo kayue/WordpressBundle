@@ -79,6 +79,8 @@ class WordpressTwigExtensionTest extends WebTestCase
         }
 
         $this->em->flush();
+
+        return $attach;
     }
 
     private function createTestPost($attachments){
@@ -103,7 +105,7 @@ class WordpressTwigExtensionTest extends WebTestCase
         return $post;
     }
 
-    public function testGetPostThumbnail()
+    public function testGetThumbnail()
     {
         //contain exact size of thumbnail 300x200
         $post = $this->createTestPost(array(
@@ -406,6 +408,24 @@ class WordpressTwigExtensionTest extends WebTestCase
         ));
         $result = $this->instance->getThumbnail($post, array(400, 400), true);
         $this->assertEquals('http://www.example.com/file-100x100.jpg', $result);
+
+        //attachment input
+        $post = new Post();
+        $post->setTitle(rand());
+        $post->setContent(rand());
+        $this->em->persist($post);
+
+        // standard input
+        $attach = $this->createTestAttachment('http://www.example.com/', 'file', 'jpg', $post, 640, 480, 
+            array(array(640, 480), array(480, 320), array(240, 160), array(80, 60)));
+        $result = $this->instance->getThumbnail($attach);
+        $this->assertEquals('http://www.example.com/file-240x160.jpg', $result);
+
+        // non-image
+        $attach = $this->createTestAttachment('http://www.example.com/', 'file', 'txt', $post, 640, 480, 
+            array(array(640, 480), array(480, 320), array(240, 160), array(80, 60)), false, 'text/plain');
+        $result = $this->instance->getThumbnail($attach);
+        $this->assertNull($result);
 
     }
 
