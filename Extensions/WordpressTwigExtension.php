@@ -163,7 +163,7 @@ class WordpressTwigExtension extends \Twig_Extension
 
     public function getThumbnail(Post $post, $size = 'thumbnail', $keepRatio = false)
     {
-        if($size === 'thumbnail') {
+        if( $size === 'thumbnail' || !$size) {
             $size = array(300, 200);
         }
 
