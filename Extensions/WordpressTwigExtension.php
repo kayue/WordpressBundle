@@ -202,6 +202,8 @@ class WordpressTwigExtension extends \Twig_Extension
 
         $basename = $this->basename($thumbnail->getGuid());
         $nearestSize = $this->getNearestSize($thumbnail, $size, $keepRatio);
+
+        if ($nearestSize === null) return null;
         
         return str_replace($basename, $nearestSize['file'], $thumbnail->getGuid());
     }
@@ -224,6 +226,8 @@ class WordpressTwigExtension extends \Twig_Extension
         $nearestKey = null;
 
         list($x1, $y1) = $target;
+
+        if (!$allSizes) return null;
 
         do {
             foreach ($allSizes as $key => $size) {
@@ -260,7 +264,10 @@ class WordpressTwigExtension extends \Twig_Extension
             'file'   => $this->basename($attachment->getGuid()),
         );
 
-        $allSizes = $metadata['sizes'];
+        if (array_key_exists('sizes', $metadata)){
+            $allSizes = $metadata['sizes'];
+        }
+
         $allSizes['original'] = $originalSize;
 
         return $allSizes;
