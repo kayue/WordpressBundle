@@ -172,6 +172,10 @@ class WordpressTwigExtensionTest extends WebTestCase
                     )
                 ), 'http://www.example.com/file-1024x768.jpg'
             ),
+            //no attachment at all
+            array(
+                array(), null
+            ),
             //test for file name, paths too.
             array(
                 array(
@@ -398,18 +402,6 @@ class WordpressTwigExtensionTest extends WebTestCase
         $post = $this->createTestPost($postData);
         $result = $this->instance->getThumbnail($post, $thumbnail, $keepRatio);
         $this->assertEquals($expected, $result);
-
-        //attachment input
-        /*$attach = $this->createTestAttachment();
-
-        // standard input
-        
-
-        // non-image
-        $attach = $this->createTestAttachment();
-        $result = $this->instance->getThumbnail($attach);
-        $this->assertNull($result);*/
-
     }
 
     public function provideAttachmentThumbnailData(){
