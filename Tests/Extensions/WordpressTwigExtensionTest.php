@@ -105,328 +105,333 @@ class WordpressTwigExtensionTest extends WebTestCase
         return $post;
     }
 
-    public function testGetThumbnail()
+    public function providePostThumbnailData(){
+        return array(
+            //contain exact size of thumbnail 300x200
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 600, 
+                        'height' => 400, 
+                        'sizes' => array(array(600, 400), array(300, 200), array(200, 150))
+                    )
+                ), 'http://www.example.com/file-300x200.jpg'
+            ),
+            //standard input
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 800, 
+                        'height' => 600, 
+                        'sizes' => array(array(800, 600), array(600, 400), array(400, 200), array(200, 100))
+                    )
+                ), 'http://www.example.com/file-400x200.jpg'
+            ),
+            //all larger than thumbnail
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 1024, 
+                        'height' => 768, 
+                        'sizes' => array(array(1024, 768), array(800, 600), array(640, 480), array(480, 320))
+                    )
+                ), 'http://www.example.com/file-480x320.jpg'
+            ),
+            //all smaller than thumbnail
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 120, 
+                        'height' => 120, 
+                        'sizes' => array(array(120, 120), array(60, 60), array(30, 30))
+                    )
+                ), 'http://www.example.com/file-120x120.jpg'
+            ),
+            //only one size
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 1024, 
+                        'height' => 768, 
+                        'sizes' => array(array(1024, 768))
+                    )
+                ), 'http://www.example.com/file-1024x768.jpg'
+            ),
+            //test for file name, paths too.
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.google.com/', 
+                        'fileName' => 'upload', 
+                        'ext' => 'png',  
+                        'width' => 800, 
+                        'height' => 600, 
+                        'sizes' => array(array(800, 600), array(600, 400), array(400, 200), array(200, 100)),
+                        'mimeType' => 'image/png'
+                     )
+                ), 'http://www.google.com/upload-400x200.png'
+            ),
+            //more than one attachment, no feature
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file1', 
+                        'ext' => 'jpg',  
+                        'width' => 1024, 
+                        'height' => 768, 
+                        'sizes' => array(array(1024, 768))
+                    ),
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file2', 
+                        'ext' => 'jpg',  
+                        'width' => 800, 
+                        'height' => 600, 
+                        'sizes' => array(array(800, 600))
+                    ),
+                ), 'http://www.example.com/file1-1024x768.jpg'
+            ),
+            //more than one attachment, contains feature
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file1', 
+                        'ext' => 'jpg',  
+                        'width' => 1024, 
+                        'height' => 768, 
+                        'sizes' => array(array(1024, 768))
+                    ),
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file2', 
+                        'ext' => 'jpg',  
+                        'width' => 800, 
+                        'height' => 600, 
+                        'sizes' => array(array(800, 600)),
+                        'feature' => true
+                    ),
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file3', 
+                        'ext' => 'jpg',  
+                        'width' => 300, 
+                        'height' => 200, 
+                        'sizes' => array(array(300, 200))
+                    ),
+                ), 'http://www.example.com/file2-800x600.jpg'
+            ),
+            //check whether the upload is an image
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'pdf',  
+                        'width' => 1024, 
+                        'height' => 768, 
+                        'sizes' => array(array(1024, 768)),
+                        'mimeType' => 'application/pdf'
+                    )
+                ), null
+            ),
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file1', 
+                        'ext' => 'txt',  
+                        'width' => 1024, 
+                        'height' => 768, 
+                        'sizes' => array(array(1024, 768)),
+                        'mimeType' => 'text/plain'
+                    ),
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file2', 
+                        'ext' => 'mpg',  
+                        'width' => 800, 
+                        'height' => 600, 
+                        'sizes' => array(array(800, 600)),
+                        'mimeType' => 'audio/mpeg'
+                    ),
+                ), null
+            ),
+            //mix image and non-image!
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file1', 
+                        'ext' => 'txt',  
+                        'width' => 1024, 
+                        'height' => 768, 
+                        'sizes' => array(array(1024, 768)),
+                        'mimeType' => 'text/plain'
+                    ),
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file2', 
+                        'ext' => 'mpg',  
+                        'width' => 800, 
+                        'height' => 600, 
+                        'sizes' => array(array(800, 600)),
+                        'mimeType' => 'audio/mpeg'
+                    ),
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file3', 
+                        'ext' => 'jpg',  
+                        'width' => 1024, 
+                        'height' => 768, 
+                        'sizes' => array(array(1024, 768))
+                    ),
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file4', 
+                        'ext' => 'jpg',  
+                        'width' => 800, 
+                        'height' => 600, 
+                        'sizes' => array(array(800, 600))
+                    ),
+                ), 'http://www.example.com/file3-1024x768.jpg'
+            ),
+            //test custom thumbnail size
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 240, 
+                        'height' => 120, 
+                        'sizes' => array(array(240, 120), array(120, 60), array(60, 30))
+                    )
+                ), 'http://www.example.com/file-120x60.jpg', array(120, 60)
+            ),
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 240, 
+                        'height' => 120, 
+                        'sizes' => array(array(240, 120), array(120, 60), array(60, 30))
+                    )
+                ), 'http://www.example.com/file-120x60.jpg', array(90, 60)
+            ),
+            //test ratio keeping
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 1500, 
+                        'height' => 1000, 
+                        'sizes' => array(array(1500, 1000), array(800, 600), array(400, 300), array(100, 50))
+                    )
+                ), 'http://www.example.com/file-1500x1000.jpg', null, true
+            ),
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 1500, 
+                        'height' => 1000, 
+                        'sizes' => array(array(1500, 1000), array(800, 600), array(400, 300), array(150, 100))
+                    )
+                ), 'http://www.example.com/file-150x100.jpg', null, true
+            ),
+            //all parameter active!
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 1000, 
+                        'height' => 1000, 
+                        'sizes' => array(array(1000, 1000), array(800, 600), array(400, 300), array(100, 50))
+                    )
+                ), 'http://www.example.com/file-1000x1000.jpg', array(600, 600), true
+            ),
+            array(
+                array(
+                    array(
+                        'path' => 'http://www.example.com/', 
+                        'fileName' => 'file', 
+                        'ext' => 'jpg',  
+                        'width' => 1000, 
+                        'height' => 1000, 
+                        'sizes' => array(array(1000, 1000), array(800, 600), array(400, 300), array(100, 100))
+                    )
+                ), 'http://www.example.com/file-100x100.jpg', array(400, 400), true
+            ),
+        );
+    }
+
+    /**
+    * @dataProvider providePostThumbnailData
+    */
+    public function testGetPostThumbnail($postData, $expected, $thumbnail = null, $keepRatio = false)
     {
-        //contain exact size of thumbnail 300x200
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 600, 
-                'height' => 400, 
-                'sizes' => array(array(600, 400), array(300, 200), array(200, 150))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.example.com/file-300x200.jpg', $result);
-
-        //standard input
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 800, 
-                'height' => 600, 
-                'sizes' => array(array(800, 600), array(600, 400), array(400, 200), array(200, 100))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.example.com/file-400x200.jpg', $result);
-
-        //all larger than thumbnail
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 1024, 
-                'height' => 768, 
-                'sizes' => array(array(1024, 768), array(800, 600), array(640, 480), array(480, 320))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.example.com/file-480x320.jpg', $result);
-
-        //all smaller than thumbnail
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 120, 
-                'height' => 120, 
-                'sizes' => array(array(120, 120), array(60, 60), array(30, 30))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.example.com/file-120x120.jpg', $result);
-
-        //only one sizes
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 1024, 
-                'height' => 768, 
-                'sizes' => array(array(1024, 768))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.example.com/file-1024x768.jpg', $result);
-
-        //no attachment at all
-        $post = $this->createTestPost(array());
-        $result = $this->instance->getThumbnail($post);
-        $this->assertNull($result);
-
-        //test for file name, paths too.
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.google.com/', 
-                'fileName' => 'upload', 
-                'ext' => 'png',  
-                'width' => 800, 
-                'height' => 600, 
-                'sizes' => array(array(800, 600), array(600, 400), array(400, 200), array(200, 100)),
-                'mimeType' => 'image/png'
-             )
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.google.com/upload-400x200.png', $result);
-
-        //more than one attachment, no feature
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file1', 
-                'ext' => 'jpg',  
-                'width' => 1024, 
-                'height' => 768, 
-                'sizes' => array(array(1024, 768))
-            ),
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file2', 
-                'ext' => 'jpg',  
-                'width' => 800, 
-                'height' => 600, 
-                'sizes' => array(array(800, 600))
-            ),
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.example.com/file1-1024x768.jpg', $result);
-
-        //more than one attachment, contains feature
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file1', 
-                'ext' => 'jpg',  
-                'width' => 1024, 
-                'height' => 768, 
-                'sizes' => array(array(1024, 768))
-            ),
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file2', 
-                'ext' => 'jpg',  
-                'width' => 800, 
-                'height' => 600, 
-                'sizes' => array(array(800, 600)),
-                'feature' => true
-            ),
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file3', 
-                'ext' => 'jpg',  
-                'width' => 300, 
-                'height' => 200, 
-                'sizes' => array(array(300, 200))
-            ),
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.example.com/file2-800x600.jpg', $result);
-
-        //check whether the upload is an image
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'pdf',  
-                'width' => 1024, 
-                'height' => 768, 
-                'sizes' => array(array(1024, 768)),
-                'mimeType' => 'application/pdf'
-            )
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertNull($result);
-
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file1', 
-                'ext' => 'txt',  
-                'width' => 1024, 
-                'height' => 768, 
-                'sizes' => array(array(1024, 768)),
-                'mimeType' => 'text/plain'
-            ),
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file2', 
-                'ext' => 'mpg',  
-                'width' => 800, 
-                'height' => 600, 
-                'sizes' => array(array(800, 600)),
-                'mimeType' => 'audio/mpeg'
-            ),
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertNull($result);
-
-        //mix image and non-image!
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file1', 
-                'ext' => 'txt',  
-                'width' => 1024, 
-                'height' => 768, 
-                'sizes' => array(array(1024, 768)),
-                'mimeType' => 'text/plain'
-            ),
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file2', 
-                'ext' => 'mpg',  
-                'width' => 800, 
-                'height' => 600, 
-                'sizes' => array(array(800, 600)),
-                'mimeType' => 'audio/mpeg'
-            ),
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file3', 
-                'ext' => 'jpg',  
-                'width' => 1024, 
-                'height' => 768, 
-                'sizes' => array(array(1024, 768))
-            ),
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file4', 
-                'ext' => 'jpg',  
-                'width' => 800, 
-                'height' => 600, 
-                'sizes' => array(array(800, 600))
-            ),
-        ));
-        $result = $this->instance->getThumbnail($post);
-        $this->assertEquals('http://www.example.com/file3-1024x768.jpg', $result);
-
-        //test custom thumbnail size
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 240, 
-                'height' => 120, 
-                'sizes' => array(array(240, 120), array(120, 60), array(60, 30))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post, array(120, 60));
-        $this->assertEquals('http://www.example.com/file-120x60.jpg', $result);
-
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 240, 
-                'height' => 120, 
-                'sizes' => array(array(240, 120), array(120, 60), array(60, 30))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post, array(90, 60));
-        $this->assertEquals('http://www.example.com/file-120x60.jpg', $result);
-
-        //test ratio keeping
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 1500, 
-                'height' => 1000, 
-                'sizes' => array(array(1500, 1000), array(800, 600), array(400, 300), array(100, 50))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post, null, true);
-        $this->assertEquals('http://www.example.com/file-1500x1000.jpg', $result);
-
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 1500, 
-                'height' => 1000, 
-                'sizes' => array(array(1500, 1000), array(800, 600), array(400, 300), array(150, 100))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post, null, true);
-        $this->assertEquals('http://www.example.com/file-150x100.jpg', $result);
-
-        //all parameter active!
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 1000, 
-                'height' => 1000, 
-                'sizes' => array(array(1000, 1000), array(800, 600), array(400, 300), array(100, 50))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post, array(600, 600), true);
-        $this->assertEquals('http://www.example.com/file-1000x1000.jpg', $result);
-
-        $post = $this->createTestPost(array(
-            array(
-                'path' => 'http://www.example.com/', 
-                'fileName' => 'file', 
-                'ext' => 'jpg',  
-                'width' => 1000, 
-                'height' => 1000, 
-                'sizes' => array(array(1000, 1000), array(800, 600), array(400, 300), array(100, 100))
-            )
-        ));
-        $result = $this->instance->getThumbnail($post, array(400, 400), true);
-        $this->assertEquals('http://www.example.com/file-100x100.jpg', $result);
+        $post = $this->createTestPost($postData);
+        $result = $this->instance->getThumbnail($post, $thumbnail, $keepRatio);
+        $this->assertEquals($expected, $result);
 
         //attachment input
+        /*$attach = $this->createTestAttachment();
+
+        // standard input
+        
+
+        // non-image
+        $attach = $this->createTestAttachment();
+        $result = $this->instance->getThumbnail($attach);
+        $this->assertNull($result);*/
+
+    }
+
+    public function provideAttachmentThumbnailData(){
+        return array(
+            array('http://www.example.com/', 'file', 'jpg', 640, 480, 
+                array(array(640, 480), array(480, 320), array(240, 160), array(80, 60)), false, 'image/jpeg', 'http://www.example.com/file-240x160.jpg'),
+            array('http://www.example.com/', 'file', 'txt', 640, 480, 
+                array(array(640, 480), array(480, 320), array(240, 160), array(80, 60)), false, 'text/plain', null)
+        );
+    }
+
+    /**
+    * @dataProvider provideAttachmentThumbnailData
+    */
+    public function testGetAttachmentThumbnail($url, $fileName, $ext, $width, $height, $sizes, $feature, $mimeType, $expected){
         $post = new Post();
         $post->setTitle(rand());
         $post->setContent(rand());
         $this->em->persist($post);
-
-        // standard input
-        $attach = $this->createTestAttachment('http://www.example.com/', 'file', 'jpg', $post, 640, 480, 
-            array(array(640, 480), array(480, 320), array(240, 160), array(80, 60)));
+        $attach = $this->createTestAttachment($url, $fileName, $ext, $post, $width, $height, $sizes, $feature, $mimeType);
         $result = $this->instance->getThumbnail($attach);
-        $this->assertEquals('http://www.example.com/file-240x160.jpg', $result);
-
-        // non-image
-        $attach = $this->createTestAttachment('http://www.example.com/', 'file', 'txt', $post, 640, 480, 
-            array(array(640, 480), array(480, 320), array(240, 160), array(80, 60)), false, 'text/plain');
-        $result = $this->instance->getThumbnail($attach);
-        $this->assertNull($result);
-
+        $this->assertEquals($expected, $result);
     }
 
 
