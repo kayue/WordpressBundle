@@ -395,6 +395,7 @@ class WordpressTwigExtensionTest extends WebTestCase
     }
 
     /**
+    * @covers \Hypebeast\WordpressBundle\Extensions\WordpressTwigExtension::getThumbnail
     * @dataProvider providePostThumbnailData
     */
     public function testGetPostThumbnail($postData, $expected, $thumbnail = null, $keepRatio = false)
@@ -414,6 +415,7 @@ class WordpressTwigExtensionTest extends WebTestCase
     }
 
     /**
+    * @covers \Hypebeast\WordpressBundle\Extensions\WordpressTwigExtension::getThumbnail
     * @dataProvider provideAttachmentThumbnailData
     */
     public function testGetAttachmentThumbnail($url, $fileName, $ext, $width, $height, $sizes, $feature, $mimeType, $expected){
