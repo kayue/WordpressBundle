@@ -50,7 +50,7 @@ class WordpressTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'wpautop' => new \Twig_Filter_Method(&$this, 'wpautop'),
+            'wpautop' => new \Twig_Filter_Method($this, 'wpautop'),
         );
     }
 
@@ -204,7 +204,7 @@ class WordpressTwigExtension extends \Twig_Extension
         $nearestSize = $this->getNearestSize($thumbnail, $size, $keepRatio);
 
         if ($nearestSize === null) return null;
-        
+
         return str_replace($basename, $nearestSize['file'], $thumbnail->getGuid());
     }
 
