@@ -9,6 +9,7 @@ use Hypebeast\WordpressBundle\Types\WordPressIdType;
 use Hypebeast\WordpressBundle\Types\WordPressMetaType;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\HttpKernel\Kernel;
 
 class HypebeastWordpressBundle extends Bundle
 {
