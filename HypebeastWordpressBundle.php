@@ -31,7 +31,8 @@ class HypebeastWordpressBundle extends Bundle
         parent::build($container);
 
         $security = $container->getExtension('security');
-        if(method_exists($security, 'addSecurityListenerFactory')) {
+        
+        if (version_compare(Kernel::VERSION, '2.1-DEV', '>=')) {
             $security->addSecurityListenerFactory(new WordpressCookieFactory());
             $security->addSecurityListenerFactory(new WordpressFormLoginFactory());
         }
