@@ -81,6 +81,10 @@ Installation
             # Set WordPress table prefix, default value is "wp_"
             table_prefix:   wp_
 
+            # Your WordPress site's domain, it is requried to fix the redirection bug
+            # when you have WordPpress multisite enabled. Optional in normal case.
+            domain: example.com
+
 5. Add the bundle factories, user provider, and authentication providers to your `security.yml`.
 Below is a sample configuration. All of the options for the wordpress_* authentication methods are
 optional and are displayed with their default values. You can omit them if you use the defaults,
@@ -92,8 +96,9 @@ e.g. `wordpress_cookie: ~` and `wordpress_form_login: ~`
 
             # ...
 
-            factories:
-                - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
+            # Uncomment the following line in Symfony 2.0.
+            # factories:
+            #     - "%kernel.root_dir%/../vendor/bundles/Hypebeast/WordpressBundle/Resources/config/security_factories.xml"
 
             providers:
                 wordpress:

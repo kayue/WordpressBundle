@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
         $builder->root('hypebeast_wordpress')
             ->children()
                 ->scalarNode('wordpress_path')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('domain')->defaultValue(null)->end()
                 ->booleanNode('short_init')->defaultValue(false)->end()
                 ->scalarNode('table_prefix')->defaultValue('wp_')->end()
             ->end()

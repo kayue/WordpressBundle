@@ -26,32 +26,41 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 class ApiLoader
 {
     /**
-     * Path to the Wordpress installation to use
+     * Path to the WordPress installation to use.
      *
      * @var string
      */
     public $wordpressPath;
 
     /**
+     * WordPress site's domain.
+     *
+     * @var string
+     */
+    private $domain;
+
+    /**
      * Constructor
      *
-     * @param string $wordpressPath path to the Wordpress installation to use
+     * @param string $wordpressPath path to the WordPress installation to use.
+     * @param string $domain WordPress site's domain.
      */
-    public function __construct($wordpressPath, $shortInit = false)
+    public function __construct($wordpressPath, $shortInit = false, $domain = null)
     {
         $this->wordpressPath = $wordpressPath;
+        $this->domain        = $domain;
 
         if(!defined('SHORTINIT')) {
             define('SHORTINIT', $shortInit);
         }
     }
-    
+
     /**
      * Loads a Wordpress configuration and API using the specified bootstrap
      * NB: Wordpress uses a number of variables in the global scope!
      *
      * @param string $bootstrap The filename of the Wordpress bootstrap to use
-     * 
+     *
      * @throws FileNotFoundException if the bootstrap can't be found
      */
     public function load($bootstrap='wp-load.php')
@@ -61,14 +70,21 @@ class ApiLoader
             return;
         }
 
+        // Modify HTTP_HOST to fix WordPress multi-site's redirection bug.
+        if($this->domain) {
+            $httpHost = $_SERVER['HTTP_HOST'];
+            $_SERVER['HTTP_HOST'] = $this->domain;
+        }
+
         $bootstrap = $this->wordpressPath . DIRECTORY_SEPARATOR . $bootstrap;
 
         if (!file_exists($bootstrap)) {
             throw new FileNotFoundException($bootstrap);
         }
-        
+
         // Work around WordPress's `$wp_rewrite` global. Fixes #2.
-        global $wp_rewrite; 
+        // Need $wpdb for ms-settings.php.
+        global $wp_rewrite, $wpdb;
 
         $returnValue = require_once $bootstrap;
 
@@ -81,7 +97,7 @@ class ApiLoader
             require(ABSPATH.WPINC.'/pluggable.php');
             wp_cookie_constants();
 
-            // If not logged in, load functions like wp_login_url() to 
+            // If not logged in, load functions like wp_login_url() to
             // generate login link.
             if(!is_user_logged_in()) {
                 require(ABSPATH.WPINC.'/general-template.php');
@@ -93,6 +109,11 @@ class ApiLoader
         foreach (get_defined_vars() as $name => $value) {
             if ($name == 'bootstrap' or $name == 'returnValue') continue;
             $GLOBALS[$name] = $value;
+        }
+
+        // Change back the HTTP_HOST to the original one.
+        if($this->domain) {
+            $_SERVER['HTTP_HOST'] = $httpHost;
         }
 
         return $returnValue;
