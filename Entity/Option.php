@@ -22,13 +22,6 @@ class Option
     private $id;
 
     /**
-     * @var integer $blogId
-     *
-     * @ORM\Column(name="blog_id", type="integer", length=11, nullable=false)
-     */
-    private $blogId;
-
-    /**
      * @var string $name
      *
      * @ORM\Column(name="option_name", type="string", length=64, nullable=false, unique=true)
@@ -58,26 +51,6 @@ class Option
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set blogId
-     *
-     * @param integer $blogId
-     */
-    public function setBlogId($blogId)
-    {
-        $this->blogId = $blogId;
-    }
-
-    /**
-     * Get blogId
-     *
-     * @return integer
-     */
-    public function getBlogId()
-    {
-        return $this->blogId;
     }
 
     /**
