@@ -50,6 +50,10 @@ class ApiLoader
         $this->wordpressPath = $wordpressPath;
         $this->domain        = $domain;
 
+        if(!isset($_SERVER['HTTP_HOST'])) {
+            $this->domain    = false;
+        }
+
         if(!defined('SHORTINIT')) {
             define('SHORTINIT', $shortInit);
         }
