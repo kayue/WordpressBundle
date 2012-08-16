@@ -94,6 +94,10 @@ class ApiLoader
 
         // Stop most of WordPress classes and functions from being loaded.
         if(SHORTINIT) {
+            // Load the L10n library.
+            require(ABSPATH.WPINC.'/l10n.php');
+
+            // Load most of WordPress.
             require(ABSPATH.WPINC.'/formatting.php');
             require(ABSPATH.WPINC.'/capabilities.php');
             require(ABSPATH.WPINC.'/user.php');
