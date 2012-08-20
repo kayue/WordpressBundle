@@ -40,6 +40,13 @@ class ApiLoader
     private $domain;
 
     /**
+     * HTTP Host
+     *
+     * @var string
+     */
+    private $httpHost;
+
+    /**
      * Constructor
      *
      * @param string $wordpressPath path to the WordPress installation to use.
@@ -49,10 +56,7 @@ class ApiLoader
     {
         $this->wordpressPath = $wordpressPath;
         $this->domain        = $domain;
-
-        if(!isset($_SERVER['HTTP_HOST'])) {
-            $this->domain    = false;
-        }
+        $this->httpHost      = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
 
         if(!defined('SHORTINIT')) {
             define('SHORTINIT', $shortInit);
@@ -76,7 +80,6 @@ class ApiLoader
 
         // Modify HTTP_HOST to fix WordPress multi-site's redirection bug.
         if($this->domain) {
-            $httpHost = $_SERVER['HTTP_HOST'];
             $_SERVER['HTTP_HOST'] = $this->domain;
         }
 
@@ -121,7 +124,7 @@ class ApiLoader
 
         // Change back the HTTP_HOST to the original one.
         if($this->domain) {
-            $_SERVER['HTTP_HOST'] = $httpHost;
+            $_SERVER['HTTP_HOST'] = $this->httpHost;
         }
 
         return $returnValue;
