@@ -31,7 +31,7 @@ class Option
     /**
      * @var text $value
      *
-     * @ORM\Column(name="option_value", type="text", nullable=false)
+     * @ORM\Column(name="option_value", type="wordpressmeta", nullable=false)
      */
     private $value;
 
