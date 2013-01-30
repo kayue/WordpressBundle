@@ -131,6 +131,29 @@ e.g. `wordpress_cookie: ~` and `wordpress_form_login: ~`
 
                 # ...
 
+
+6. When you're using the Symfony CLI, exclude the Wordpress tables by creating a default entitymanager
+
+		# app/config/config.yml
+		
+        doctrine:
+	        orm:
+			    auto_generate_proxy_classes: %kernel.debug%
+				    auto_mapping: true
+		
+will become
+	
+		doctrine:
+			orm:
+			    auto_generate_proxy_classes: %kernel.debug%
+			    default_entity_manager:   default
+			    entity_managers:
+			        default:
+			            connection:       default
+			            mappings:
+			                YourAppBundle: ~
+		  
+
 Multiple Blogs With Multiple Entity Manager
 ===========================================
 
