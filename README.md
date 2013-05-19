@@ -1,3 +1,5 @@
+Note: If you don't need to use WordPress's native function, please consider using [this new WordPress bundle](https://github.com/kayue/KayueWordpressBundle) instead. The new bundle should provide faster performacne as it won't load the entire WordPress into Symfony, and also come with a complete WordPress entity repositories, better authenication system and multisite support.
+
 Requirements
 ============
 
