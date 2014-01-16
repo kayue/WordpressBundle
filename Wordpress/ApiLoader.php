@@ -94,6 +94,9 @@ class ApiLoader
         global $wp_rewrite, $wpdb;
 
         $returnValue = require_once $bootstrap;
+        
+        // load user.php into apiLoader to can use wp_delete_user function
+        require_once ABSPATH.'wp-admin/includes/user.php';
 
         // Stop most of WordPress classes and functions from being loaded.
         if(SHORTINIT) {
